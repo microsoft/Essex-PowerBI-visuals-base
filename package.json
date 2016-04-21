@@ -1,0 +1,40 @@
+{
+  "name": "essex.powerbi.base",
+  "version": "0.0.1",
+  "description": "Essex PowerBI visual base",
+  "scripts": {
+    "build": "npm-run-all --sequential typings tsc",
+    "typings": "typings install",
+    "tsc": "! tsc | grep -v \"^node_modules.*\""
+  },
+  "main": "dist/index.js",
+  "repository": {
+    "type": "git",
+    "url": "https://msrp.visualstudio.com/DefaultCollection/Essex/_git/EssexPBIBase"
+  },
+  "keywords": [
+    "PowerBI",
+    "Base"
+  ],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "font-awesome": "^4.6.1",
+    "jquery": "^2.2.3",
+    "lodash": "^4.11.0",
+    "powerbi-visuals": "^0.3.8"
+  },
+  "devDependencies": {
+    "css-loader": "^0.23.1",
+    "exports-loader": "^0.6.3",
+    "imports-loader": "^0.6.5",
+    "node-sass": "^3.4.2",
+    "npm-run-all": "^1.7.0",
+    "raw-loader": "^0.5.1",
+    "sass-loader": "^3.2.0",
+    "style-loader": "^0.13.1",
+    "tslint": "^3.7.4",
+    "typescript": "^1.8.10",
+    "webpack": "^1.13.0"
+  }
+}

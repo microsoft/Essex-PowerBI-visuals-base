@@ -1,0 +1,18 @@
+{
+  "compilerOptions": {
+    "target": "es5",
+    "module": "commonjs",
+    "experimentalDecorators": true,
+    "declaration": true,
+    "noImplicitAny": true,
+    "sourceMap": true,
+    "suppressImplicitAnyIndexErrors": true,
+    "outDir":"dist"
+  },
+  "compileOnSave": false,
+  "files": [
+    "./src/index.ts",
+    "./typings/powerbi.d.ts",
+    "./typings/main.d.ts"
+  ]
+}

@@ -1,0 +1,11 @@
+{
+  "name": "essex.powerbi.base",
+  "version": false,
+  "dependencies": {},
+  "ambientDependencies": {
+    "d3": "registry:dt/d3#0.0.0+20160317120654",
+    "jquery": "registry:dt/jquery#1.10.0+20160316155526",
+    "lodash": "registry:dt/lodash#3.10.0+20160330154726",
+    "node": "registry:dt/node#4.0.0+20160330064709"
+  }
+}
