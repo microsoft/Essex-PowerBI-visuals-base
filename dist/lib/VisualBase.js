@@ -1,3 +1,4 @@
+/// <reference path="../../typings/powerbi.d.ts" />
 "use strict";
 var $ = require("jquery");
 var VisualBase = (function () {

@@ -1,3 +1,4 @@
+/// <reference path="../../typings/powerbi.d.ts" />
 import VisualCapabilities = powerbi.VisualCapabilities;
 import EnumerateVisualObjectInstancesOptions = powerbi.EnumerateVisualObjectInstancesOptions;
 import VisualObjectInstance = powerbi.VisualObjectInstance;
