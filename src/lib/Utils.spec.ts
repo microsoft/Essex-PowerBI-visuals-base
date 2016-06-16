@@ -232,6 +232,12 @@ describe("Utils", () => {
         it ("should return Data when the number of categories has changed, and the underlying data has changed",
             () => identityTest([{ key: "KEY1" }], [{ key: "KEY1" }, { key: "KEY2" }], UpdateType.Data)
         );
+        it ("should return Data when the number of categories has changed, and the underlying data has changed not in the first, middle or last position",
+            () => identityTest(
+                [{ key: "KEY1" }, { key: "KEY2" }, { key: "KEY3"}, { key: "KEY4"}],
+                [{ key: "KEY1" }, { key: "KEY2" }, { key: "DIFF KEY"}, { key: "KEY4"}],
+            UpdateType.Data)
+        );
 
         it ("should return Data when the metadata columns have changed data roles",
             () => dataRoleTest("ROLE_1", "ROLE_2", UpdateType.Data)

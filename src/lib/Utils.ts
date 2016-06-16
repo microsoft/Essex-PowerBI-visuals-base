@@ -260,13 +260,15 @@ function hasArrayChanged<T>(a1: T[], a2: T[], isEqual: (a: T, b: T) => boolean) 
 
     if (a1.length > 0) {
         const last = a1.length - 1;
-        const mid = Math.floor(last / 2);
 
-        // Cheat, check first, last, and middle
+        // check first and last, initially, as it should find 99.95% of changed cases
         return (!isEqual(a1[0], a2[0])) ||
             (!isEqual(a1[last], a2[last])) ||
-            (!isEqual(a1[mid], a2[mid]));
+
+            // Check everything
+            (_.some(a1, ((n, i) => !isEqual(n, a2[i]))));
     }
+    return false;
 }
 
 function hasCategoryChanged(dc1: powerbi.DataViewCategoryColumn, dc2: powerbi.DataViewCategoryColumn) {

@@ -264,12 +264,13 @@ function hasArrayChanged(a1, a2, isEqual) {
     }
     if (a1.length > 0) {
         var last = a1.length - 1;
-        var mid = Math.floor(last / 2);
-        // Cheat, check first, last, and middle
+        // check first and last, initially, as it should find 99.95% of changed cases
         return (!isEqual(a1[0], a2[0])) ||
             (!isEqual(a1[last], a2[last])) ||
-            (!isEqual(a1[mid], a2[mid]));
+            // Check everything
+            (_.some(a1, (function (n, i) { return !isEqual(n, a2[i]); })));
     }
+    return false;
 }
 function hasCategoryChanged(dc1, dc2) {
     return hasArrayChanged(dc1.identity, dc2.identity, function (a, b) { return a.key === b.key; });
