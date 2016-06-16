@@ -1,5 +1,37 @@
 "use strict";
+/* tslint:disable */
+var debug = require("debug");
+debug.save = function () { };
+// TODO: #IF DEBUG
+if (process.env.DEBUG) {
+    debug.enable(process.env.DEBUG);
+}
+else {
+    debug.enabled = function () { return false; };
+}
+/* tslint:enable */
 var _ = require("lodash");
+/**
+ * A logger factory function
+ */
+var logWriters = [consoleLogWriter()];
+exports.logger = (function (name) {
+    var newLogger = debug(name);
+    newLogger.log = function () {
+        var args = [];
+        for (var _i = 0; _i < arguments.length; _i++) {
+            args[_i - 0] = arguments[_i];
+        }
+        logWriters.forEach(function (n) {
+            n.apply(this, args);
+        });
+    };
+    return newLogger;
+});
+exports.logger.addWriter = function (writer) {
+    logWriters.push(writer);
+};
+var log = exports.logger("essex:widget:Utils");
 function applyMixins(derivedCtor, baseCtors) {
     baseCtors.forEach(function (baseCtor) {
         Object.getOwnPropertyNames(baseCtor.prototype).forEach(function (name) {
@@ -67,7 +99,8 @@ var Utils = (function () {
      * @param differ The interface for comparing items and add/remove events
      * @param <M>
      */
-    // TODO: Think about a param that indicates if should be merged into existingItems should be modified, or if only the differ should be called
+    // TODO: Think about a param that indicates if should be merged into 
+    /// existingItems should be modified, or if only the differ should be called
     Utils.listDiff = function (existingItems, newItems, differ) {
         existingItems = existingItems || [];
         newItems = newItems || [];
@@ -118,4 +151,199 @@ var Utils = (function () {
 }());
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.default = Utils;
+/**
+ * Creates an update watcher for a visual
+ */
+// TODO: This would be SOOO much better as a mixin, just don't want all that extra code that it requires right now.
+function updateTypeGetter(obj) {
+    var currUpdateType = UpdateType.Unknown;
+    if (obj && obj.update) {
+        var oldUpdate_1 = obj.update;
+        var prevOptions_1;
+        obj.update = function (options) {
+            var updateType = calcUpdateType(prevOptions_1, options);
+            currUpdateType = updateType;
+            prevOptions_1 = options;
+            log("Update -- Type: " + UpdateType[updateType]);
+            return oldUpdate_1.call(this, options);
+        };
+    }
+    return function () {
+        return currUpdateType;
+    };
+}
+exports.updateTypeGetter = updateTypeGetter;
+/**
+ * Calculates the updates that have occurred between the two updates
+ */
+function calcUpdateType(oldOpts, newOpts) {
+    var updateType = UpdateType.Unknown;
+    if (hasResized(oldOpts, newOpts)) {
+        updateType ^= UpdateType.Resize;
+    }
+    if (hasDataChanged(oldOpts, newOpts)) {
+        updateType ^= UpdateType.Data;
+    }
+    if (hasSettingsChanged(oldOpts, newOpts)) {
+        updateType ^= UpdateType.Settings;
+    }
+    return updateType;
+}
+exports.calcUpdateType = calcUpdateType;
+/**
+ * Creates html from the given things to log, supports chrome log style coloring (%c)
+ * See: https://developer.chrome.com/devtools/docs/console-api#consolelogobject-object
+ */
+function colorizedLog() {
+    var toLog = [];
+    for (var _i = 0; _i < arguments.length; _i++) {
+        toLog[_i - 0] = arguments[_i];
+    }
+    var logStr;
+    // logEle.css({ display: "block" });
+    if (toLog && toLog.length > 1) {
+        logStr = "<span>" + toLog[0] + "</span>";
+        for (var i = 1; i < toLog.length; i++) {
+            var value = toLog[i];
+            var cIdx = logStr.indexOf("%c");
+            if (cIdx >= 0) {
+                var beginningPart = logStr.substring(0, cIdx);
+                logStr = beginningPart + "</span><span style=\"" + value + "\">" + logStr.substring(cIdx + 2);
+            }
+            else {
+                logStr += value;
+            }
+        }
+    }
+    else {
+        logStr = toLog.join("");
+    }
+    return logStr;
+}
+exports.colorizedLog = colorizedLog;
+/**
+ * Adds logging to an element
+ */
+function elementLogWriter(getElement) {
+    var _this = this;
+    //logger: Logger, 
+    // const oldLog = logger.log;
+    return function () {
+        var toLog = [];
+        for (var _i = 0; _i < arguments.length; _i++) {
+            toLog[_i - 0] = arguments[_i];
+        }
+        var ele = getElement();
+        if (ele) {
+            getElement().prepend($("<div>" + colorizedLog.apply(_this, toLog) + "</div>"));
+        }
+        console.log.apply(console, toLog);
+    };
+}
+exports.elementLogWriter = elementLogWriter;
+;
+/**
+ * Adds logging to an element
+ */
+function consoleLogWriter() {
+    //logger: Logger, 
+    // const oldLog = logger.log;
+    return function () {
+        var toLog = [];
+        for (var _i = 0; _i < arguments.length; _i++) {
+            toLog[_i - 0] = arguments[_i];
+        }
+        console.log.apply(console, toLog);
+    };
+}
+exports.consoleLogWriter = consoleLogWriter;
+;
+function hasArrayChanged(a1, a2, isEqual) {
+    if (a1.length !== a2.length) {
+        return true;
+    }
+    if (a1.length > 0) {
+        var last = a1.length - 1;
+        var mid = Math.floor(last / 2);
+        // Cheat, check first, last, and middle
+        return (!isEqual(a1[0], a2[0])) ||
+            (!isEqual(a1[last], a2[last])) ||
+            (!isEqual(a1[mid], a2[mid]));
+    }
+}
+function hasCategoryChanged(dc1, dc2) {
+    return hasArrayChanged(dc1.identity, dc2.identity, function (a, b) { return a.key === b.key; });
+}
+var colProps = ['queryName', 'roles', 'sort'];
+function hasDataViewChanged(dv1, dv2) {
+    var cats1 = (dv1.categorical && dv1.categorical.categories) || [];
+    var cats2 = (dv2.categorical && dv2.categorical.categories) || [];
+    var cols1 = (dv1.metadata && dv1.metadata.columns) || [];
+    var cols2 = (dv2.metadata && dv2.metadata.columns) || [];
+    if (cats1.length !== cats2.length ||
+        cols1.length !== cols2.length) {
+        return true;
+    }
+    cols1 = cols1.sort(function (a, b) { return a.queryName.localeCompare(b.queryName); });
+    cols2 = cols2.sort(function (a, b) { return a.queryName.localeCompare(b.queryName); });
+    for (var i = 0; i < cols1.length; i++) {
+        // The underlying column has changed, or if the roles have changed
+        if (!_.isEqual(_.pick(cols1[i], colProps), _.pick(cols2[i], colProps))) {
+            return true;
+        }
+    }
+    for (var i = 0; i < cats1.length; i++) {
+        if (hasCategoryChanged(cats1[i], cats2[i])) {
+            return true;
+        }
+    }
+    return false;
+}
+function hasDataChanged(oldOptions, newOptions) {
+    var oldDvs = (oldOptions && oldOptions.dataViews) || [];
+    var dvs = newOptions.dataViews || [];
+    if (oldDvs.length !== dvs.length) {
+        return true;
+    }
+    for (var i = 0; i < oldDvs.length; i++) {
+        if (hasDataViewChanged(oldDvs[i], dvs[i])) {
+            return true;
+        }
+    }
+    return false;
+}
+function hasSettingsChanged(oldOptions, newOptions) {
+    var oldDvs = (oldOptions && oldOptions.dataViews) || [];
+    var dvs = newOptions.dataViews || [];
+    // Is this correct?
+    if (oldDvs.length !== dvs.length) {
+        return true;
+    }
+    for (var i = 0; i < oldDvs.length; i++) {
+        var oM = oldDvs[i].metadata || {};
+        var nM = dvs[i].metadata || {};
+        if (!_.isEqual(oM.objects, nM.objects)) {
+            return true;
+        }
+    }
+}
+function hasResized(oldOptions, newOptions) {
+    return newOptions.resizeMode;
+}
+/**
+ * Represents an update type for a visual
+ */
+(function (UpdateType) {
+    UpdateType[UpdateType["Unknown"] = 0] = "Unknown";
+    UpdateType[UpdateType["Data"] = 1] = "Data";
+    UpdateType[UpdateType["Resize"] = 2] = "Resize";
+    UpdateType[UpdateType["Settings"] = 4] = "Settings";
+    // Some utility keys for debugging
+    /* tslint:disable */
+    UpdateType[UpdateType["DataAndResize"] = 3] = "DataAndResize";
+    UpdateType[UpdateType["DataAndSettings"] = 5] = "DataAndSettings";
+    UpdateType[UpdateType["SettingsAndResize"] = 6] = "SettingsAndResize";
+    UpdateType[UpdateType["All"] = 7] = "All";
+})(exports.UpdateType || (exports.UpdateType = {}));
+var UpdateType = exports.UpdateType;
 //# sourceMappingURL=Utils.js.map

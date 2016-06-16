@@ -1,8 +1,19 @@
 /// <reference path="../../typings/powerbi.d.ts" />
 "use strict";
+var Utils_1 = require("./Utils");
 var $ = require("jquery");
 var VisualBase = (function () {
+    /**
+     * Constructor for the Visual
+     * @param logger The logger used for logging, if provided, the logger will log events to the log element contained in this visual
+     */
     function VisualBase() {
+        var _this = this;
+        Utils_1.logger.addWriter(Utils_1.elementLogWriter(function () {
+            var ele = _this.element.find(".logArea");
+            ele.css({ display: "block" });
+            return ele;
+        }));
     }
     /** This is called once when the visual is initialially created */
     VisualBase.prototype.init = function (options, template, addCssToParent) {
@@ -13,6 +24,8 @@ var VisualBase = (function () {
         this.height = options.viewport.height;
         this.container = options.element;
         this.element = $("<div style='height:100%;width:100%;'/>");
+        // Adds a logging area
+        this.element.append($("<div class=\"logArea\"></div>"));
         this.sandboxed = VisualBase.DEFAULT_SANDBOX_ENABLED;
         var promises = this.getExternalCssResources().map(function (resource) { return _this.buildExternalCssLink(resource); });
         $.when.apply($, promises).then(function () {

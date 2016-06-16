@@ -1,5 +1,6 @@
 /// <reference path="../../typings/powerbi.d.ts" />
 
+import { elementLogWriter, logger } from "./Utils";
 import VisualCapabilities = powerbi.VisualCapabilities;
 import EnumerateVisualObjectInstancesOptions = powerbi.EnumerateVisualObjectInstancesOptions;
 import VisualObjectInstance = powerbi.VisualObjectInstance;
@@ -38,15 +39,31 @@ export default class VisualBase implements powerbi.IVisual {
         }
     } : {};
 
+    /**
+     * Constructor for the Visual
+     * @param logger The logger used for logging, if provided, the logger will log events to the log element contained in this visual
+     */
+    constructor() {
+        logger.addWriter(elementLogWriter(() => {
+            const ele = this.element.find(".logArea");
+            ele.css({ display: "block" });
+            return ele;
+        }));
+    }
+
     /** This is called once when the visual is initialially created */
-    public init(options:powerbi.VisualInitOptions, template:string = "", addCssToParent:boolean = false):void {
+    public init(options: powerbi.VisualInitOptions, template: string = "", addCssToParent: boolean = false): void {
         this.width = options.viewport.width;
         this.height = options.viewport.height;
         this.container = options.element;
         this.element = $("<div style='height:100%;width:100%;'/>");
+
+        // Adds a logging area
+        this.element.append($(`<div class="logArea"></div>`));
+
         this.sandboxed = VisualBase.DEFAULT_SANDBOX_ENABLED;
         const promises = this.getExternalCssResources().map((resource) => this.buildExternalCssLink(resource));
-        $.when.apply($, promises).then((...styles:string[]) => this.element.append(styles.map((s)=> $(s))));
+        $.when.apply($, promises).then((...styles: string[]) => this.element.append(styles.map((s)=> $(s))));
 
         if (addCssToParent) {
             this.container.append(this.getCss().map((css) => $("<st" + "yle>" + css + "</st" + "yle>")));

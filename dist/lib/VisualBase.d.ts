@@ -18,6 +18,11 @@ export default class VisualBase implements powerbi.IVisual {
      * The set of capabilities for the visual
      */
     static capabilities: VisualCapabilities;
+    /**
+     * Constructor for the Visual
+     * @param logger The logger used for logging, if provided, the logger will log events to the log element contained in this visual
+     */
+    constructor();
     /** This is called once when the visual is initialially created */
     init(options: powerbi.VisualInitOptions, template?: string, addCssToParent?: boolean): void;
     /**

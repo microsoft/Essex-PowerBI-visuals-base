@@ -1,3 +1,6 @@
+import IVisual = powerbi.IVisual;
+import VisualUpdateOptions = powerbi.VisualUpdateOptions;
+export declare let logger: LoggerFactory;
 /**
  * Registers a visual in the power bi system
  */
@@ -24,6 +27,40 @@ export default class Utils {
     static listDiff<M>(existingItems: M[], newItems: M[], differ: IDiffProcessor<M>): void;
 }
 /**
+ * Creates an update watcher for a visual
+ */
+export declare function updateTypeGetter(obj: IVisual): () => UpdateType;
+/**
+ * Calculates the updates that have occurred between the two updates
+ */
+export declare function calcUpdateType(oldOpts: VisualUpdateOptions, newOpts: VisualUpdateOptions): UpdateType;
+/**
+ * Creates html from the given things to log, supports chrome log style coloring (%c)
+ * See: https://developer.chrome.com/devtools/docs/console-api#consolelogobject-object
+ */
+export declare function colorizedLog(...toLog: any[]): string;
+/**
+ * Adds logging to an element
+ */
+export declare function elementLogWriter(getElement: () => JQuery): (...toLog: any[]) => void;
+/**
+ * Adds logging to an element
+ */
+export declare function consoleLogWriter(): (...toLog: any[]) => void;
+/**
+ * Represents an update type for a visual
+ */
+export declare enum UpdateType {
+    Unknown = 0,
+    Data = 1,
+    Resize = 2,
+    Settings = 4,
+    DataAndResize = 3,
+    DataAndSettings = 5,
+    SettingsAndResize = 6,
+    All = 7,
+}
+/**
  * Processes a difference found in a list
  */
 export interface IDiffProcessor<M> {
@@ -43,4 +80,30 @@ export interface IDiffProcessor<M> {
      * Gets called when the given item was updated
      */
     onUpdate?(oldVersion: M, newVersion: M): void;
+}
+export interface LogWriter {
+    /**
+     * Writes the given log
+     */
+    (...args: any[]): void;
+}
+export interface LoggerFactory {
+    /**
+     * Creates a new logger
+     */
+    (name: string): Logger;
+    /**
+     * Adds a log writer
+     */
+    addWriter(writer: LogWriter): void;
+}
+export interface Logger {
+    /**
+     * Adds a log entry
+     */
+    (...args: any[]): void;
+    /**
+     * The function that gets called when a log entry is added
+     */
+    log(...args: any[]): void;
 }

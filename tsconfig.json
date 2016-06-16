@@ -7,7 +7,7 @@
     "noImplicitAny": true,
     "sourceMap": true,
     "suppressImplicitAnyIndexErrors": true,
-    "outDir":"dist"
+    "outDir": "dist"
   },
   "compileOnSave": false,
   "files": [

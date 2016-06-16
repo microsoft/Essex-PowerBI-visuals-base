@@ -1,10 +1,11 @@
 {
   "name": "essex.powerbi.base",
-  "version": "0.0.2",
+  "version": "0.1.0",
   "description": "Essex PowerBI visual base",
   "scripts": {
-    "build": "npm-run-all --sequential typings tsc",
+    "build": "npm-run-all --sequential typings test tsc",
     "typings": "typings install",
+    "test": "mocha --require ts-node/register \"src/**/*.spec.ts\"",
     "tsc": "! tsc | grep -v \"^node_modules.*\""
   },
   "main": "dist/index.js",
@@ -19,9 +20,12 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "chai": "^3.5.0",
+    "debug": "^2.2.0",
     "font-awesome": "^4.6.1",
     "jquery": "^2.2.3",
     "lodash": "^4.11.0",
+    "mocha": "^2.5.3",
     "powerbi-visuals": "^0.3.8"
   },
   "devDependencies": {
@@ -33,8 +37,10 @@
     "raw-loader": "^0.5.1",
     "sass-loader": "^3.2.0",
     "style-loader": "^0.13.1",
+    "ts-node": "^0.9.1",
     "tslint": "^3.7.4",
     "typescript": "^1.8.10",
+    "typings": "^0.7.12",
     "webpack": "^1.13.0"
   }
 }
