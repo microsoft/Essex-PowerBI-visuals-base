@@ -280,7 +280,15 @@ function hasArrayChanged(a1, a2, isEqual) {
     return false;
 }
 function hasCategoryChanged(dc1, dc2) {
-    return hasArrayChanged(dc1.identity, dc2.identity, function (a, b) { return a.key === b.key; });
+    var changed = hasArrayChanged(dc1.identity, dc2.identity, function (a, b) { return a.key === b.key; });
+    // Samesees array, they reuse the array for appending items
+    if (dc1.identity && dc2.identity && dc1.identity === dc2.identity) {
+        var prevLength = dc1.identity["$prevLength"];
+        var newLength = dc1.identity.length;
+        dc1.identity["$prevLength"] = newLength;
+        return prevLength !== newLength;
+    }
+    return changed;
 }
 var colProps = ['queryName', 'roles', 'sort'];
 function hasDataViewChanged(dv1, dv2) {

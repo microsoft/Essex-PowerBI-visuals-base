@@ -281,7 +281,15 @@ function hasArrayChanged<T>(a1: T[], a2: T[], isEqual: (a: T, b: T) => boolean) 
 }
 
 function hasCategoryChanged(dc1: powerbi.DataViewCategoryColumn, dc2: powerbi.DataViewCategoryColumn) {
-    return hasArrayChanged<powerbi.DataViewScopeIdentity>(dc1.identity, dc2.identity, (a, b) => a.key === b.key);
+    let changed = hasArrayChanged<powerbi.DataViewScopeIdentity>(dc1.identity, dc2.identity, (a, b) => a.key === b.key);
+    // Samesees array, they reuse the array for appending items
+    if (dc1.identity && dc2.identity && dc1.identity === dc2.identity) {
+        let prevLength = dc1.identity["$prevLength"];
+        let newLength = dc1.identity.length;
+        dc1.identity["$prevLength"] = newLength;
+        return prevLength !== newLength;
+    }
+    return changed;
 }
 
 const colProps = ['queryName', 'roles', 'sort'];

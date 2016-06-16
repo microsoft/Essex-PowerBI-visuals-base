@@ -1,6 +1,7 @@
 import { colorizedLog, updateTypeGetter, UpdateType } from "./Utils";
 import VisualBase from "./VisualBase";
 import { expect } from "chai";
+import * as _ from "lodash";
 
 describe("Utils", () => {
     describe("updateTypeGetter", () => {
@@ -240,6 +241,31 @@ describe("Utils", () => {
         );
         it ("should return Data when undefined is passed to the other one of the data sets",
             () => identityTest(undefined, [{ key: "KEY1" }], UpdateType.Data)
+        );
+        it ("should return Data when the same identity array is mutated",
+            () => {
+                const identities = [{ key: "KEY1" }];
+                const arr = {
+                    dataViews: [{
+                        categorical: {
+                            categories: [{
+                                identity: identities
+                            }, ]
+                        }
+                    }, ]
+                } as any;
+                const fakeVisual = {
+                    update: () => 0
+                } as any as VisualBase;
+                const getter = updateTypeGetter(fakeVisual);
+                fakeVisual.update(<any>_.assign({}, arr));
+                identities.push({
+                    key: "KEY2"
+                });
+                fakeVisual.update(<any>_.assign({}, arr));
+                let result = getter();
+                expect(result).to.eq(UpdateType.Data);
+            }
         );
         it ("should return Data when the number of categories has changed, and the underlying data has changed not in the first, middle or last position",
             () => identityTest(
