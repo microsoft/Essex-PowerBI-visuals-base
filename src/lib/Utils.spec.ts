@@ -232,6 +232,15 @@ describe("Utils", () => {
         it ("should return Data when the number of categories has changed, and the underlying data has changed",
             () => identityTest([{ key: "KEY1" }], [{ key: "KEY1" }, { key: "KEY2" }], UpdateType.Data)
         );
+        it ("should return Unknown when undefined is passed to it",
+            () => identityTest(undefined, undefined, UpdateType.Unknown, true)
+        );
+        it ("should return Data when undefined is passed to one of the data sets",
+            () => identityTest([{ key: "KEY1" }], undefined, UpdateType.Data)
+        );
+        it ("should return Data when undefined is passed to the other one of the data sets",
+            () => identityTest(undefined, [{ key: "KEY1" }], UpdateType.Data)
+        );
         it ("should return Data when the number of categories has changed, and the underlying data has changed not in the first, middle or last position",
             () => identityTest(
                 [{ key: "KEY1" }, { key: "KEY2" }, { key: "KEY3"}, { key: "KEY4"}],

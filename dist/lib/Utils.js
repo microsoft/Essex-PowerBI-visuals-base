@@ -259,6 +259,13 @@ function consoleLogWriter() {
 exports.consoleLogWriter = consoleLogWriter;
 ;
 function hasArrayChanged(a1, a2, isEqual) {
+    // If the same array, shortcut (also works for undefined/null)
+    if (a1 === a2) {
+        return false;
+    }
+    else if (!a1 || !a2) {
+        return true;
+    }
     if (a1.length !== a2.length) {
         return true;
     }

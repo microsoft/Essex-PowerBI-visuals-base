@@ -254,6 +254,15 @@ export function consoleLogWriter() {
 };
 
 function hasArrayChanged<T>(a1: T[], a2: T[], isEqual: (a: T, b: T) => boolean) {
+    // If the same array, shortcut (also works for undefined/null)
+    if (a1 === a2) {
+        return false;
+
+    // If one of them is null and the other one isn't
+    } else if (!a1 || !a2) {
+        return true;
+    }
+
     if (a1.length !== a2.length) {
         return true;
     }
