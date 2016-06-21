@@ -284,6 +284,7 @@ function hasCategoryChanged(dc1: powerbi.DataViewCategoryColumn, dc2: powerbi.Da
     let changed = hasArrayChanged<powerbi.DataViewScopeIdentity>(dc1.identity, dc2.identity, (a, b) => a.key === b.key);
     // Samesees array, they reuse the array for appending items
     if (dc1.identity && dc2.identity && dc1.identity === dc2.identity) {
+        // TODO: This will not catch the case they reuse the array, ie clear the array, add new items with the same amount as the old one.
         let prevLength = dc1.identity["$prevLength"];
         let newLength = dc1.identity.length;
         dc1.identity["$prevLength"] = newLength;
