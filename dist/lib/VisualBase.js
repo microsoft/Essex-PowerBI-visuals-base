@@ -221,6 +221,5 @@ if (powerbi.visuals.utility.SelectionManager.prototype['selectInternal']) {
                 this.selectedIds = [selectionId];
         }
     };
-    console.warn("Monkey Patched: powerbi.visuals.utility.SelectionManager.prototype.selectInternal");
 }
 //# sourceMappingURL=VisualBase.js.map
