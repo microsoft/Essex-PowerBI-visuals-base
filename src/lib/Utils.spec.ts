@@ -191,8 +191,11 @@ describe("Utils", () => {
             directCompare);
         };
 
-        it("should return Unknown when not doing any known update type, intially", () => runUpdateTest(<any>{}, UpdateType.Unknown));
-        it("should NOT return Resize when NOT resizing", () => runUpdateTest(<any>{}, UpdateType.Unknown, true));
+        it("should return Initial on first run", () => runUpdateTest(<any>{}, UpdateType.Initial));
+        it("should return Unknown when nothing has changed twice", () => {
+            runMultipleUpdateTests(<any>{}, <any>{}, UpdateType.Unknown, true);
+        });
+        it("should return Resize initially cause it was invisible before", () => runUpdateTest(<any>{}, UpdateType.Resize));
         it("should return Resize when resizing", () => runUpdateTest(<any>{ resizeMode: 1 }, UpdateType.Resize));
         it("should return Resize when resizing and data has changed initially",
             () => runUpdateTest(resizeAndDataUpdateOptions, UpdateType.Resize));

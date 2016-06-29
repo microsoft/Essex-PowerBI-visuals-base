@@ -199,6 +199,11 @@ export function calcUpdateType(oldOpts: VisualUpdateOptions, newOpts: VisualUpda
     if (hasSettingsChanged(oldOpts, newOpts)) {
         updateType ^= UpdateType.Settings;
     }
+
+    if (!oldOpts) {
+        updateType ^= UpdateType.Initial;
+    }
+
     return updateType;
 }
 
@@ -354,7 +359,7 @@ function hasSettingsChanged(oldOptions: VisualUpdateOptions, newOptions: VisualU
 }
 
 function hasResized(oldOptions: VisualUpdateOptions, newOptions: VisualUpdateOptions) {
-    return newOptions.resizeMode;
+    return !oldOptions || newOptions.resizeMode;
 }
 
 /**
@@ -365,6 +370,7 @@ export enum UpdateType {
     Data = 1 << 0,
     Resize = 1 << 1,
     Settings = 1 << 2,
+    Initial = 1 << 3,
 
     // Some utility keys for debugging
     /* tslint:disable */

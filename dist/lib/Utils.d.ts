@@ -55,6 +55,7 @@ export declare enum UpdateType {
     Data = 1,
     Resize = 2,
     Settings = 4,
+    Initial = 8,
     DataAndResize = 3,
     DataAndSettings = 5,
     SettingsAndResize = 6,

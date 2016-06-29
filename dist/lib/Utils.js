@@ -187,6 +187,9 @@ function calcUpdateType(oldOpts, newOpts) {
     if (hasSettingsChanged(oldOpts, newOpts)) {
         updateType ^= UpdateType.Settings;
     }
+    if (!oldOpts) {
+        updateType ^= UpdateType.Initial;
+    }
     return updateType;
 }
 exports.calcUpdateType = calcUpdateType;
@@ -345,7 +348,7 @@ function hasSettingsChanged(oldOptions, newOptions) {
     }
 }
 function hasResized(oldOptions, newOptions) {
-    return newOptions.resizeMode;
+    return !oldOptions || newOptions.resizeMode;
 }
 /**
  * Represents an update type for a visual
@@ -355,6 +358,7 @@ function hasResized(oldOptions, newOptions) {
     UpdateType[UpdateType["Data"] = 1] = "Data";
     UpdateType[UpdateType["Resize"] = 2] = "Resize";
     UpdateType[UpdateType["Settings"] = 4] = "Settings";
+    UpdateType[UpdateType["Initial"] = 8] = "Initial";
     // Some utility keys for debugging
     /* tslint:disable */
     UpdateType[UpdateType["DataAndResize"] = 3] = "DataAndResize";
