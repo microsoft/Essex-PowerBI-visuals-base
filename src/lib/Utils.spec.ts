@@ -5,7 +5,6 @@ import * as _ from "lodash";
 
 describe("Utils", () => {
     describe("updateTypeGetter", () => {
-
         /**
          * Runs a update test that validates that the given update options returns the given update type
          */

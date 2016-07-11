@@ -240,7 +240,6 @@ function elementLogWriter(getElement) {
         if (ele) {
             getElement().prepend($("<div>" + colorizedLog.apply(_this, toLog) + "</div>"));
         }
-        console.log.apply(console, toLog);
     };
 }
 exports.elementLogWriter = elementLogWriter;

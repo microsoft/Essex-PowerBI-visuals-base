@@ -243,7 +243,6 @@ export function elementLogWriter(getElement: () => JQuery) {
         if (ele) {
             getElement().prepend($(`<div>${colorizedLog.apply(this, toLog)}</div>`));
         }
-        console.log.apply(console, toLog);
     };
 };
 
