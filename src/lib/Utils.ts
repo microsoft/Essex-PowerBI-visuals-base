@@ -297,6 +297,18 @@ function hasCategoryChanged(dc1: powerbi.DataViewCategoryColumn, dc2: powerbi.Da
     return changed;
 }
 
+function markDataViewState(dv: powerbi.DataView) {
+    if (dv) {
+        let cats2 = (dv.categorical && dv.categorical.categories) || [];
+    // set the length, so next go around, hasCategoryChanged can properly compare
+        cats2.forEach(dc => {
+            if (dc.identity) {
+                dc.identity["$prevLength"] = dc.identity.length;
+            }
+        });
+    }
+}
+
 const colProps = ['queryName', 'roles', 'sort'];
 function hasDataViewChanged(dv1: powerbi.DataView, dv2: powerbi.DataView) {
     let cats1 = (dv1.categorical && dv1.categorical.categories) || [];
@@ -329,13 +341,16 @@ function hasDataChanged(oldOptions: VisualUpdateOptions, newOptions: VisualUpdat
     const oldDvs = (oldOptions && oldOptions.dataViews) || [];
     const dvs = newOptions.dataViews || [];
     if (oldDvs.length !== dvs.length) {
+        dvs.forEach(dv => markDataViewState(dv));
         return true;
     }
     for (let i = 0; i < oldDvs.length; i++) {
         if (hasDataViewChanged(oldDvs[i], dvs[i])) {
+            dvs.forEach(dv => markDataViewState(dv));
             return true;
         }
     }
+    dvs.forEach(dv => markDataViewState(dv));
     return false;
 }
 

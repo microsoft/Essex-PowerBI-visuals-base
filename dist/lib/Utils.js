@@ -293,6 +293,17 @@ function hasCategoryChanged(dc1, dc2) {
     }
     return changed;
 }
+function markDataViewState(dv) {
+    if (dv) {
+        var cats2 = (dv.categorical && dv.categorical.categories) || [];
+        // set the length, so next go around, hasCategoryChanged can properly compare
+        cats2.forEach(function (dc) {
+            if (dc.identity) {
+                dc.identity["$prevLength"] = dc.identity.length;
+            }
+        });
+    }
+}
 var colProps = ['queryName', 'roles', 'sort'];
 function hasDataViewChanged(dv1, dv2) {
     var cats1 = (dv1.categorical && dv1.categorical.categories) || [];
@@ -322,13 +333,16 @@ function hasDataChanged(oldOptions, newOptions) {
     var oldDvs = (oldOptions && oldOptions.dataViews) || [];
     var dvs = newOptions.dataViews || [];
     if (oldDvs.length !== dvs.length) {
+        dvs.forEach(function (dv) { return markDataViewState(dv); });
         return true;
     }
     for (var i = 0; i < oldDvs.length; i++) {
         if (hasDataViewChanged(oldDvs[i], dvs[i])) {
+            dvs.forEach(function (dv) { return markDataViewState(dv); });
             return true;
         }
     }
+    dvs.forEach(function (dv) { return markDataViewState(dv); });
     return false;
 }
 function hasSettingsChanged(oldOptions, newOptions) {

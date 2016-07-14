@@ -296,6 +296,25 @@ describe("Utils", () => {
         it ("should NOT return Data when the metadata columns have NOT changed sort", 
             () => sortTest(undefined, undefined, UpdateType.Unknown, true)
         );
+        it ("should NOT return Data when the metadata columns have changed and then a resize occurs", () => {
+            const dvs = [{
+                categorical: {
+                    categories: [{
+                        identity: [{
+                            key: "KEY"
+                        }, ]
+                    }, ]
+                }
+            }, ];
+            runMultipleUpdateTests({
+                dataViews: dvs,
+            } as any, {
+                dataViews: dvs,
+                resizeMode: 1, // Just resized, data remained the same
+            } as any,
+            UpdateType.Resize,
+            true);
+        });
     });
 
     describe("colorizedLog", () => {
