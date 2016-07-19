@@ -72,6 +72,65 @@ export function Visual(config:{ visualName: string; projectId: string }) {
     };
 }
 
+/**
+ * Represents a class that handles the persistance of properties
+ */
+export class PropertyPersister {
+    constructor(private host: powerbi.IVisualHostServices, private delay: number = 100) {}
+
+    /* tslint:disable */
+    /**
+     * Queues the given property changes
+     */
+    private propsToUpdate: { changes: powerbi.VisualObjectInstancesToPersist[], selection: boolean }[] = [];
+    private propUpdater = _.debounce(() => {
+        if (this.propsToUpdate && this.propsToUpdate.length) {
+            const toUpdate = this.propsToUpdate.slice(0);
+            this.propsToUpdate.length = 0;
+            const final: powerbi.VisualObjectInstancesToPersist = {};
+            let isSelection: boolean;
+            toUpdate.forEach(n => {
+                n.changes.forEach(m => {
+                    Object.keys(m).forEach(operation => {
+                        if (!final[operation]) {
+                            final[operation] = [];
+                        }
+                        final[operation].push(...m[operation]);
+                    });
+                });
+                if (n.selection) {
+                    isSelection = true;
+                }
+
+            });
+
+            // SUPER important that these guys happen together, otherwise the selection does not update properly
+            if (isSelection) {
+                this.host.onSelect({ data: [] });
+            }
+            this.host.persistProperties(final);
+        }
+    }, this.delay);
+
+    /**
+     * Queues a set of property changes for the next update
+     */
+    public persist(selection: boolean, ...changes: powerbi.VisualObjectInstancesToPersist[]) {
+        this.propsToUpdate.push({
+            changes,
+            selection
+        });
+        this.propUpdater();
+    }
+    /* tslint:enable */
+}
+
+/**
+ * Creates a property persister to ensure that all property changes are persisted in bulk
+ */
+export function createPropertyPersister(host: powerbi.IVisualHostServices, delay: number) {
+    return new PropertyPersister(host, delay);
+}
 
 /**
  * A collection of utils
@@ -105,7 +164,7 @@ export default class Utils {
      * @param differ The interface for comparing items and add/remove events
      * @param <M>
      */
-    // TODO: Think about a param that indicates if should be merged into 
+    // TODO: Think about a param that indicates if should be merged into
     /// existingItems should be modified, or if only the differ should be called
     public static listDiff<M>(existingItems: M[], newItems: M[], differ: IDiffProcessor<M>) {
         existingItems = existingItems || [];
@@ -236,7 +295,7 @@ export function colorizedLog(...toLog: any[]): string {
  * Adds logging to an element
  */
 export function elementLogWriter(getElement: () => JQuery) {
-    //logger: Logger, 
+    //logger: Logger,
     // const oldLog = logger.log;
     return (...toLog: any[]) => {
         const ele = getElement();
@@ -250,7 +309,7 @@ export function elementLogWriter(getElement: () => JQuery) {
  * Adds logging to an element
  */
 export function consoleLogWriter() {
-    //logger: Logger, 
+    //logger: Logger,
     // const oldLog = logger.log;
     return (...toLog: any[]) => {
         console.log.apply(console, toLog);
@@ -423,7 +482,7 @@ export interface IDiffProcessor<M> {
 
 export interface LogWriter {
     /**
-     * Writes the given log 
+     * Writes the given log
      */
     (...args: any[]): void;
 }

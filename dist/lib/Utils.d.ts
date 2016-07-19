@@ -9,6 +9,27 @@ export declare function Visual(config: {
     projectId: string;
 }): (ctor: any) => void;
 /**
+ * Represents a class that handles the persistance of properties
+ */
+export declare class PropertyPersister {
+    private host;
+    private delay;
+    constructor(host: powerbi.IVisualHostServices, delay?: number);
+    /**
+     * Queues the given property changes
+     */
+    private propsToUpdate;
+    private propUpdater;
+    /**
+     * Queues a set of property changes for the next update
+     */
+    persist(selection: boolean, ...changes: powerbi.VisualObjectInstancesToPersist[]): void;
+}
+/**
+ * Creates a property persister to ensure that all property changes are persisted in bulk
+ */
+export declare function createPropertyPersister(host: powerbi.IVisualHostServices, delay: number): PropertyPersister;
+/**
  * A collection of utils
  */
 export default class Utils {

@@ -71,6 +71,72 @@ function Visual(config) {
 }
 exports.Visual = Visual;
 /**
+ * Represents a class that handles the persistance of properties
+ */
+var PropertyPersister = (function () {
+    function PropertyPersister(host, delay) {
+        var _this = this;
+        if (delay === void 0) { delay = 100; }
+        this.host = host;
+        this.delay = delay;
+        /* tslint:disable */
+        /**
+         * Queues the given property changes
+         */
+        this.propsToUpdate = [];
+        this.propUpdater = _.debounce(function () {
+            if (_this.propsToUpdate && _this.propsToUpdate.length) {
+                var toUpdate = _this.propsToUpdate.slice(0);
+                _this.propsToUpdate.length = 0;
+                var final_1 = {};
+                var isSelection_1;
+                toUpdate.forEach(function (n) {
+                    n.changes.forEach(function (m) {
+                        Object.keys(m).forEach(function (operation) {
+                            if (!final_1[operation]) {
+                                final_1[operation] = [];
+                            }
+                            (_a = final_1[operation]).push.apply(_a, m[operation]);
+                            var _a;
+                        });
+                    });
+                    if (n.selection) {
+                        isSelection_1 = true;
+                    }
+                });
+                // SUPER important that these guys happen together, otherwise the selection does not update properly
+                if (isSelection_1) {
+                    _this.host.onSelect({ data: [] });
+                }
+                _this.host.persistProperties(final_1);
+            }
+        }, this.delay);
+    }
+    /**
+     * Queues a set of property changes for the next update
+     */
+    PropertyPersister.prototype.persist = function (selection) {
+        var changes = [];
+        for (var _i = 1; _i < arguments.length; _i++) {
+            changes[_i - 1] = arguments[_i];
+        }
+        this.propsToUpdate.push({
+            changes: changes,
+            selection: selection
+        });
+        this.propUpdater();
+    };
+    return PropertyPersister;
+}());
+exports.PropertyPersister = PropertyPersister;
+/**
+ * Creates a property persister to ensure that all property changes are persisted in bulk
+ */
+function createPropertyPersister(host, delay) {
+    return new PropertyPersister(host, delay);
+}
+exports.createPropertyPersister = createPropertyPersister;
+/**
  * A collection of utils
  */
 var Utils = (function () {
@@ -99,7 +165,7 @@ var Utils = (function () {
      * @param differ The interface for comparing items and add/remove events
      * @param <M>
      */
-    // TODO: Think about a param that indicates if should be merged into 
+    // TODO: Think about a param that indicates if should be merged into
     /// existingItems should be modified, or if only the differ should be called
     Utils.listDiff = function (existingItems, newItems, differ) {
         existingItems = existingItems || [];
@@ -229,7 +295,7 @@ exports.colorizedLog = colorizedLog;
  */
 function elementLogWriter(getElement) {
     var _this = this;
-    //logger: Logger, 
+    //logger: Logger,
     // const oldLog = logger.log;
     return function () {
         var toLog = [];
@@ -248,7 +314,7 @@ exports.elementLogWriter = elementLogWriter;
  * Adds logging to an element
  */
 function consoleLogWriter() {
-    //logger: Logger, 
+    //logger: Logger,
     // const oldLog = logger.log;
     return function () {
         var toLog = [];
