@@ -13,6 +13,7 @@ export default class VisualBase implements powerbi.IVisual {
     private _sandboxed:boolean;
     private width:number;
     private height:number;
+    private cssModule: any;
 
     // TODO: Switch this to a build config
     public static EXPERIMENTAL_ENABLED = false;
@@ -31,7 +32,7 @@ export default class VisualBase implements powerbi.IVisual {
                 displayName: "Experimental",
                 properties: {
                     sandboxed: {
-                        type: {bool: true},
+                        type: { bool: true },
                         displayName: "Enable to sandbox the visual into an IFrame"
                     }
                 }
@@ -43,12 +44,15 @@ export default class VisualBase implements powerbi.IVisual {
      * Constructor for the Visual
      * @param logger The logger used for logging, if provided, the logger will log events to the log element contained in this visual
      */
-    constructor() {
+    constructor(noCss = false) {
         logger.addWriter(elementLogWriter(() => {
             const ele = this.element.find(".logArea");
             ele.css({ display: "block" });
             return ele;
         }));
+        if (!noCss) {
+            this.cssModule = require("!css!sass!./../../css/main.scss");
+        }
     }
 
     /** This is called once when the visual is initialially created */
@@ -56,7 +60,7 @@ export default class VisualBase implements powerbi.IVisual {
         this.width = options.viewport.width;
         this.height = options.viewport.height;
         this.container = options.element;
-        this.element = $("<div style='height:100%;width:100%;'/>");
+        this.element = $("<div class='visual-base' style='height:100%;width:100%;'/>");
 
         // Adds a logging area
         this.element.append($(`<div class="logArea"></div>`));
@@ -65,9 +69,9 @@ export default class VisualBase implements powerbi.IVisual {
         const promises = this.getExternalCssResources().map((resource) => this.buildExternalCssLink(resource));
         $.when.apply($, promises).then((...styles: string[]) => this.element.append(styles.map((s)=> $(s))));
 
-        if (addCssToParent) {
-            this.container.append(this.getCss().map((css) => $("<st" + "yle>" + css + "</st" + "yle>")));
-        }
+        // if (addCssToParent) {
+        //     this.container.append(this.getCss().map((css) => $("<st" + "yle>" + css + "</st" + "yle>")));
+        // }
 
         this.element.append($("<st" + "yle>" + this.getCss().join("\n") + "</st" + "yle>"));
 
@@ -120,6 +124,8 @@ export default class VisualBase implements powerbi.IVisual {
         this._sandboxed = value;
         this.element.detach();
 
+        let classedEle: JQuery;
+
         if (this.parent) {
             this.parent.remove();
         }
@@ -130,7 +136,8 @@ export default class VisualBase implements powerbi.IVisual {
             this.container.append(this.parent);
 
             if (typeof navigator !== "undefined" && navigator.userAgent.toLowerCase().indexOf('firefox') > -1) {
-                // If you append the element without doing this, the iframe will load after you've appended it and remove everything that you added
+                // If you append the element without doing this, the iframe will load 
+                // after you've appended it and remove everything that you added
                 this.parent[0].onload = () => {
                     setTimeout(() => {
                         this.HACK_fonts();
@@ -141,11 +148,18 @@ export default class VisualBase implements powerbi.IVisual {
                 this.parent.contents().find("head").append($('<meta http-equiv="X-UA-Compatible" content="IE=edge">'));
                 this.parent.contents().find("body").append(this.element);
                 this.HACK_fonts();
+                classedEle = this.parent.contents().find("html");
             }
         } else {
             this.parent = $(`<div style="width:${this.width}px;height:${this.height}px;border:0;margin:0;padding:0"/>`);
             this.parent.append(this.element);
             this.container.append(this.parent);
+            classedEle = this.parent;
+        }
+
+        const classNameToAdd = this.cssModule && this.cssModule.locals && this.cssModule.locals.className;
+        if (classNameToAdd) {
+            classedEle.addClass(classNameToAdd);
         }
     }
 
@@ -159,8 +173,8 @@ export default class VisualBase implements powerbi.IVisual {
     /**
      * Gets the inline css used for this element
      */
-    protected getCss():string[] {
-        return [require("!css!sass!./../../css/main.scss")];
+    protected getCss(): string[] {
+        return this.cssModule ? [this.cssModule + ""] : [];
     }
 
     /**

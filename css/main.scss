@@ -1,46 +1,31 @@
-@import "./variables";
 @import "./mixins";
 @import "./font";
 
-$thumbColor: #C8C8C8;
-$trackColor: transparent;
-$scrollbarSize: 8px;
+:local(.className) {
+    $thumbColor: #C8C8C8;
+    $trackColor: transparent;
+    $scrollbarSize: 8px;
 
-* {
-    @include scrollbars($scrollbarSize, $thumbColor, $trackColor, true);
+    * {
+        @include scrollbars($scrollbarSize, $thumbColor, $trackColor, true);
+    }
+
+    .logArea {
+        position: absolute;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        height: 200px;
+        overflow: auto;
+        background-color: white;
+        border-top: 1px solid gray;
+        display:none;
+        z-index: 1000;
+    }
+
+    body {
+        margin: 0;
+        padding: 0;
+        overflow: hidden;
+    }
 }
-
-.logArea {
-    position: absolute;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    height: 200px;
-    overflow: auto;
-    background-color: white;
-    border-top: 1px solid gray;
-    display:none;
-    z-index: 1000;
-}
-
-/*
-* {
-    -ms-overflow-style: -ms-autohiding-scrollbar;
-    -ms-scrollbar-track-color:#d8d8ea;
-    -ms-scrollbar-arrow-color:$thumbColor;
-    -ms-scrollbar-face-color:$thumbColor;
-}
-
-* ::-webkit-scrollbar {
-    width: 8px;
-    height: 8px;
-    background-color: transparent;
-}`
-
-* ::-webkit-scrollbar-thumb {
-    background: $thumbColor;
-}
-
-* ::-webkit-scrollbar-track-piece {
-    background: 0 0;
-}*/

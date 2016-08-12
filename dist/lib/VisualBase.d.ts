@@ -9,6 +9,7 @@ export default class VisualBase implements powerbi.IVisual {
     private _sandboxed;
     private width;
     private height;
+    private cssModule;
     static EXPERIMENTAL_ENABLED: boolean;
     /**
      * True if the sandbox is enabled by default
@@ -22,7 +23,7 @@ export default class VisualBase implements powerbi.IVisual {
      * Constructor for the Visual
      * @param logger The logger used for logging, if provided, the logger will log events to the log element contained in this visual
      */
-    constructor();
+    constructor(noCss?: boolean);
     /** This is called once when the visual is initialially created */
     init(options: powerbi.VisualInitOptions, template?: string, addCssToParent?: boolean): void;
     /**

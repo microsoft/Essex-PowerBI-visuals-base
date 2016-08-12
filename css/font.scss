@@ -1,39 +1,41 @@
-.secondaryFont{
+@import "./variables";
+
+%secondaryFont {
     font-family: $regularSecondaryFontFamily;
 }
 
-.secondaryBoldFont{
+%secondaryBoldFont {
     font-family: $boldSecondaryFontFamily;
 }
 
-.lightFont{
+%lightFont {
     font-family: $lightFontFamily;
 }
 
-.semilightFont {
+%semilightFont  {
     font-family: $semilightFontFamily;
 }
 
-.regularFont{
+%regularFont {
     font-family: $regularFontFamily;
 }
 
-.semiboldFont{
+%semiboldFont {
     font-family: $semiboldFontFamily;
 }
 
-.boldFontFamily{
+%boldFontFamily {
     font-family: $boldFontFamily;
 }
 
-.smallFontSize{
+%smallFontSize {
     font-size: $smallFontSize;
 }
 
-.mediumFontSize{
+%mediumFontSize {
     font-size: $mediumFontSize;
 }
 
-.largeFontSize{
+%largeFontSize {
     font-size: $largeFontSize;
 }
