@@ -20,10 +20,9 @@ var VisualBase = (function () {
         }
     }
     /** This is called once when the visual is initialially created */
-    VisualBase.prototype.init = function (options, template, addCssToParent) {
+    VisualBase.prototype.init = function (options, template) {
         var _this = this;
         if (template === void 0) { template = ""; }
-        if (addCssToParent === void 0) { addCssToParent = false; }
         this.width = options.viewport.width;
         this.height = options.viewport.height;
         this.container = options.element;
@@ -39,9 +38,6 @@ var VisualBase = (function () {
             }
             return _this.element.append(styles.map(function (s) { return $(s); }));
         });
-        // if (addCssToParent) {
-        //     this.container.append(this.getCss().map((css) => $("<st" + "yle>" + css + "</st" + "yle>")));
-        // }
         this.element.append($("<st" + "yle>" + this.getCss().join("\n") + "</st" + "yle>"));
         if (template) {
             this.element = this.element.append($(template));

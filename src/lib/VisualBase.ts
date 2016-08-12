@@ -56,7 +56,7 @@ export default class VisualBase implements powerbi.IVisual {
     }
 
     /** This is called once when the visual is initialially created */
-    public init(options: powerbi.VisualInitOptions, template: string = "", addCssToParent: boolean = false): void {
+    public init(options: powerbi.VisualInitOptions, template: string = ""): void {
         this.width = options.viewport.width;
         this.height = options.viewport.height;
         this.container = options.element;
@@ -68,10 +68,6 @@ export default class VisualBase implements powerbi.IVisual {
         this.sandboxed = VisualBase.DEFAULT_SANDBOX_ENABLED;
         const promises = this.getExternalCssResources().map((resource) => this.buildExternalCssLink(resource));
         $.when.apply($, promises).then((...styles: string[]) => this.element.append(styles.map((s)=> $(s))));
-
-        // if (addCssToParent) {
-        //     this.container.append(this.getCss().map((css) => $("<st" + "yle>" + css + "</st" + "yle>")));
-        // }
 
         this.element.append($("<st" + "yle>" + this.getCss().join("\n") + "</st" + "yle>"));
 

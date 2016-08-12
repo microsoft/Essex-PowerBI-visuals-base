@@ -25,7 +25,7 @@ export default class VisualBase implements powerbi.IVisual {
      */
     constructor(noCss?: boolean);
     /** This is called once when the visual is initialially created */
-    init(options: powerbi.VisualInitOptions, template?: string, addCssToParent?: boolean): void;
+    init(options: powerbi.VisualInitOptions, template?: string): void;
     /**
      * Notifies the IVisual of an update (data, viewmode, size change).
      */
