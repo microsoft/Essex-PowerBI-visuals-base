@@ -1,13 +1,13 @@
 /* tslint:disable */
+const ENABLE_DEBUG_WRITER = !!process.env.VISUAL_DEBUG;
+
 const debug = require("debug");
 debug.save = function() { };
 
-// TODO: #IF DEBUG
 if (process.env.DEBUG) {
     debug.enable(process.env.DEBUG);
-} else {
-    debug.enabled = function() { return false; };
 }
+
 /* tslint:enable */
 
 import * as _ from "lodash";
@@ -298,9 +298,11 @@ export function elementLogWriter(getElement: () => JQuery) {
     //logger: Logger,
     // const oldLog = logger.log;
     return (...toLog: any[]) => {
-        const ele = getElement();
-        if (ele) {
-            getElement().prepend($(`<div>${colorizedLog.apply(this, toLog)}</div>`));
+        if (ENABLE_DEBUG_WRITER) {
+            const ele = getElement();
+            if (ele) {
+                getElement().prepend($(`<div>${colorizedLog.apply(this, toLog)}</div>`));
+            }
         }
     };
 };

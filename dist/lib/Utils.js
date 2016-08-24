@@ -1,13 +1,10 @@
 "use strict";
 /* tslint:disable */
+var ENABLE_DEBUG_WRITER = !!process.env.VISUAL_DEBUG;
 var debug = require("debug");
 debug.save = function () { };
-// TODO: #IF DEBUG
 if (process.env.DEBUG) {
     debug.enable(process.env.DEBUG);
-}
-else {
-    debug.enabled = function () { return false; };
 }
 /* tslint:enable */
 var _ = require("lodash");
@@ -302,9 +299,11 @@ function elementLogWriter(getElement) {
         for (var _i = 0; _i < arguments.length; _i++) {
             toLog[_i - 0] = arguments[_i];
         }
-        var ele = getElement();
-        if (ele) {
-            getElement().prepend($("<div>" + colorizedLog.apply(_this, toLog) + "</div>"));
+        if (ENABLE_DEBUG_WRITER) {
+            var ele = getElement();
+            if (ele) {
+                getElement().prepend($("<div>" + colorizedLog.apply(_this, toLog) + "</div>"));
+            }
         }
     };
 }
