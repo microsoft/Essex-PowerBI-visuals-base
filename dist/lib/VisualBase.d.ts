@@ -36,10 +36,11 @@ export default class VisualBase implements powerbi.IVisual {
      */
     enumerateObjectInstances(options: EnumerateVisualObjectInstancesOptions): VisualObjectInstance[];
     /**
-     *
-     */
-    /**
      * Sets the sandboxed state
+     */
+    protected attach(isSandboxed: boolean): void;
+    /**
+     *
      */
     sandboxed: boolean;
     /**

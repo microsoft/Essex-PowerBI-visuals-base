@@ -1,5 +1,6 @@
-/// <reference path="../../typings/powerbi.d.ts" />
 "use strict";
+/// <reference path="../../typings/powerbi.d.ts" />
+var log = require('debug')('essex:PbiBase');
 var Utils_1 = require("./Utils");
 var $ = require("jquery");
 var VisualBase = (function () {
@@ -35,7 +36,6 @@ var VisualBase = (function () {
         if (this.template) {
             this.element = this.element.append($(this.template));
         }
-        this.sandboxed = VisualBase.DEFAULT_SANDBOX_ENABLED;
     }
     Object.defineProperty(VisualBase.prototype, "template", {
         get: function () {
@@ -50,6 +50,7 @@ var VisualBase = (function () {
         this.width = options.viewport.width;
         this.height = options.viewport.height;
         this.container = options.element;
+        this.attach(VisualBase.DEFAULT_SANDBOX_ENABLED);
     };
     /**
      * Notifies the IVisual of an update (data, viewmode, size change).
@@ -85,55 +86,61 @@ var VisualBase = (function () {
                 }];
         }
     };
+    /**
+     * Sets the sandboxed state
+     */
+    VisualBase.prototype.attach = function (isSandboxed) {
+        var _this = this;
+        this._sandboxed = isSandboxed;
+        this.element.detach();
+        var classedEle;
+        if (this.parent) {
+            log('Attach::Remove Parent');
+            this.parent.remove();
+        }
+        if (isSandboxed) {
+            log('Attach::Sandboxed');
+            this.parent = $("<iframe style=\"width:" + this.width + "px;height:" + this.height + "px;border:0;margin:0;padding:0\" frameBorder=\"0\"/>");
+            // Important that this happens first, otherwise there might not be a body
+            this.container.append(this.parent);
+            if (typeof navigator !== "undefined" && navigator.userAgent.toLowerCase().indexOf('firefox') > -1) {
+                log('Attach::Firefox or No Navigator');
+                // If you append the element without doing this, the iframe will load 
+                // after you've appended it and remove everything that you added
+                this.parent[0].onload = function () {
+                    setTimeout(function () {
+                        _this.HACK_fonts();
+                        _this.parent.contents().find("body").append(_this.element);
+                    }, 0);
+                };
+            }
+            else {
+                log('Attach::Not Firefox');
+                this.parent.contents().find("head").append($('<meta http-equiv="X-UA-Compatible" content="IE=edge">'));
+                this.parent.contents().find("body").append(this.element);
+                this.HACK_fonts();
+                classedEle = this.parent.contents().find("html");
+            }
+        }
+        else {
+            log('Attach::Not Sandboxed');
+            this.parent = $("<div style=\"width:" + this.width + "px;height:" + this.height + "px;border:0;margin:0;padding:0\"/>");
+            this.parent.append(this.element);
+            this.container.append(this.parent);
+            classedEle = this.parent;
+        }
+        var classNameToAdd = this.cssModule && this.cssModule.locals && this.cssModule.locals.className;
+        if (classNameToAdd) {
+            log('Attach::Adding Classes');
+            classedEle.addClass(classNameToAdd);
+        }
+    };
     Object.defineProperty(VisualBase.prototype, "sandboxed", {
         /**
          *
          */
         get: function () {
             return this._sandboxed;
-        },
-        /**
-         * Sets the sandboxed state
-         */
-        set: function (value) {
-            var _this = this;
-            this._sandboxed = value;
-            this.element.detach();
-            var classedEle;
-            if (this.parent) {
-                this.parent.remove();
-            }
-            if (value) {
-                this.parent = $("<iframe style=\"width:" + this.width + "px;height:" + this.height + "px;border:0;margin:0;padding:0\" frameBorder=\"0\"/>");
-                // Important that this happens first, otherwise there might not be a body
-                this.container.append(this.parent);
-                if (typeof navigator !== "undefined" && navigator.userAgent.toLowerCase().indexOf('firefox') > -1) {
-                    // If you append the element without doing this, the iframe will load 
-                    // after you've appended it and remove everything that you added
-                    this.parent[0].onload = function () {
-                        setTimeout(function () {
-                            _this.HACK_fonts();
-                            _this.parent.contents().find("body").append(_this.element);
-                        }, 0);
-                    };
-                }
-                else {
-                    this.parent.contents().find("head").append($('<meta http-equiv="X-UA-Compatible" content="IE=edge">'));
-                    this.parent.contents().find("body").append(this.element);
-                    this.HACK_fonts();
-                    classedEle = this.parent.contents().find("html");
-                }
-            }
-            else {
-                this.parent = $("<div style=\"width:" + this.width + "px;height:" + this.height + "px;border:0;margin:0;padding:0\"/>");
-                this.parent.append(this.element);
-                this.container.append(this.parent);
-                classedEle = this.parent;
-            }
-            var classNameToAdd = this.cssModule && this.cssModule.locals && this.cssModule.locals.className;
-            if (classNameToAdd) {
-                classedEle.addClass(classNameToAdd);
-            }
         },
         enumerable: true,
         configurable: true
