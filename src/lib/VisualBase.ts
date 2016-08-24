@@ -23,6 +23,10 @@ export default class VisualBase implements powerbi.IVisual {
      */
     public static DEFAULT_SANDBOX_ENABLED = window.parent === window /* Checks if we are in an iframe */;
 
+    public get template() {
+        return "";
+    };
+
     /**
      * The set of capabilities for the visual
      */
@@ -57,25 +61,26 @@ export default class VisualBase implements powerbi.IVisual {
         this.element = $("<div class='visual-base' style='height:100%;width:100%;'/>");
 
         // Add a Logging area
-        this.element.append($(`<div class="logArea"></div>`));                
-    }
-
-    /** This is called once when the visual is initialially created */
-    public init(options: powerbi.VisualInitOptions, template: string = ""): void {
-        this.width = options.viewport.width;
-        this.height = options.viewport.height;
-        this.container = options.element;
-        this.sandboxed = VisualBase.DEFAULT_SANDBOX_ENABLED;
-
+        this.element.append($(`<div class="logArea"></div>`));    
+        
         // Add Custom Styles
         const promises = this.getExternalCssResources().map((resource) => this.buildExternalCssLink(resource));
         $.when.apply($, promises).then((...styles: string[]) => this.element.append(styles.map((s)=> $(s))));        
         this.element.append($("<st" + "yle>" + this.getCss().join("\n") + "</st" + "yle>"));
-        
+
         // Append Template
-        if (template) {
-            this.element = this.element.append($(template));
+        if (this.template) {
+            this.element = this.element.append($(this.template));
         }
+                    
+        this.sandboxed = VisualBase.DEFAULT_SANDBOX_ENABLED;
+    }
+
+    /** This is called once when the visual is initialially created */
+    public init(options: powerbi.VisualInitOptions): void {
+        this.width = options.viewport.width;
+        this.height = options.viewport.height;
+        this.container = options.element;            
     }
 
     /**
@@ -178,7 +183,7 @@ export default class VisualBase implements powerbi.IVisual {
     /**
      * Builds the link for the given external css resource
      */
-    protected buildExternalCssLink(resource:ExternalCssResource):JQueryPromise<string> {
+    protected buildExternalCssLink(resource:ExternalCssResource): JQueryPromise<string> {
         var link = 'li' + 'nk';
         var integrity = resource.integrity ? `integrity="${resource.integrity}"` : '';
         var href = `href="${resource.url}"`;

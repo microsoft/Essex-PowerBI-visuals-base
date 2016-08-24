@@ -15,6 +15,7 @@ export default class VisualBase implements powerbi.IVisual {
      * True if the sandbox is enabled by default
      */
     static DEFAULT_SANDBOX_ENABLED: boolean;
+    template: string;
     /**
      * The set of capabilities for the visual
      */
@@ -25,7 +26,7 @@ export default class VisualBase implements powerbi.IVisual {
      */
     constructor(noCss?: boolean);
     /** This is called once when the visual is initialially created */
-    init(options: powerbi.VisualInitOptions, template?: string): void;
+    init(options: powerbi.VisualInitOptions): void;
     /**
      * Notifies the IVisual of an update (data, viewmode, size change).
      */

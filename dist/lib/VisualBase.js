@@ -21,15 +21,6 @@ var VisualBase = (function () {
         this.element = $("<div class='visual-base' style='height:100%;width:100%;'/>");
         // Add a Logging area
         this.element.append($("<div class=\"logArea\"></div>"));
-    }
-    /** This is called once when the visual is initialially created */
-    VisualBase.prototype.init = function (options, template) {
-        var _this = this;
-        if (template === void 0) { template = ""; }
-        this.width = options.viewport.width;
-        this.height = options.viewport.height;
-        this.container = options.element;
-        this.sandboxed = VisualBase.DEFAULT_SANDBOX_ENABLED;
         // Add Custom Styles
         var promises = this.getExternalCssResources().map(function (resource) { return _this.buildExternalCssLink(resource); });
         $.when.apply($, promises).then(function () {
@@ -41,9 +32,24 @@ var VisualBase = (function () {
         });
         this.element.append($("<st" + "yle>" + this.getCss().join("\n") + "</st" + "yle>"));
         // Append Template
-        if (template) {
-            this.element = this.element.append($(template));
+        if (this.template) {
+            this.element = this.element.append($(this.template));
         }
+        this.sandboxed = VisualBase.DEFAULT_SANDBOX_ENABLED;
+    }
+    Object.defineProperty(VisualBase.prototype, "template", {
+        get: function () {
+            return "";
+        },
+        enumerable: true,
+        configurable: true
+    });
+    ;
+    /** This is called once when the visual is initialially created */
+    VisualBase.prototype.init = function (options) {
+        this.width = options.viewport.width;
+        this.height = options.viewport.height;
+        this.container = options.element;
     };
     /**
      * Notifies the IVisual of an update (data, viewmode, size change).
