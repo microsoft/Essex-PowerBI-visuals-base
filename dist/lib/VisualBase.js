@@ -18,6 +18,9 @@ var VisualBase = (function () {
         if (!noCss) {
             this.cssModule = require("!css!sass!./../../css/main.scss");
         }
+        this.element = $("<div class='visual-base' style='height:100%;width:100%;'/>");
+        // Add a Logging area
+        this.element.append($("<div class=\"logArea\"></div>"));
     }
     /** This is called once when the visual is initialially created */
     VisualBase.prototype.init = function (options, template) {
@@ -26,10 +29,8 @@ var VisualBase = (function () {
         this.width = options.viewport.width;
         this.height = options.viewport.height;
         this.container = options.element;
-        this.element = $("<div class='visual-base' style='height:100%;width:100%;'/>");
-        // Adds a logging area
-        this.element.append($("<div class=\"logArea\"></div>"));
         this.sandboxed = VisualBase.DEFAULT_SANDBOX_ENABLED;
+        // Add Custom Styles
         var promises = this.getExternalCssResources().map(function (resource) { return _this.buildExternalCssLink(resource); });
         $.when.apply($, promises).then(function () {
             var styles = [];
@@ -39,6 +40,7 @@ var VisualBase = (function () {
             return _this.element.append(styles.map(function (s) { return $(s); }));
         });
         this.element.append($("<st" + "yle>" + this.getCss().join("\n") + "</st" + "yle>"));
+        // Append Template
         if (template) {
             this.element = this.element.append($(template));
         }
