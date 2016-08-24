@@ -53,6 +53,11 @@ export default class VisualBase implements powerbi.IVisual {
         if (!noCss) {
             this.cssModule = require("!css!sass!./../../css/main.scss");
         }
+
+        this.element = $("<div class='visual-base' style='height:100%;width:100%;'/>");
+
+        // Add a Logging area
+        this.element.append($(`<div class="logArea"></div>`));                
     }
 
     /** This is called once when the visual is initialially created */
@@ -60,17 +65,14 @@ export default class VisualBase implements powerbi.IVisual {
         this.width = options.viewport.width;
         this.height = options.viewport.height;
         this.container = options.element;
-        this.element = $("<div class='visual-base' style='height:100%;width:100%;'/>");
-
-        // Adds a logging area
-        this.element.append($(`<div class="logArea"></div>`));
-
         this.sandboxed = VisualBase.DEFAULT_SANDBOX_ENABLED;
+
+        // Add Custom Styles
         const promises = this.getExternalCssResources().map((resource) => this.buildExternalCssLink(resource));
-        $.when.apply($, promises).then((...styles: string[]) => this.element.append(styles.map((s)=> $(s))));
-
+        $.when.apply($, promises).then((...styles: string[]) => this.element.append(styles.map((s)=> $(s))));        
         this.element.append($("<st" + "yle>" + this.getCss().join("\n") + "</st" + "yle>"));
-
+        
+        // Append Template
         if (template) {
             this.element = this.element.append($(template));
         }
@@ -191,9 +193,7 @@ export default class VisualBase implements powerbi.IVisual {
      * Gets the external css paths used for this visualization
      */
     protected getExternalCssResources():ExternalCssResource[] {
-        return [];
-    }
-
+        return [];    }
     private HACK_fonts() {
         let faces = this.HACK_getFontFaces();
         this.element.prepend($("<st" + "yle>" + (Object.keys(faces).map(n => faces[n].cssText)).join("\n") + "</st" + "yle>"));

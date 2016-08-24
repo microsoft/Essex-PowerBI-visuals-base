@@ -1,4 +1,5 @@
-require("../../testSetup");
+"use strict";
+require("../testSetup");
 global['powerbi'] = {
     visuals: {
         utility: {
