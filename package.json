@@ -1,6 +1,6 @@
 {
   "name": "essex.powerbi.base",
-  "version": "0.2.4",
+  "version": "0.2.5",
   "description": "Essex PowerBI visual base",
   "scripts": {
     "build": "npm-run-all --sequential typings test tsc",
