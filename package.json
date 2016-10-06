@@ -4,7 +4,7 @@
   "description": "Essex PowerBI visual base",
   "scripts": {
     "tsc": "! tsc | grep -v \"^node_modules.*\"",
-    "lint": "tslint src/**/*.ts spec/visualHelpers.ts",
+    "lint": "tslint {src,spec}/**/*.ts",
     "mocha": "mocha --require ts-node/register \"src/**/*.spec.ts\"",
     "test": "npm-run-all tsc lint mocha"
   },

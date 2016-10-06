@@ -261,23 +261,3 @@ export interface ExternalCssResource {
      */
     crossorigin?: string;
 }
-
-/* HACK FIXES */
-function __HACK_SELECT_INTERNAL__(selectionId: powerbi.visuals.SelectionId, multiSelect: boolean) {
-    "use strict";
-    if (powerbi.visuals.utility.SelectionManager.containsSelection(this.selectedIds, selectionId)) {
-        this.selectedIds = multiSelect
-            ? this.selectedIds.filter((d: any) => !powerbi.data.Selector.equals(d.getSelector(), selectionId.getSelector()))
-            : this.selectedIds.length > 1
-            ? [selectionId] : [];
-    } else {
-        if (multiSelect) {
-            this.selectedIds.push(selectionId);
-        } else {
-            this.selectedIds = [selectionId];
-        }
-    }
-}
-if (powerbi.visuals.utility.SelectionManager.prototype["selectInternal"]) {
-    powerbi.visuals.utility.SelectionManager.prototype["selectInternal"] = __HACK_SELECT_INTERNAL__;
-}
