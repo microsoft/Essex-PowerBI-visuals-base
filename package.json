@@ -9,6 +9,7 @@
     "test": "npm-run-all tsc lint mocha"
   },
   "main": "dist/index.js",
+  "typings": "dist/index.d.ts",
   "repository": {
     "type": "git",
     "url": "https://msrp.visualstudio.com/DefaultCollection/Essex/_git/EssexPBIBase"
