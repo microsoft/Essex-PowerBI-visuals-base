@@ -32,31 +32,18 @@ logger.addWriter = (writer: LogWriter) => {
 };
 const log = logger("essex:widget:Utils");
 
-function applyMixins(derivedCtor:any, baseCtors:any[]) {
-    baseCtors.forEach(baseCtor => {
-        Object.getOwnPropertyNames(baseCtor.prototype).forEach(name => {
-            derivedCtor.prototype[name] = baseCtor.prototype[name];
-        });
-    });
-}
-
-function Mixin(ctor:any) {
-    return function (me:Function) {
-        applyMixins(me, ctor);
-    };
-}
-
 /**
  * Registers a visual in the power bi system
  */
-export function Visual(config:{ visualName: string; projectId: string }) {
-    return function (ctor:any) {
-        (function (powerbi:any) {
-            let visuals:any;
-            (function (visuals:any) {
-                let plugins:any;
-                (function (plugins:any) {
-                    var name = config.visualName + config.projectId;
+export function Visual(config: { visualName: string; projectId: string }) {
+    "use strict";
+    return function (ctor: any) {
+        (function (powerbi: any) {
+            let visuals: any;
+            (function (visuals: any) { // tslint:disable-line
+                let plugins: any;
+                (function (plugins: any) { // tslint:disable-line
+                    let name = config.visualName + config.projectId;
                     plugins[name] = {
                         name: name,
                         class: name,
@@ -64,11 +51,11 @@ export function Visual(config:{ visualName: string; projectId: string }) {
                         custom: true,
                         create: function () {
                             return new ctor();
-                        }
+                        },
                     };
                 })(plugins = visuals.plugins || (visuals.plugins = {}));
             })(visuals = powerbi.visuals || (powerbi.visuals = {}));
-        })(window['powerbi'] || (window['powerbi'] = {}));
+        })(window["powerbi"] || (window["powerbi"] = {}));
     };
 }
 
@@ -76,7 +63,10 @@ export function Visual(config:{ visualName: string; projectId: string }) {
  * Represents a class that handles the persistance of properties
  */
 export class PropertyPersister {
-    constructor(private host: powerbi.IVisualHostServices, private delay: number = 100) {}
+    constructor(
+        private host: powerbi.IVisualHostServices, // tslint:disable-line 
+        private delay: number = 100 // tslint:disable-line
+    ) {}
 
     /* tslint:disable */
     /**
@@ -106,7 +96,7 @@ export class PropertyPersister {
 
             // SUPER important that these guys happen together, otherwise the selection does not update properly
             if (isSelection) {
-                this.host.onSelect({ data: [] });
+                this.host.onSelect({ data: [] } as any); // TODO: Change this to visualObjects: []?
             }
             this.host.persistProperties(final);
         }
@@ -129,6 +119,7 @@ export class PropertyPersister {
  * Creates a property persister to ensure that all property changes are persisted in bulk
  */
 export function createPropertyPersister(host: powerbi.IVisualHostServices, delay: number) {
+    "use strict";
     return new PropertyPersister(host, delay);
 }
 
@@ -141,7 +132,7 @@ export default class Utils {
      * Returns if there is any more or less data in the new data
      * @param idEquality Returns true if a and b are referring to the same object, not necessarily if it has changed
      */
-    public static hasDataChanged<T>(newData:T[], oldData:T[], equality:(a:T, b:T) => boolean) {
+    public static hasDataChanged<T>(newData: T[], oldData: T[], equality: (a: T, b: T) => boolean) {
         // If the are identical, either same array or undefined, nothing has changed
         if (oldData === newData) {
             return false;
@@ -170,17 +161,17 @@ export default class Utils {
         existingItems = existingItems || [];
         newItems = newItems || [];
 
-        var existing: M;
-        var found: boolean;
-        var curr: M;
-        var foundItem: M;
+        let existing: M;
+        let found: boolean = false;
+        let curr: M;
+        let foundItem: M;
 
         // Go backwards so we can remove without screwing up the index
-        for (var i = existingItems.length - 1; i >= 0; i--) {
-            var existing:M = existingItems[i];
-            var found = false;
-            for (var j = 0; j < newItems.length; j++) {
-                var curr:M = newItems[j];
+        for (let i = existingItems.length - 1; i >= 0; i--) {
+            existing = existingItems[i];
+            found = false;
+            for (let j = 0; j < newItems.length; j++) {
+                curr = newItems[j];
                 if (differ.equals(curr, existing)) {
                     found = true;
                 }
@@ -197,11 +188,11 @@ export default class Utils {
         existing = undefined;
 
         // Go through the existing ones and add the missing ones
-        for (var i = 0; i < newItems.length; i++) {
+        for (let i = 0; i < newItems.length; i++) {
             curr = newItems[i];
             foundItem = undefined;
 
-            for (var j = 0; j < existingItems.length; j++) {
+            for (let j = 0; j < existingItems.length; j++) {
                 existing = existingItems[j];
                 if (differ.equals(curr, existing)) {
                     foundItem = existing;
@@ -224,6 +215,7 @@ export default class Utils {
  */
 // TODO: This would be SOOO much better as a mixin, just don't want all that extra code that it requires right now.
 export function updateTypeGetter(obj: IVisual) {
+    "use strict";
     let currUpdateType = UpdateType.Unknown;
     if (obj && obj.update) {
         const oldUpdate = obj.update;
@@ -245,6 +237,7 @@ export function updateTypeGetter(obj: IVisual) {
  * Calculates the updates that have occurred between the two updates
  */
 export function calcUpdateType(oldOpts: VisualUpdateOptions, newOpts: VisualUpdateOptions) {
+    "use strict";
     let updateType = UpdateType.Unknown;
 
     if (hasResized(oldOpts, newOpts)) {
@@ -271,8 +264,8 @@ export function calcUpdateType(oldOpts: VisualUpdateOptions, newOpts: VisualUpda
  * See: https://developer.chrome.com/devtools/docs/console-api#consolelogobject-object
  */
 export function colorizedLog(...toLog: any[]): string {
+    "use strict";
     let logStr: string;
-        // logEle.css({ display: "block" });
     if (toLog && toLog.length > 1) {
         logStr = `<span>${toLog[0]}</span>`;
         for (let i = 1; i < toLog.length; i++) {
@@ -295,8 +288,7 @@ export function colorizedLog(...toLog: any[]): string {
  * Adds logging to an element
  */
 export function elementLogWriter(getElement: () => JQuery) {
-    //logger: Logger,
-    // const oldLog = logger.log;
+    "use strict";
     return (...toLog: any[]) => {
         if (ENABLE_DEBUG_WRITER) {
             const ele = getElement();
@@ -311,14 +303,14 @@ export function elementLogWriter(getElement: () => JQuery) {
  * Adds logging to an element
  */
 export function consoleLogWriter() {
-    //logger: Logger,
-    // const oldLog = logger.log;
+    "use strict";
     return (...toLog: any[]) => {
         console.log.apply(console, toLog);
     };
 };
 
 function hasArrayChanged<T>(a1: T[], a2: T[], isEqual: (a: T, b: T) => boolean) {
+    "use strict";
     // If the same array, shortcut (also works for undefined/null)
     if (a1 === a2) {
         return false;
@@ -346,6 +338,7 @@ function hasArrayChanged<T>(a1: T[], a2: T[], isEqual: (a: T, b: T) => boolean) 
 }
 
 function hasCategoryChanged(dc1: powerbi.DataViewCategoryColumn, dc2: powerbi.DataViewCategoryColumn) {
+    "use strict";
     let changed = hasArrayChanged<powerbi.DataViewScopeIdentity>(dc1.identity, dc2.identity, (a, b) => a.key === b.key);
     // Samesees array, they reuse the array for appending items
     if (dc1.identity && dc2.identity && dc1.identity === dc2.identity) {
@@ -359,9 +352,10 @@ function hasCategoryChanged(dc1: powerbi.DataViewCategoryColumn, dc2: powerbi.Da
 }
 
 function markDataViewState(dv: powerbi.DataView) {
+    "use strict";
     if (dv) {
         let cats2 = (dv.categorical && dv.categorical.categories) || [];
-    // set the length, so next go around, hasCategoryChanged can properly compare
+        // set the length, so next go around, hasCategoryChanged can properly compare
         cats2.forEach(dc => {
             if (dc.identity) {
                 dc.identity["$prevLength"] = dc.identity.length;
@@ -370,8 +364,10 @@ function markDataViewState(dv: powerbi.DataView) {
     }
 }
 
-const colProps = ['queryName', 'roles', 'sort'];
+const colProps = ["queryName", "roles", "sort"];
+
 function hasDataViewChanged(dv1: powerbi.DataView, dv2: powerbi.DataView) {
+    "use strict";
     let cats1 = (dv1.categorical && dv1.categorical.categories) || [];
     let cats2 = (dv2.categorical && dv2.categorical.categories) || [];
     let cols1 = (dv1.metadata && dv1.metadata.columns) || [];
@@ -399,6 +395,7 @@ function hasDataViewChanged(dv1: powerbi.DataView, dv2: powerbi.DataView) {
 }
 
 function hasDataChanged(oldOptions: VisualUpdateOptions, newOptions: VisualUpdateOptions) {
+    "use strict";
     const oldDvs = (oldOptions && oldOptions.dataViews) || [];
     const dvs = newOptions.dataViews || [];
     if (oldDvs.length !== dvs.length) {
@@ -416,6 +413,7 @@ function hasDataChanged(oldOptions: VisualUpdateOptions, newOptions: VisualUpdat
 }
 
 function hasSettingsChanged(oldOptions: VisualUpdateOptions, newOptions: VisualUpdateOptions) {
+    "use strict";
     const oldDvs = (oldOptions && oldOptions.dataViews) || [];
     const dvs = newOptions.dataViews || [];
 
@@ -434,6 +432,7 @@ function hasSettingsChanged(oldOptions: VisualUpdateOptions, newOptions: VisualU
 }
 
 function hasResized(oldOptions: VisualUpdateOptions, newOptions: VisualUpdateOptions) {
+    "use strict";
     return !oldOptions || newOptions.resizeMode;
 }
 
@@ -464,22 +463,22 @@ export interface IDiffProcessor<M> {
     /**
      * Returns true if item one equals item two
      */
-    equals(one:M, two:M) : boolean;
+    equals(one: M, two: M): boolean;
 
     /**
      * Gets called when the given item was removed
      */
-    onRemove?(item:M) : void;
+    onRemove?(item: M): void;
 
     /**
      * Gets called when the given item was added
      */
-    onAdd?(item:M) : void;
+    onAdd?(item: M): void;
 
     /**
      * Gets called when the given item was updated
      */
-    onUpdate?(oldVersion:M, newVersion:M) : void;
+    onUpdate?(oldVersion: M, newVersion: M): void;
 }
 
 export interface LogWriter {

@@ -1,48 +1,49 @@
-/// <reference path="../../typings/powerbi.d.ts" />
-const log = require('debug')('essex:PbiBase');
+import "powerbi-visuals/lib/powerbi-visuals";
 import { elementLogWriter, logger } from "./Utils";
 import VisualCapabilities = powerbi.VisualCapabilities;
 import EnumerateVisualObjectInstancesOptions = powerbi.EnumerateVisualObjectInstancesOptions;
 import VisualObjectInstance = powerbi.VisualObjectInstance;
 import * as $ from "jquery";
 
-export default class VisualBase implements powerbi.IVisual {
-    protected element:JQuery;
-    protected container:JQuery;
-    private parent:JQuery;
-    private _sandboxed:boolean;
-    private width:number;
-    private height:number;
-    private cssModule: any;
+const log = require("debug")("essex:PbiBase"); // tslint:disable-line
 
+export default class VisualBase implements powerbi.IVisual {
     // TODO: Switch this to a build config
     public static EXPERIMENTAL_ENABLED = false;
 
     /**
      * True if the sandbox is enabled by default
      */
-    public static DEFAULT_SANDBOX_ENABLED = window.parent === window /* Checks if we are in an iframe */;
-
-    public get template() {
-        return "";
-    };
+    public static DEFAULT_SANDBOX_ENABLED = window.parent === window; /* Checks if we are in an iframe */;
 
     /**
      * The set of capabilities for the visual
      */
-    public static capabilities:VisualCapabilities = VisualBase.EXPERIMENTAL_ENABLED ? {
+    public static capabilities: VisualCapabilities = VisualBase.EXPERIMENTAL_ENABLED ? {
         objects: {
             experimental: {
                 displayName: "Experimental",
                 properties: {
                     sandboxed: {
                         type: { bool: true },
-                        displayName: "Enable to sandbox the visual into an IFrame"
-                    }
-                }
-            }
-        }
+                        displayName: "Enable to sandbox the visual into an IFrame",
+                    },
+                },
+            },
+        },
     } : {};
+
+    protected element: JQuery;
+    protected container: JQuery;
+    private parent: JQuery;
+    private _sandboxed: boolean;
+    private width: number;
+    private height: number;
+    private cssModule: any;
+
+    public get template() {
+        return "";
+    }
 
     /**
      * Constructor for the Visual
@@ -54,6 +55,7 @@ export default class VisualBase implements powerbi.IVisual {
             ele.css({ display: "block" });
             return ele;
         }));
+
         if (!noCss) {
             this.cssModule = require("!css!sass!./../../css/main.scss");
         }
@@ -61,31 +63,31 @@ export default class VisualBase implements powerbi.IVisual {
         this.element = $("<div class='visual-base' style='height:100%;width:100%;'/>");
 
         // Add a Logging area
-        this.element.append($(`<div class="logArea"></div>`));    
-        
+        this.element.append($(`<div class="logArea"></div>`));
+
         // Add Custom Styles
         const promises = this.getExternalCssResources().map((resource) => this.buildExternalCssLink(resource));
-        $.when.apply($, promises).then((...styles: string[]) => this.element.append(styles.map((s)=> $(s))));        
+        $.when.apply($, promises).then((...styles: string[]) => this.element.append(styles.map((s) => $(s))));
         this.element.append($("<st" + "yle>" + this.getCss().join("\n") + "</st" + "yle>"));
 
         // Append Template
         if (this.template) {
             this.element = this.element.append($(this.template));
-        }                    
+        }
     }
 
     /** This is called once when the visual is initialially created */
     public init(options: powerbi.VisualInitOptions): void {
         this.width = options.viewport.width;
         this.height = options.viewport.height;
-        this.container = options.element;        
-        this.attach(VisualBase.DEFAULT_SANDBOX_ENABLED);            
+        this.container = options.element;
+        this.attach(VisualBase.DEFAULT_SANDBOX_ENABLED);
     }
 
     /**
      * Notifies the IVisual of an update (data, viewmode, size change).
      */
-    public update(options:powerbi.VisualUpdateOptions) {
+    public update(options: powerbi.VisualUpdateOptions) {
         this.width = options.viewport.width;
         this.height = options.viewport.height;
 
@@ -93,11 +95,11 @@ export default class VisualBase implements powerbi.IVisual {
         if (dataView) {
             if (VisualBase.EXPERIMENTAL_ENABLED) {
                 const objs = dataView.metadata.objects;
-                const experimental = objs && objs['experimental'];
-                let sandboxed = experimental && experimental['sandboxed'];
+                const experimental = objs && objs["experimental"];
+                let sandboxed = experimental && experimental["sandboxed"];
                 sandboxed = typeof sandboxed === "undefined" ? VisualBase.DEFAULT_SANDBOX_ENABLED : sandboxed;
                 if (this.sandboxed !== sandboxed) {
-                    this.sandboxed = sandboxed;
+                    this._sandboxed = sandboxed;
                 }
             }
         }
@@ -107,14 +109,14 @@ export default class VisualBase implements powerbi.IVisual {
     /**
      * Enumerates the instances for the objects that appear in the power bi panel
      */
-    public enumerateObjectInstances(options:EnumerateVisualObjectInstancesOptions):VisualObjectInstance[] {
-        if (options.objectName === 'experimental' && VisualBase.EXPERIMENTAL_ENABLED) {
+    public enumerateObjectInstances(options: EnumerateVisualObjectInstancesOptions): VisualObjectInstance[] {
+        if (options.objectName === "experimental" && VisualBase.EXPERIMENTAL_ENABLED) {
             return [{
-                selector: null,
-                objectName: 'experimental',
+                selector: null, // tslint:disable-line
+                objectName: "experimental",
                 properties: {
-                    sandboxed: this.sandboxed
-                }
+                    sandboxed: this.sandboxed,
+                },
             }];
         }
     }
@@ -122,27 +124,27 @@ export default class VisualBase implements powerbi.IVisual {
     /**
      * Sets the sandboxed state
      */
-    protected attach(isSandboxed:boolean) {
+    protected attach(isSandboxed: boolean) {
         this._sandboxed = isSandboxed;
         this.element.detach();
 
         let classedEle: JQuery;
 
         if (this.parent) {
-            log('Attach::Remove Parent');
+            log("Attach::Remove Parent");
             this.parent.remove();
         }
 
         if (isSandboxed) {
-            log('Attach::Sandboxed');
+            log("Attach::Sandboxed");
             this.parent = $(`<iframe style="width:${this.width}px;height:${this.height}px;border:0;margin:0;padding:0" frameBorder="0"/>`);
 
             // Important that this happens first, otherwise there might not be a body
             this.container.append(this.parent);
 
-            if (typeof navigator !== "undefined" && navigator.userAgent.toLowerCase().indexOf('firefox') > -1) {
-                log('Attach::Firefox or No Navigator');
-                // If you append the element without doing this, the iframe will load 
+            if (typeof navigator !== "undefined" && navigator.userAgent.toLowerCase().indexOf("firefox") > -1) {
+                log("Attach::Firefox or No Navigator");
+                // If you append the element without doing this, the iframe will load
                 // after you've appended it and remove everything that you added
                 this.parent[0].onload = () => {
                     setTimeout(() => {
@@ -151,14 +153,14 @@ export default class VisualBase implements powerbi.IVisual {
                     }, 0);
                 };
             } else {
-                log('Attach::Not Firefox');
+                log("Attach::Not Firefox");
                 this.parent.contents().find("head").append($('<meta http-equiv="X-UA-Compatible" content="IE=edge">'));
                 this.parent.contents().find("body").append(this.element);
                 this.HACK_fonts();
                 classedEle = this.parent.contents().find("html");
             }
         } else {
-            log('Attach::Not Sandboxed');
+            log("Attach::Not Sandboxed");
             this.parent = $(`<div style="width:${this.width}px;height:${this.height}px;border:0;margin:0;padding:0"/>`);
             this.parent.append(this.element);
             this.container.append(this.parent);
@@ -167,7 +169,7 @@ export default class VisualBase implements powerbi.IVisual {
 
         const classNameToAdd = this.cssModule && this.cssModule.locals && this.cssModule.locals.className;
         if (classNameToAdd) {
-            log('Attach::Adding Classes');        
+            log("Attach::Adding Classes");
             classedEle.addClass(classNameToAdd);
         }
     }
@@ -189,13 +191,13 @@ export default class VisualBase implements powerbi.IVisual {
     /**
      * Builds the link for the given external css resource
      */
-    protected buildExternalCssLink(resource:ExternalCssResource): JQueryPromise<string> {
-        var link = 'li' + 'nk';
-        var integrity = resource.integrity ? `integrity="${resource.integrity}"` : '';
-        var href = `href="${resource.url}"`;
-        var crossorigin = resource.crossorigin ? ` crossorigin="${resource.crossorigin}"` : '';
-        var rel = 'rel="stylesheet"';
-        var defer = $.Deferred<string>();
+    protected buildExternalCssLink(resource: ExternalCssResource): JQueryPromise<string> {
+        const link = "li" + "nk";
+        const integrity = resource.integrity ? `integrity="${resource.integrity}"` : "";
+        const href = `href="${resource.url}"`;
+        const crossorigin = resource.crossorigin ? ` crossorigin="${resource.crossorigin}"` : "";
+        const rel = 'rel="stylesheet"';
+        const defer = $.Deferred<string>();
         defer.resolve(`<${link} ${href} ${rel} ${integrity} ${crossorigin}>`);
         return defer.promise();
     }
@@ -203,59 +205,41 @@ export default class VisualBase implements powerbi.IVisual {
     /**
      * Gets the external css paths used for this visualization
      */
-    protected getExternalCssResources():ExternalCssResource[] {
+    protected getExternalCssResources(): ExternalCssResource[] {
         return [];    }
     private HACK_fonts() {
         let faces = this.HACK_getFontFaces();
         this.element.prepend($("<st" + "yle>" + (Object.keys(faces).map(n => faces[n].cssText)).join("\n") + "</st" + "yle>"));
     }
 
-    private HACK_getFontFaces(obj?:any) {
-        var sheet = document.styleSheets,
-            rule:any = null,
-            i = sheet.length, j:any, toReturn = {};
+    private HACK_getFontFaces(obj?: any) {
+        const sheet = document.styleSheets;
+        let i = sheet.length;
+        let result = {};
         while (0 <= --i) {
             try {
-                rule = sheet[i]['rules'] || sheet[i]['cssRules'] || [];
-                j = rule.length;
+                let rule = sheet[i]["rules"] || sheet[i]["cssRules"] || [];
+                let j = rule.length;
                 while (0 <= --j) {
-                    if (rule[j].constructor.name === 'CSSFontFaceRule' ||
-                        rule[j].constructor.toString().indexOf('CSSFontFaceRule') >= 0) { // rule[j].slice(0, 10).toLowerCase() === '@font-face'
-                        //o[ rule[j].style.fontFamily ] = rule[j].style.src;
+                    if (rule[j].constructor.name === "CSSFontFaceRule" ||
+                        rule[j].constructor.toString().indexOf("CSSFontFaceRule") >= 0) {
                         const style = rule[j].style;
                         let fontFamily = style.fontFamily;
                         if (!fontFamily && style.getPropertyValue) {
-                            fontFamily = style.getPropertyValue('font-family');
+                            fontFamily = style.getPropertyValue("font-family");
                         }
-                        toReturn[fontFamily] = rule[j];
+                        result[fontFamily] = rule[j];
                     }
                     ;
                 }
             } catch (e) {
-                if (e.name !== 'SecurityError') {
+                if (e.name !== "SecurityError") {
                     throw e;
                 }
             }
         }
-        return toReturn;
+        return result;
     }
-
-    // private HACK_getFontFaces(obj?) {
-    //     var o = obj || {},
-    //         sheet = document.styleSheets,
-    //         rule = null,
-    //         i = sheet.length, j;
-    //     while( 0 <= --i ){
-    //         rule = sheet[i]['rules'] || sheet[i]['cssRules'] || [];
-    //         j = rule.length;
-    //         while( 0 <= --j ){
-    //             if( rule[j].constructor.name === 'CSSFontFaceRule' ){ // rule[j].slice(0, 10).toLowerCase() === '@font-face'
-    //                 o[ rule[j].style.fontFamily ] = rule[j].style.src;
-    //             };
-    //         }
-    //     }
-    //     return o;
-    // }
 }
 
 /**
@@ -279,18 +263,21 @@ export interface ExternalCssResource {
 }
 
 /* HACK FIXES */
-if (powerbi.visuals.utility.SelectionManager.prototype['selectInternal']) {
-    powerbi.visuals.utility.SelectionManager.prototype['selectInternal'] = function (selectionId:powerbi.visuals.SelectionId, multiSelect:boolean) {
-        if (powerbi.visuals.utility.SelectionManager.containsSelection(this.selectedIds, selectionId)) {
-            this.selectedIds = multiSelect
-                ? this.selectedIds.filter((d:any) => !powerbi.data.Selector.equals(d.getSelector(), selectionId.getSelector()))
-                : this.selectedIds.length > 1
-                ? [selectionId] : [];
+function __HACK_SELECT_INTERNAL__(selectionId: powerbi.visuals.SelectionId, multiSelect: boolean) {
+    "use strict";
+    if (powerbi.visuals.utility.SelectionManager.containsSelection(this.selectedIds, selectionId)) {
+        this.selectedIds = multiSelect
+            ? this.selectedIds.filter((d: any) => !powerbi.data.Selector.equals(d.getSelector(), selectionId.getSelector()))
+            : this.selectedIds.length > 1
+            ? [selectionId] : [];
+    } else {
+        if (multiSelect) {
+            this.selectedIds.push(selectionId);
         } else {
-            if (multiSelect)
-                this.selectedIds.push(selectionId);
-            else
-                this.selectedIds = [selectionId];
+            this.selectedIds = [selectionId];
         }
-    };
+    }
+}
+if (powerbi.visuals.utility.SelectionManager.prototype["selectInternal"]) {
+    powerbi.visuals.utility.SelectionManager.prototype["selectInternal"] = __HACK_SELECT_INTERNAL__;
 }

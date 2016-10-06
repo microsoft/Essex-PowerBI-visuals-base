@@ -1,7 +1,15 @@
+require("../../testSetup"); // tslint:disable-line
 import { colorizedLog, updateTypeGetter, UpdateType } from "./Utils";
 import VisualBase from "./VisualBase";
 import { expect } from "chai";
 import * as _ from "lodash";
+import "mocha";
+declare var window: any;
+import "powerbi-visuals/lib/powerbi-visuals";
+
+const fakeVisual = {
+    update: () => 0,
+} as any as VisualBase;
 
 describe("Utils", () => {
     describe("updateTypeGetter", () => {
@@ -9,9 +17,6 @@ describe("Utils", () => {
          * Runs a update test that validates that the given update options returns the given update type
          */
         const runUpdateTest = (options: powerbi.VisualUpdateOptions, updateType: UpdateType, directCompare = false) => {
-            const fakeVisual = {
-                update: () => 0
-            } as any as VisualBase;
             const getter = updateTypeGetter(fakeVisual);
             fakeVisual.update(options);
             let expected = getter();
@@ -24,9 +29,6 @@ describe("Utils", () => {
             o1: powerbi.VisualUpdateOptions,
             o2: powerbi.VisualUpdateOptions,
             updateType: UpdateType, directCompare = false) => {
-            const fakeVisual = {
-                update: () => 0
-            } as any as VisualBase;
             const getter = updateTypeGetter(fakeVisual);
             fakeVisual.update(o1);
             fakeVisual.update(o2);
@@ -39,17 +41,17 @@ describe("Utils", () => {
 
         const resizeAndDataUpdateOptions = {
             dataViews: [{}],
-            resizeMode: 1
+            resizeMode: 1,
         } as any as powerbi.VisualUpdateOptions;
 
         const simpleSettingsUpdateOptions = {
             dataViews: [{
                 metadata: {
                     objects: {
-                        whatever: "whatever"
-                    }
-                }
-            }, ]
+                        whatever: "whatever",
+                    },
+                },
+            }],
         } as any as powerbi.VisualUpdateOptions;
 
         const dataRoleTest = (role1: string, role2: string, type: UpdateType, directCompare = false) => {
@@ -58,37 +60,37 @@ describe("Utils", () => {
                     categorical: {
                         categories: [{
                             identity: [{
-                                key: "KEY"
-                            }, ]
-                        }, ]
+                                key: "KEY",
+                            }],
+                        }],
                     },
                     metadata: {
                         columns: [{
                             queryName: "MyQuery",
                             roles: {
-                                [role1]: true
-                            }
-                        }, ]
-                    }
-                }, ]
+                                [role1]: true,
+                            },
+                        }],
+                    },
+                }],
             } as any, {
                 dataViews: [{
                     categorical: {
                         categories: [{
                             identity: [{
-                                key: "KEY"
-                            }, ]
-                        }, ]
+                                key: "KEY",
+                            }],
+                        }],
                     },
                     metadata: {
                         columns: [{
                             queryName: "MyQuery",
                             roles: {
-                                [role2]: true
-                            }
-                        }, ]
-                    }
-                }, ]
+                                [role2]: true,
+                            },
+                        }],
+                    },
+                }],
             } as any,
             type,
             directCompare);
@@ -100,33 +102,33 @@ describe("Utils", () => {
                     categorical: {
                         categories: [{
                             identity: [{
-                                key: "KEY"
-                            }, ]
-                        }, ]
+                                key: "KEY",
+                            }],
+                        }],
                     },
                     metadata: {
                         columns: [{
                             queryName: "MyQuery",
-                            sort: sort1
-                        }, ]
-                    }
-                }, ]
+                            sort: sort1,
+                        }],
+                    },
+                }],
             } as any, {
                 dataViews: [{
                     categorical: {
                         categories: [{
                             identity: [{
-                                key: "KEY"
-                            }, ]
-                        }, ]
+                                key: "KEY",
+                            }],
+                        }],
                     },
                     metadata: {
                         columns: [{
                             queryName: "MyQuery",
-                            sort: sort2
-                        }, ]
-                    }
-                }, ]
+                            sort: sort2,
+                        }],
+                    },
+                }],
             } as any,
             type,
             directCompare);
@@ -137,18 +139,18 @@ describe("Utils", () => {
                 dataViews: [{
                     categorical: {
                         categories: [{
-                            identity: identities1
-                        }, ]
-                    }
-                }, ]
+                            identity: identities1,
+                        }],
+                    },
+                }],
             } as any, {
                 dataViews: [{
                     categorical: {
                         categories: [{
-                            identity: identities2
-                        }, ]
-                    }
-                }, ]
+                            identity: identities2,
+                        }],
+                    },
+                }],
             } as any,
             type,
             directCompare);
@@ -160,31 +162,31 @@ describe("Utils", () => {
                     categorical: {
                         categories: [{
                             identity: [{
-                                key: "KEY"
-                            }, ]
-                        }, ]
+                                key: "KEY",
+                            }],
+                        }],
                     },
                     metadata: {
                         objects: {
-                            whatever: sn1
-                        }
-                    }
-                }, ]
+                            whatever: sn1,
+                        },
+                    },
+                }],
             } as any, {
                 dataViews: [{
                     categorical: {
                         categories: [{
                             identity: [{
-                                key: "KEY"
-                            }, ]
-                        }, ]
+                                key: "KEY",
+                            }],
+                        }],
                     },
                     metadata: {
                         objects: {
-                            whatever: sn2
-                        }
-                    }
-                }, ]
+                            whatever: sn2,
+                        },
+                    },
+                }],
             } as any,
             type,
             directCompare);
@@ -216,13 +218,13 @@ describe("Utils", () => {
         });
         it ("should return Data when the number of categories changed", () => {
             runMultipleUpdateTests({
-                dataViews: [{}]
+                dataViews: [{}],
             } as any, {
                 dataViews: [{
                     categorical: {
-                        categories: [{}]
-                    }
-                }, ]
+                        categories: [{}],
+                    },
+                }],
             } as any,
             UpdateType.Data);
         });
@@ -251,25 +253,22 @@ describe("Utils", () => {
                     dataViews: [{
                         categorical: {
                             categories: [{
-                                identity: identities
-                            }, ]
-                        }
-                    }, ]
+                                identity: identities,
+                            }],
+                        },
+                    }],
                 } as any;
-                const fakeVisual = {
-                    update: () => 0
-                } as any as VisualBase;
                 const getter = updateTypeGetter(fakeVisual);
                 fakeVisual.update(<any>_.assign({}, arr));
                 identities.push({
-                    key: "KEY2"
+                    key: "KEY2",
                 });
                 fakeVisual.update(<any>_.assign({}, arr));
                 let result = getter();
                 expect(result).to.eq(UpdateType.Data);
             }
         );
-        it ("should return Data when the number of categories has changed, and the underlying data has changed not in the first, middle or last position",
+        it("should return Data when the number of categories has changed, and the underlying data has changed not in the first, middle or last position", // tslint:disable-line
             () => identityTest(
                 [{ key: "KEY1" }, { key: "KEY2" }, { key: "KEY3"}, { key: "KEY4"}],
                 [{ key: "KEY1" }, { key: "KEY2" }, { key: "DIFF KEY"}, { key: "KEY4"}],
@@ -279,7 +278,7 @@ describe("Utils", () => {
         it ("should return Data when the metadata columns have changed data roles",
             () => dataRoleTest("ROLE_1", "ROLE_2", UpdateType.Data)
         );
-        it ("should NOT return Data when the metadata columns have NOT changed data roles", 
+        it ("should NOT return Data when the metadata columns have NOT changed data roles",
             () => dataRoleTest("ROLE_1", "ROLE_1", UpdateType.Unknown, true)
         );
 
@@ -290,10 +289,10 @@ describe("Utils", () => {
             sortTest(false, true, UpdateType.Data);
             sortTest(false, undefined, UpdateType.Data);
         });
-        it ("should NOT return Data when the metadata columns have NOT changed sort", 
+        it ("should NOT return Data when the metadata columns have NOT changed sort",
             () => sortTest(true, true, UpdateType.Unknown, true)
         );
-        it ("should NOT return Data when the metadata columns have NOT changed sort", 
+        it ("should NOT return Data when the metadata columns have NOT changed sort",
             () => sortTest(undefined, undefined, UpdateType.Unknown, true)
         );
         it ("should NOT return Data when the metadata columns have changed and then a resize occurs", () => {
@@ -301,11 +300,11 @@ describe("Utils", () => {
                 categorical: {
                     categories: [{
                         identity: [{
-                            key: "KEY"
-                        }, ]
-                    }, ]
-                }
-            }, ];
+                            key: "KEY",
+                        }],
+                    }],
+                },
+            }];
             runMultipleUpdateTests({
                 dataViews: dvs,
             } as any, {

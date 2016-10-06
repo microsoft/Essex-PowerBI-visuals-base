@@ -1,42 +1,45 @@
-require("../testSetup");
-global['powerbi'] = {
+import "powerbi-visuals/lib/powerbi-visuals";
+import * as jquery from "jquery";
+require("../testSetup"); // tslint:disable-line
+
+global["powerbi"] = {
     visuals: {
         utility: {
             SelectionManager: () => {
                 return {
-                    getSelectionIds: () => <any[]>[]
+                    getSelectionIds: () => <any[]>[],
                 };
-            }
+            },
         },
         SelectionId: {
             createNull: () => ({
-                equals: () => false
-            })
-        }
+                equals: () => false,
+            }),
+        },
     },
     VisualDataRoleKind: {
     },
     data: {
-        createDisplayNameGetter: () => {}
-    }
+        createDisplayNameGetter: () => ({}),
+    },
 };
-global['$'] = require("jquery");
-export var Utils = {
 
+global["$"] = jquery;
+export var Utils = { // tslint:disable-line
     FAKE_TABLE_DATA_ONE_COLUMN: <powerbi.DataView>{
         metadata: <powerbi.DataViewMetadata>{},
         table: {
             columns: <powerbi.DataViewMetadataColumn[]>[{
                 displayName: "COLUMN_1",
                 type: <any>{
-                    text: true
-                }
+                    text: true,
+                },
             }],
             rows: [
                 ["COLUMN_1_ROW_1"],
                 ["COLUMN_1_ROW_2"],
-            ]
-        }
+            ],
+        },
     },
 
     FAKE_TABLE_DATA_TWO_COLUMN: <powerbi.DataView>{
@@ -45,32 +48,32 @@ export var Utils = {
             columns: <powerbi.DataViewMetadataColumn[]>[{
                 displayName: "COLUMN_1",
                 type: <any>{
-                    text: true
-                }
+                    text: true,
+                },
             }, {
                 displayName: "COLUMN_2",
-                type: <any>{
-                    numeric: true
-                }
+                type: <any> {
+                    numeric: true,
+                },
             }],
             rows: [
                 ["COLUMN_1_ROW_1", 1],
                 ["COLUMN_1_ROW_2", 2],
-            ]
-        }
+            ],
+        },
     },
 
     createElement: () => {
-        return $('<div>');
+        return $("<div>");
     },
 
     createUpdateOptionsWithSmallData: () => {
         return <powerbi.VisualUpdateOptions>{
             viewport: {
                 width: 100,
-                height: 100
+                height: 100,
             },
-            dataViews: [Utils.FAKE_TABLE_DATA_ONE_COLUMN]
+            dataViews: [Utils.FAKE_TABLE_DATA_ONE_COLUMN],
         };
     },
 
@@ -78,27 +81,26 @@ export var Utils = {
         return <powerbi.VisualUpdateOptions>{
             viewport: {
                 width: 100,
-                height: 100
+                height: 100,
             },
-            dataViews: [Utils.FAKE_TABLE_DATA_TWO_COLUMN]
+            dataViews: [Utils.FAKE_TABLE_DATA_TWO_COLUMN],
         };
     },
 
     createFakeHost: () => {
         return <powerbi.IVisualHostServices>{
-            persistProperties: <any>function() {}
+            persistProperties: (<any>function() {}) // tslint:disable-line
         };
     },
 
     createFakeInitOptions: () => {
-        var element = Utils.createElement();
         return <powerbi.VisualInitOptions>{
-            element: element,
+            element: Utils.createElement(),
             host: Utils.createFakeHost(),
             viewport: {
                 width: 100,
-                height: 100
-            }
+                height: 100,
+            },
         };
-    }
+    },
 };

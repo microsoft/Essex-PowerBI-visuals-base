@@ -12,7 +12,6 @@
   "compileOnSave": false,
   "files": [
     "./src/index.ts",
-    "./typings/powerbi.d.ts",
-    "./typings/main.d.ts"
+    "node_modules/powerbi-visuals/lib/powerbi-visuals.d.ts"
   ]
 }

@@ -12,4 +12,4 @@ if (typeof window === 'undefined' || typeof document === 'undefined') {
 // Some typical deps
 myGlobal['$'] = require("jquery");
 myGlobal['d3'] = require("d3");
-myGlobal['_'] = require("underscore");
+myGlobal['_'] = require("lodash");
