@@ -134,6 +134,49 @@ describe("Utils", () => {
             directCompare);
         };
 
+        interface IAggregate {
+            minLocal?: number;
+            maxLocal?: number;
+        }
+
+        const aggregatesTest = (aggregatesOne: IAggregate, aggregatesTwo: IAggregate, type: UpdateType, directCompare = false) => {
+            runMultipleUpdateTests({
+                dataViews: [{
+                    categorical: {
+                        categories: [{
+                            identity: [{
+                                key: "KEY",
+                            }],
+                        }],
+                    },
+                    metadata: {
+                        columns: [{
+                            queryName: "MyQuery",
+                            aggregates: aggregatesOne,
+                        }],
+                    },
+                }],
+            } as any, {
+                dataViews: [{
+                    categorical: {
+                        categories: [{
+                            identity: [{
+                                key: "KEY",
+                            }],
+                        }],
+                    },
+                    metadata: {
+                        columns: [{
+                            queryName: "MyQuery",
+                            aggregates: aggregatesTwo,
+                        }],
+                    },
+                }],
+            } as any,
+            type,
+            directCompare);
+        };
+
         const identityTest = (identities1: any[], identities2: any[], type: UpdateType, directCompare = false) => {
             runMultipleUpdateTests({
                 dataViews: [{
@@ -294,6 +337,19 @@ describe("Utils", () => {
         );
         it ("should NOT return Data when the metadata columns have NOT changed sort",
             () => sortTest(undefined, undefined, UpdateType.Unknown, true)
+        );
+
+        it ("should return Data when the metadata columns have changed aggregates", () => {
+            const a1 = { minLocal: 0, maxLocal: 0 };
+            const a2 = { minLocal: 10, maxLocal: 20 };
+            aggregatesTest(a1, a2, UpdateType.Data);
+            aggregatesTest(undefined, a2, UpdateType.Data);
+            aggregatesTest(undefined, a1, UpdateType.Data);
+            aggregatesTest(a1, undefined, UpdateType.Data);
+            aggregatesTest(a2, undefined, UpdateType.Data);
+        });
+        it ("should NOT return Data when the metadata columns have NOT changed aggregates",
+            () => aggregatesTest({ minLocal: 10, maxLocal: 20 }, { minLocal: 10, maxLocal: 20 }, UpdateType.Unknown, true)
         );
         it ("should NOT return Data when the metadata columns have changed and then a resize occurs", () => {
             const dvs = [{

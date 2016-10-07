@@ -1,18 +1,9 @@
-var colors = [   
-    "#01B8AA",
-   // "#374649",
-    "#FD625E",
-    "#F2C80F",
-  //  "#5F6B6D", // Remove dark colors for now, for the black text
-    "#8AD4EB",
-    "#FE9666", // Bethany's Mango
-    "#A66999",
-    "#3599B8",
-    "#DFBFBF"
-];
+export interface ColorsArray extends Array<string> {
+    primary: string[];
+    full: string[];
+}
 
-colors.primary = colors.slice(0);
-colors.full = [   
+const colors: ColorsArray = <any>[
     "#01B8AA",
    // "#374649",
     "#FD625E",
@@ -23,7 +14,21 @@ colors.full = [
     "#A66999",
     "#3599B8",
     "#DFBFBF",
-    
+];
+
+colors.primary = colors.slice(0);
+colors.full = [
+    "#01B8AA",
+   // "#374649",
+    "#FD625E",
+    "#F2C80F",
+  //  "#5F6B6D", // Remove dark colors for now, for the black text
+    "#8AD4EB",
+    "#FE9666", // Bethany's Mango
+    "#A66999",
+    "#3599B8",
+    "#DFBFBF",
+
     // Second loop
     "#4AC5BB",
     "#5F6B6D",
@@ -35,7 +40,7 @@ colors.full = [
     "#B687AC",
     "#28738A",
     "#A78F8F",
-    
+
     // Third loop
     "#168980",
     "#293537",
@@ -47,7 +52,7 @@ colors.full = [
     "#7B4F71",
     "#1B4D5C",
     "#706060",
-    
+
     // Fourth loop
     "#0F5C55",
     "#1C2325",
@@ -61,4 +66,4 @@ colors.full = [
     "#544848",
 ];
 
-module.exports = colors;
+export default colors;

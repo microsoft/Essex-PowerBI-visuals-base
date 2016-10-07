@@ -1,4 +1,5 @@
 import "powerbi-visuals/lib/powerbi-visuals";
+
 import { elementLogWriter, logger } from "./Utils";
 import VisualCapabilities = powerbi.VisualCapabilities;
 import EnumerateVisualObjectInstancesOptions = powerbi.EnumerateVisualObjectInstancesOptions;

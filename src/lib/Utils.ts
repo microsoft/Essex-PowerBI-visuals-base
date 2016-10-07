@@ -237,14 +237,14 @@ export function listDiff<M>(existingItems: M[], newItems: M[], differ: IDiffProc
  * Creates an update watcher for a visual
  */
 // TODO: This would be SOOO much better as a mixin, just don't want all that extra code that it requires right now.
-export function updateTypeGetter(obj: IVisual) {
+export function updateTypeGetter(obj: IVisual, defaultUnkownToData = false) {
     "use strict";
     let currUpdateType = UpdateType.Unknown;
     if (obj && obj.update) {
         const oldUpdate = obj.update;
         let prevOptions: VisualUpdateOptions;
         obj.update = function(options: VisualUpdateOptions) {
-            let updateType = calcUpdateType(prevOptions, options);
+            let updateType = calcUpdateType(prevOptions, options, defaultUnkownToData);
             currUpdateType = updateType;
             prevOptions = options;
             log(`Update -- Type: ${UpdateType[updateType]}`);
@@ -259,7 +259,7 @@ export function updateTypeGetter(obj: IVisual) {
 /**
  * Calculates the updates that have occurred between the two updates
  */
-export function calcUpdateType(oldOpts: VisualUpdateOptions, newOpts: VisualUpdateOptions) {
+export function calcUpdateType(oldOpts: VisualUpdateOptions, newOpts: VisualUpdateOptions, defaultUnkownToData = false) {
     "use strict";
     let updateType = UpdateType.Unknown;
 
@@ -277,6 +277,10 @@ export function calcUpdateType(oldOpts: VisualUpdateOptions, newOpts: VisualUpda
 
     if (!oldOpts) {
         updateType ^= UpdateType.Initial;
+    }
+
+    if (defaultUnkownToData && updateType === UpdateType.Unknown) {
+        updateType = UpdateType.Data;
     }
 
     return updateType;
@@ -387,7 +391,7 @@ function markDataViewState(dv: powerbi.DataView) {
     }
 }
 
-const colProps = ["queryName", "roles", "sort"];
+const colProps = ["queryName", "roles", "sort", "aggregates"];
 
 function hasDataViewChanged(dv1: powerbi.DataView, dv2: powerbi.DataView) {
     "use strict";
