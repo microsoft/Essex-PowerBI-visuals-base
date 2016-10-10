@@ -12,6 +12,7 @@
   "compileOnSave": false,
   "files": [
     "./src/index.ts",
+    "./src/build_scripts/index.ts",
     "node_modules/powerbi-visuals/lib/powerbi-visuals.d.ts"
   ]
 }

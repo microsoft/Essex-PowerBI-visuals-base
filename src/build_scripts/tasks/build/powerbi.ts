@@ -1,8 +1,8 @@
 import * as fs from "fs";
 import * as path from "path";
 import { Gulp } from "gulp";
-import * as del from "del";
 import makeProjectConfig from "../../project";
+const del = require("del");
 const zip = require("gulp-zip");
 const gutil = require("gulp-util");
 const webpack = require("gulp-webpack");
