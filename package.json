@@ -4,9 +4,10 @@
   "description": "Essex PowerBI visual base",
   "scripts": {
     "tsc": "! tsc | grep -v \"^node_modules.*\"",
+    "copy:build_package_json": "cp src/build_scripts/tasks/build/package.json ./dist/build_scripts/tasks/build",
     "lint": "tslint {src,spec}/**/*.ts",
     "mocha": "mocha --require ts-node/register \"src/**/*.spec.ts\"",
-    "test": "npm-run-all tsc lint mocha"
+    "test": "npm-run-all copy:build_package_json tsc lint mocha"
   },
   "main": "dist/index.js",
   "typings": "dist/index.d.ts",

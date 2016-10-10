@@ -73,7 +73,8 @@ export default function powerbiTasks(gulp: Gulp, baseDir: string) {
      */
     gulp.task(task("package_json"), function () {
         const output = config.output.PowerBI;
-        return gulp.src([path.join(__dirname, "package.json")])
+        const packageFile = path.join(__dirname, "package.json");
+        return gulp.src([packageFile])
             .pipe(replace("%PROJECT_NAME%", output.visualName))
             .pipe(replace("%PROJECT_DISPLAY_NAME%", output.displayName || output.visualName))
             .pipe(replace("%PROJECT_ID%", output.projectId))
