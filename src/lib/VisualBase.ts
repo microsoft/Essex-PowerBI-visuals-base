@@ -1,9 +1,6 @@
 import "powerbi-visuals/lib/powerbi-visuals";
 
 import { elementLogWriter, logger } from "./Utils";
-import VisualCapabilities = powerbi.VisualCapabilities;
-import EnumerateVisualObjectInstancesOptions = powerbi.EnumerateVisualObjectInstancesOptions;
-import VisualObjectInstance = powerbi.VisualObjectInstance;
 import { CatchingVisualBase } from "./CatchingVisualBase";
 import { receiveUpdateType, IUpdateTypeReceiver } from "./utils/receiveUpdateType";
 import UpdateType from "./Utils/UpdateType";
@@ -24,7 +21,7 @@ export default class VisualBase extends CatchingVisualBase implements IUpdateTyp
     /**
      * The set of capabilities for the visual
      */
-    public static capabilities: VisualCapabilities = VisualBase.EXPERIMENTAL_ENABLED ? {
+    public static capabilities: powerbi.VisualCapabilities = VisualBase.EXPERIMENTAL_ENABLED ? {
         objects: {
             experimental: {
                 displayName: "Experimental",
@@ -116,7 +113,7 @@ export default class VisualBase extends CatchingVisualBase implements IUpdateTyp
      * Enumerates the instances for the objects that appear in the power bi panel
      */
     protected handleEnumerateObjectInstances(
-        options: EnumerateVisualObjectInstancesOptions
+        options: powerbi.EnumerateVisualObjectInstancesOptions
     ): powerbi.VisualObjectInstanceEnumeration {
         if (options.objectName === "experimental" && VisualBase.EXPERIMENTAL_ENABLED) {
             return [{
