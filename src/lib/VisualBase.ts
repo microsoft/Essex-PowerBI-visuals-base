@@ -2,7 +2,7 @@ import "powerbi-visuals/lib/powerbi-visuals";
 
 import { elementLogWriter, logger } from "./Utils";
 import { CatchingVisualBase } from "./CatchingVisualBase";
-import { receiveUpdateType, IUpdateTypeReceiver } from "./utils/receiveUpdateType";
+import { receiveUpdateType, IUpdateTypeReceiver } from "./Utils/receiveUpdateType";
 import UpdateType from "./Utils/UpdateType";
 import * as $ from "jquery";
 

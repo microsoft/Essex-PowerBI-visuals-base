@@ -13,25 +13,23 @@ export function receiveUpdateType(defaultUnknownToData: boolean = false) {
         const original = target;
 
         const newConstructor: any = function (...args: any[]) {
-            let instance: IUpdateTypeReceiver = new target(args);
-            let { update: originalUpdate } = instance;
+            original.apply(this, args);
+            let { update: originalUpdate } = this;
             let prevOptions: VisualUpdateOptions;
 
-            instance.update = function (options: VisualUpdateOptions) {
+            this.update = function (options: VisualUpdateOptions) {
                 if (originalUpdate) {
-                    originalUpdate(options);
+                    originalUpdate.call(this, options);
                 }
                 let updateType = calcUpdateType(prevOptions, options, defaultUnknownToData);
-                instance.updateWithType(options, updateType);
+                this.updateWithType(options, updateType);
                 prevOptions = options;
-            }.bind(instance);
-
-            return instance;
+            }.bind(this);
         };
 
         newConstructor.prototype = original.prototype;
         return newConstructor;
-    }
+    };
 }
 
 /**
