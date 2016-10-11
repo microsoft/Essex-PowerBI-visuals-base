@@ -115,8 +115,9 @@ export default class VisualBase extends CatchingVisualBase implements IUpdateTyp
     /**
      * Enumerates the instances for the objects that appear in the power bi panel
      */
-    public handleEnumerateObjectInstances(options: EnumerateVisualObjectInstancesOptions): VisualObjectInstance[] {
-        super.handleEnumerateObjectInstances(options);
+    protected handleEnumerateObjectInstances(
+        options: EnumerateVisualObjectInstancesOptions
+    ): powerbi.VisualObjectInstanceEnumeration {
         if (options.objectName === "experimental" && VisualBase.EXPERIMENTAL_ENABLED) {
             return [{
                 selector: null, // tslint:disable-line
@@ -126,6 +127,7 @@ export default class VisualBase extends CatchingVisualBase implements IUpdateTyp
                 },
             }];
         }
+        return [];
     }
 
     /**
