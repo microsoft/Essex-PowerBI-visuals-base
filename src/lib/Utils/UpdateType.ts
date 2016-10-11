@@ -1,4 +1,3 @@
-
 /**
  * Represents an update type for a visual
  */
