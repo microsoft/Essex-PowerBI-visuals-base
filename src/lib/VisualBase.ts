@@ -4,11 +4,15 @@ import { elementLogWriter, logger } from "./Utils";
 import VisualCapabilities = powerbi.VisualCapabilities;
 import EnumerateVisualObjectInstancesOptions = powerbi.EnumerateVisualObjectInstancesOptions;
 import VisualObjectInstance = powerbi.VisualObjectInstance;
+import { CatchingVisualBase } from "./CatchingVisualBase";
+import { receiveUpdateType, IUpdateTypeReceiver } from "./utils/receiveUpdateType";
+import UpdateType from "./Utils/UpdateType";
 import * as $ from "jquery";
 
 const log = require("debug")("essex:PbiBase"); // tslint:disable-line
 
-export default class VisualBase implements powerbi.IVisual {
+@receiveUpdateType()
+export default class VisualBase extends CatchingVisualBase implements IUpdateTypeReceiver {
     // TODO: Switch this to a build config
     public static EXPERIMENTAL_ENABLED = false;
 
@@ -50,7 +54,8 @@ export default class VisualBase implements powerbi.IVisual {
      * Constructor for the Visual
      * @param logger The logger used for logging, if provided, the logger will log events to the log element contained in this visual
      */
-    constructor(noCss = false) {
+    constructor(name: string, noCss = false) {
+        super(name);
         logger.addWriter(elementLogWriter(() => {
             const ele = this.element.find(".logArea");
             ele.css({ display: "block" });
@@ -78,7 +83,7 @@ export default class VisualBase implements powerbi.IVisual {
     }
 
     /** This is called once when the visual is initialially created */
-    public init(options: powerbi.VisualInitOptions): void {
+    protected doInit(options: powerbi.VisualInitOptions): void {
         this.width = options.viewport.width;
         this.height = options.viewport.height;
         this.container = options.element;
@@ -88,7 +93,7 @@ export default class VisualBase implements powerbi.IVisual {
     /**
      * Notifies the IVisual of an update (data, viewmode, size change).
      */
-    public update(options: powerbi.VisualUpdateOptions) {
+    public updateWithType(options: powerbi.VisualUpdateOptions, updateType: UpdateType) {
         this.width = options.viewport.width;
         this.height = options.viewport.height;
 
@@ -110,7 +115,8 @@ export default class VisualBase implements powerbi.IVisual {
     /**
      * Enumerates the instances for the objects that appear in the power bi panel
      */
-    public enumerateObjectInstances(options: EnumerateVisualObjectInstancesOptions): VisualObjectInstance[] {
+    public handleEnumerateObjectInstances(options: EnumerateVisualObjectInstancesOptions): VisualObjectInstance[] {
+        super.handleEnumerateObjectInstances(options);
         if (options.objectName === "experimental" && VisualBase.EXPERIMENTAL_ENABLED) {
             return [{
                 selector: null, // tslint:disable-line

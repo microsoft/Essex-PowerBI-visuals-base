@@ -114,7 +114,7 @@ function hasArrayChanged<T>(a1: T[], a2: T[], isEqual: (a: T, b: T) => boolean) 
             (!isEqual(a1[last], a2[last])) ||
 
             // Check everything
-            (_.some(a1, ((n, i) => !isEqual(n, a2[i]))));
+            (_.some(a1, ((n: any, i: number) => !isEqual(n, a2[i]))));
     }
     return false;
 }
