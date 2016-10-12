@@ -20,12 +20,12 @@ export function receiveDimensions(target: IReceiveDimensionsClass) {
         this.init = function receiveDimensionsInit(
             options: powerbi.VisualInitOptions
         ) {
+            originalInit.call(this, options);
             this.setDemensions({
                 width: options.viewport.width,
                 height: options.viewport.height,
             });
-            originalInit.call(this, options);
-        }
+        };
 
         this.updateWithType = function receiveDimensionsUpdate(
             options: VisualUpdateOptions,
