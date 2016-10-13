@@ -14,7 +14,6 @@ export { default as hasDataChanged } from "./hasDataChanged";
 export { default as listDiff } from "./listDiff";
 export * from "./logger";
 export { default as PropertyPersister } from "./PropertyPersister";
-export * from "./receiveDimensions";
 export * from "./receiveUpdateType";
 export { default as UpdateType } from "./UpdateType";
 export { default as updateTypeGetter } from "./updateTypeGetter";
