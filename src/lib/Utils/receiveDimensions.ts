@@ -1,7 +1,5 @@
 import "powerbi-visuals/lib/powerbi-visuals";
-import UpdateType from "./UpdateType";
 import VisualUpdateOptions = powerbi.VisualUpdateOptions;
-import { IUpdateTypeReceiver } from "./receiveUpdateType";
 
 /**
  * Decorator indicating that a given visual is stateful
@@ -14,7 +12,7 @@ export function receiveDimensions(target: IReceiveDimensionsClass) {
         original.apply(this, args);
         const {
             init: originalInit,
-            updateWithType: originalUpdateWithType,
+            update: originalUpdate,
         } = this;
 
         this.init = function receiveDimensionsInit(
@@ -27,18 +25,12 @@ export function receiveDimensions(target: IReceiveDimensionsClass) {
             });
         };
 
-        this.updateWithType = function receiveDimensionsUpdate(
-            options: VisualUpdateOptions,
-            updateType: UpdateType
-        ) {
-            const isResize = updateType & UpdateType.Resize;
-            if (isResize) {
-                this.setDimensions({
-                    width: options.viewport.width,
-                    height: options.viewport.height,
-                });
+        this.update = function receiveDimensionsUpdate(options: VisualUpdateOptions) {
+            if (options.dataViews && options.viewport) {
+                const { width, height} = options.viewport;
+                this.setDimensions(width, height);
             }
-            originalUpdateWithType.call(this, options, updateType);
+            originalUpdate.call(options);
         }.bind(this);
     };
 
@@ -57,6 +49,6 @@ export interface IDimensions {
     height: number;
     width: number;
 }
-export interface IReceiveDimensions extends IUpdateTypeReceiver {
+export interface IReceiveDimensions {
     setDimensions(dimensions: IDimensions): void;
 }
