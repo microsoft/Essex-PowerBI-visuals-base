@@ -7,6 +7,7 @@ if (process.env.DEBUG) {
 /* tslint:enable */
 
 export { default as calcUpdateType } from "./calcUpdateType";
+export * from "./capabilities";
 export { default as colorizedLog } from "./colorizedLog";
 export { default as createPropertyPersister } from "./createPropertyPersister";
 export { default as elementLogWriter } from "./elementLogWriter";
