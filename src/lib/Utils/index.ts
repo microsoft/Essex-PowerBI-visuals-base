@@ -15,6 +15,7 @@ export { default as listDiff } from "./listDiff";
 export * from "./logger";
 export { default as PropertyPersister } from "./PropertyPersister";
 export * from "./receiveUpdateType";
+export * from "./receiveDimensions";
 export { default as UpdateType } from "./UpdateType";
 export { default as updateTypeGetter } from "./updateTypeGetter";
 export { default as Visual } from "./Visual";

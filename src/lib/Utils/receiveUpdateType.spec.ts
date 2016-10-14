@@ -38,8 +38,11 @@ describe("receiveUpdateType", () => {
 
         @receiveUpdateType()
         class MockVisual extends BaseMockVisual {}
-
         const visual = new MockVisual();
+
+        expect(visual instanceof MockVisual).to.be.true;
+        expect(visual instanceof BaseMockVisual).to.be.true;
+
         visual["update"]({});
         expect(visual.isUpdateWithTypeCalled).to.be.true;
         expect(isCalcUpdateTypeCalled).to.be.true;
