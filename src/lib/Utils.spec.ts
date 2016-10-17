@@ -1,4 +1,4 @@
-require("../../testSetup"); // tslint:disable-line
+require("../../spec/testSetup"); // tslint:disable-line
 import { colorizedLog, updateTypeGetter, UpdateType } from "./Utils";
 import VisualBase from "./VisualBase";
 import { expect } from "chai";

@@ -1,6 +1,6 @@
 import "powerbi-visuals/lib/powerbi-visuals";
 import * as jquery from "jquery";
-require("../testSetup"); // tslint:disable-line
+import "./testSetup"; // tslint:disable-line
 
 global["powerbi"] = {
     visuals: {
