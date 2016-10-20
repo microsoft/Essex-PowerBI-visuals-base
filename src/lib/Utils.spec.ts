@@ -1,5 +1,27 @@
-require("../../spec/testSetup"); // tslint:disable-line
-import { colorizedLog, updateTypeGetter, UpdateType } from "./Utils";
+require("../spec/testSetup"); // tslint:disable-line
+declare var global: any;
+global["powerbi"] = {
+    visuals: {
+        utility: {
+            SelectionManager: () => {
+                return {
+                    getSelectionIds: () => <any[]>[],
+                };
+            },
+        },
+        SelectionId: {
+            createNull: () => ({
+                equals: () => false,
+            }),
+        },
+    },
+    VisualDataRoleKind: {
+    },
+    data: {
+        createDisplayNameGetter: () => ({}),
+    },
+};
+import { colorizedLog, updateTypeGetter, UpdateType } from "./utils";
 import VisualBase from "./VisualBase";
 import { expect } from "chai";
 import * as _ from "lodash";

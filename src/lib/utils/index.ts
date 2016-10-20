@@ -21,3 +21,7 @@ export { default as UpdateType } from "./UpdateType";
 export { default as updateTypeGetter } from "./updateTypeGetter";
 export { default as Visual } from "./Visual";
 export { IDiffProcessor } from "./IDiffProcessor";
+export { default as buildContainsFilter } from "./buildContainsFilter";
+export { default as parseSelectionIds } from "./parseSelectionIds";
+export { default as createPersistObjectBuilder } from "./persistObjectBuilder";
+export { default as getSelectionIdsFromSelectors } from "./getSelectionIdsFromSelectors";

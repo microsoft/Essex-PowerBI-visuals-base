@@ -1,6 +1,6 @@
 module.exports = {
     entry: {
-        Utils: "./lib/Utils",
+        Utils: "./lib/utils",
         VisualBase: "./lib/VisualBase"
     },
 

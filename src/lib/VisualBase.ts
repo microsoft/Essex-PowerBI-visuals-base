@@ -1,9 +1,9 @@
 import "powerbi-visuals/lib/powerbi-visuals";
 
-import { elementLogWriter, logger } from "./Utils";
+import { elementLogWriter, logger } from "./utils";
 import { CatchingVisualBase } from "./CatchingVisualBase";
-import { receiveUpdateType, IUpdateTypeReceiver } from "./Utils/receiveUpdateType";
-import UpdateType from "./Utils/UpdateType";
+import { receiveUpdateType, IUpdateTypeReceiver } from "./utils/receiveUpdateType";
+import UpdateType from "./utils/UpdateType";
 import * as $ from "jquery";
 
 const log = require("debug")("essex:PbiBase"); // tslint:disable-line
