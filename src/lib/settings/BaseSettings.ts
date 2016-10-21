@@ -36,15 +36,15 @@ export class BaseSettings {
     /**
      * Builds the persist objects
      */
-    public buildEnumerationObjects(objectName: string, includeHidden = false) {
-        return buildEnumerationObjects(this.constructor as any, this, objectName, includeHidden);
+    public buildEnumerationObjects(objectName: string, dataView: powerbi.DataView, includeHidden = false) {
+        return buildEnumerationObjects(this.constructor as any, this, objectName, dataView, includeHidden);
     }
 
     /**
      * Builds the persist objects
      */
-    public buildPersistObjects(includeHidden = false) {
-        return buildPersistObjects(this.constructor as any, this, includeHidden);
+    public buildPersistObjects(dataView: powerbi.DataView, includeHidden = false) {
+        return buildPersistObjects(this.constructor as any, this, dataView, includeHidden);
     }
 
     /**

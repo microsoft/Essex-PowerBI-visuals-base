@@ -32,6 +32,7 @@ export function parseSettingsFromPBI<T>(ctor: ISettingsClass<T>, dv: powerbi.Dat
 export function buildPersistObjects<T>(
     ctor: ISettingsClass<T>,
     settingsObj: T,
+    dataView: powerbi.DataView,
     includeHidden = true): powerbi.VisualObjectInstancesToPersist {
     "use strict";
     if (settingsObj) {
@@ -41,7 +42,7 @@ export function buildPersistObjects<T>(
             const builder = createPersistObjectBuilder();
             Object.keys(settingsObj).forEach(key => {
                 const setting = settingsMetadata[key];
-                const adapted = convertValueToPBI(settingsObj, setting, includeHidden);
+                const adapted = convertValueToPBI(settingsObj, setting, dataView, includeHidden);
                 if (adapted) {
                     const { objName, propName } = getPBIObjectNameAndPropertyName(setting);
                     builder.persist(objName, propName, adapted.adaptedValue);
@@ -57,7 +58,10 @@ export function buildPersistObjects<T>(
  */
 export function buildEnumerationObjects<T>(
     ctor: ISettingsClass<T>,
-    settingsObj: T, requestedObjectName: string, includeHidden = false): powerbi.VisualObjectInstance[] {
+    settingsObj: T,
+    requestedObjectName: string,
+    dataView: powerbi.DataView,
+    includeHidden = false): powerbi.VisualObjectInstance[] {
     "use strict";
     let instances = [{
         selector: null, // tslint:disable-line
@@ -73,7 +77,7 @@ export function buildEnumerationObjects<T>(
                 const { objName, propName } = getPBIObjectNameAndPropertyName(setting);
                 const isSameCategory = objName === requestedObjectName;
                 if (isSameCategory) {
-                    const adapted = convertValueToPBI(settingsObj, setting, includeHidden);
+                    const adapted = convertValueToPBI(settingsObj, setting, dataView, includeHidden);
                     if (adapted) {
                         instances[0].properties[propName] = adapted.adaptedValue;
                     }
@@ -81,7 +85,9 @@ export function buildEnumerationObjects<T>(
             });
         }
     }
-    return instances;
+
+    // If there are no settings, then return no instances
+    return Object.keys(instances[0].properties).length === 0 ? [] : instances;
 }
 
 /**
@@ -190,12 +196,12 @@ function getPBIObjectNameAndPropertyName(setting: ISetting) {
 /**
  * Converts the value for the given setting on the object to a powerbi compatible value
  */
-function convertValueToPBI(settingsObj: any, setting: ISetting, includeHidden: boolean = false) {
+function convertValueToPBI(settingsObj: any, setting: ISetting, dataView: powerbi.DataView, includeHidden: boolean = false) {
     "use strict";
     const { descriptor, propertyName: fieldName } = setting;
     const { hidden, persist, compose } = descriptor;
     // Ignore ones that are "hidden" and ones that shouldn't be "persisted"
-    const isHidden = typeof hidden === "function" ? hidden(settingsObj) : !!hidden;
+    const isHidden = typeof hidden === "function" ? hidden(settingsObj, dataView) : !!hidden;
     if ((includeHidden || !isHidden) && persist !== false) {
         let value = settingsObj[fieldName];
         if (compose) {

@@ -91,7 +91,7 @@ export interface ISettingDescriptor {
  * Represents a hidden function
  */
 export interface IHiddenFn {
-    (settingObj: any): boolean;
+    (settingObj: any, dataView?: powerbi.DataView): boolean;
 }
 
 /**
