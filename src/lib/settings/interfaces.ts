@@ -84,7 +84,10 @@ export interface ISettingDescriptor {
     /**
      * A helper to convert the setting value into a powerbi value
      */
-    compose?: (value: any, descriptor?: ISettingDescriptor) => any; // Controls how the value is returned to pbi
+    compose?: (
+        value: any,
+        descriptor?: ISettingDescriptor,
+        dataView?: powerbi.DataView) => any;
 }
 
 /**

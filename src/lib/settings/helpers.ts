@@ -205,7 +205,7 @@ function convertValueToPBI(settingsObj: any, setting: ISetting, dataView: powerb
     if ((includeHidden || !isHidden) && persist !== false) {
         let value = settingsObj[fieldName];
         if (compose) {
-            value = compose(value, descriptor);
+            value = compose(value, descriptor, dataView);
         }
         return {
             adaptedValue: value,
