@@ -15,15 +15,15 @@ export class HasSettings {
     /**
      * Creates a new instance of this class
      */
-    public static create(initialProps?: any) {
-        return HasSettings.createFromPBI(undefined, initialProps);
+    public static create<T extends HasSettings>(initialProps?: any): T {
+        return parseSettingsFromPBI(this, undefined, initialProps, true) as T;
     }
 
     /**
      * Builds the capability objects for this settings class
      */
     public static createFromPBI<T extends HasSettings>(dv?: powerbi.DataView, additionalProps?: any): T {
-        return parseSettingsFromPBI(this, dv, additionalProps) as T;
+        return parseSettingsFromPBI(this, dv, additionalProps, false) as T;
     }
 
     /**
@@ -37,14 +37,14 @@ export class HasSettings {
      * Recieves the given object and returns a new state with the object overlayed with the this set of settings
      */
     public receive(newProps?: any) {
-        return HasSettings.create(assignIn(this.toJSONObject(), newProps)) as this;
+        return (this.constructor as any).create(assignIn(this.toJSONObject(), newProps)) as this;
     }
 
     /**
      * Recieves the given pbi settings and returns a new state with the new pbi settings overlayed with the this state
      */
     public receiveFromPBI(dv?: powerbi.DataView) {
-        return parseSettingsFromPBI(this.constructor as any, dv, this.toJSONObject()) as this;
+        return (this.constructor as any).createFromPBI(dv, this.toJSONObject()) as this;
     }
 
     /**

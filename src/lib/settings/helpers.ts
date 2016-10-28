@@ -13,10 +13,14 @@ export const METADATA_KEY = "__settings__";
 /**
  * Parses settings from powerbi dataview objects
  */
-export function parseSettingsFromPBI<T>(ctor: ISettingsClass<T>, dv?: powerbi.DataView, additionalProps?: any): T {
+export function parseSettingsFromPBI<T>(ctor: ISettingsClass<T>, dv?: powerbi.DataView, additionalProps?: any, addPropsAfter = true): T {
     "use strict";
     const settingsMetadata = getSettingsMetadata(ctor);
     const newSettings = new ctor();
+    const mixin = () => additionalProps ? assignIn(newSettings, additionalProps) : 0;
+    if (!addPropsAfter) {
+        mixin();
+    }
     if (settingsMetadata) {
         Object.keys(settingsMetadata).forEach(n => {
             const setting = settingsMetadata[n];
@@ -24,8 +28,9 @@ export function parseSettingsFromPBI<T>(ctor: ISettingsClass<T>, dv?: powerbi.Da
             newSettings[setting.propertyName] = adapted.adaptedValue;
         });
     }
-    if (additionalProps) {
-        assignIn(newSettings, additionalProps);
+
+    if (addPropsAfter) {
+        mixin();
     }
     return newSettings;
 }
