@@ -16,18 +16,18 @@ export const METADATA_KEY = "__settings__";
 export function parseSettingsFromPBI<T>(ctor: ISettingsClass<T>, dv?: powerbi.DataView, additionalProps?: any): T {
     "use strict";
     const settingsMetadata = getSettingsMetadata(ctor);
+    const newSettings = new ctor();
     if (settingsMetadata) {
-        const newSettings = new ctor();
         Object.keys(settingsMetadata).forEach(n => {
             const setting = settingsMetadata[n];
             const adapted = convertValueFromPBI(setting, dv);
             newSettings[setting.propertyName] = adapted.adaptedValue;
         });
-        if (additionalProps) {
-            merge(newSettings, additionalProps);
-        }
-        return newSettings;
     }
+    if (additionalProps) {
+        assignIn(newSettings, additionalProps);
+    }
+    return newSettings;
 }
 
 /**
@@ -170,16 +170,6 @@ export function buildCapabilitiesObjects<T>(settingsCtor: any): powerbi.data.Dat
         }
     }
     return objects;
-}
-
-/**
- * Converts the given settings object into a JSON object
- */
-export function fromJSON<T>(ctor: ISettingsClass<T>, json: any) {
-    "use strict";
-    const instance = (new ctor());
-    assignIn(instance, json);
-    return instance;
 }
 
 /**

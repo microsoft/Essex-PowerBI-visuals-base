@@ -1,5 +1,4 @@
 import {
-    fromJSON,
     toJSON,
     buildCapabilitiesObjects,
     buildPersistObjects,
@@ -14,16 +13,16 @@ const assignIn = require("lodash/assignIn"); // tslint:disable-line
 export class HasSettings {
 
     /**
-     * Rehydrates this settings class from the given object
+     * Creates a new instance of this class
      */
-    public static fromJSON<T extends HasSettings>(obj: any): T {
-        return fromJSON<any>(this, obj);
+    public static create(initialProps?: any) {
+        return HasSettings.createFromPBI(undefined, initialProps);
     }
 
     /**
      * Builds the capability objects for this settings class
      */
-    public static fromPBI<T extends HasSettings>(dv?: powerbi.DataView, additionalProps?: any): T {
+    public static createFromPBI<T extends HasSettings>(dv?: powerbi.DataView, additionalProps?: any): T {
         return parseSettingsFromPBI(this, dv, additionalProps) as T;
     }
 
@@ -37,15 +36,15 @@ export class HasSettings {
     /**
      * Recieves the given object and returns a new state with the object overlayed with the this set of settings
      */
-    public receive<T extends HasSettings>(newProps?: any) {
-        return assignIn(fromJSON<any>(this.constructor as any, this.toJSONObject()), newProps);
+    public receive(newProps?: any) {
+        return HasSettings.create(assignIn(this.toJSONObject(), newProps)) as this;
     }
 
     /**
      * Recieves the given pbi settings and returns a new state with the new pbi settings overlayed with the this state
      */
-    public receivePBISettings<T extends HasSettings>(dv?: powerbi.DataView) {
-        return parseSettingsFromPBI(this.constructor as any, dv, this.toJSONObject()) as T;
+    public receiveFromPBI(dv?: powerbi.DataView) {
+        return parseSettingsFromPBI(this.constructor as any, dv, this.toJSONObject()) as this;
     }
 
     /**
