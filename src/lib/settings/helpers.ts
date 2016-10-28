@@ -40,7 +40,7 @@ export function buildPersistObjects<T>(
     includeHidden = true): powerbi.VisualObjectInstancesToPersist {
     "use strict";
     if (settingsObj) {
-        settingsObj = fromJSON(ctor, settingsObj); // Just in case they pass in a JSON version
+        settingsObj = parseSettingsFromPBI(ctor, undefined, settingsObj); // Just in case they pass in a JSON version
         const settingsMetadata = getSettingsMetadata(settingsObj);
         if (settingsMetadata) {
             const builder = createPersistObjectBuilder();
@@ -86,7 +86,7 @@ export function buildEnumerationObjects<T>(
         properties: {},
     }] as powerbi.VisualObjectInstance[];
     if (settingsObj) {
-        settingsObj = fromJSON(ctor, settingsObj); // Just in case they pass in a JSON version
+        settingsObj = parseSettingsFromPBI(ctor, undefined, settingsObj); // Just in case they pass in a JSON version
         const settingsMetadata = getSettingsMetadata(settingsObj);
         if (settingsMetadata) {
             Object.keys(settingsMetadata).forEach(key => {
