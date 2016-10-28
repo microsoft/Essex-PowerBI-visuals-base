@@ -1,6 +1,5 @@
 import "powerbi-visuals/lib/powerbi-visuals";
 import getSelectionIdsFromSelectors from "./getSelectionIdsFromSelectors";
-import data = powerbi.data;
 import SelectionId = powerbi.visuals.SelectionId;
 const ldget = require("lodash/get"); // tslint:disable-line
 
@@ -24,10 +23,7 @@ export default function parseSelectionIds(
             let sourceExpr = args[0];
             selectionIds = values.map((n: any) => {
                 return SelectionId.createWithId(powerbi.data.createDataViewScopeIdentity(
-                    powerbi.data.SQExprBuilder.compare(data.QueryComparisonKind.Equal,
-                        sourceExpr,
-                        n[0]
-                    )
+                    powerbi.data.SQExprBuilder.compare(0, sourceExpr, n[0])
                 ));
             });
         } else {

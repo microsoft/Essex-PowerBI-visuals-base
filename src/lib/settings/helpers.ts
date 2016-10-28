@@ -1,9 +1,10 @@
 import createPersistObjectBuilder from "../utils/persistObjectBuilder";
-import { ISetting, ISettingDescriptor, ISettingsClass } from "./interfaces";
+import { ISetting, ISettingDescriptor, ISettingsClass, IComposeResult } from "./interfaces";
 
 /* tslint:disable */
 const ldget = require("lodash/get");
 const merge = require("lodash/merge");
+const assignIn = require("lodash/assignIn");
 const stringify = require("json-stringify-safe");
 /* tslint:enable */
 
@@ -12,7 +13,7 @@ export const METADATA_KEY = "__settings__";
 /**
  * Parses settings from powerbi dataview objects
  */
-export function parseSettingsFromPBI<T>(ctor: ISettingsClass<T>, dv: powerbi.DataView): T {
+export function parseSettingsFromPBI<T>(ctor: ISettingsClass<T>, dv?: powerbi.DataView, additionalProps?: any): T {
     "use strict";
     const settingsMetadata = getSettingsMetadata(ctor);
     if (settingsMetadata) {
@@ -22,6 +23,9 @@ export function parseSettingsFromPBI<T>(ctor: ISettingsClass<T>, dv: powerbi.Dat
             const adapted = convertValueFromPBI(setting, dv);
             newSettings[setting.propertyName] = adapted.adaptedValue;
         });
+        if (additionalProps) {
+            merge(newSettings, additionalProps);
+        }
         return newSettings;
     }
 }
@@ -40,12 +44,25 @@ export function buildPersistObjects<T>(
         const settingsMetadata = getSettingsMetadata(settingsObj);
         if (settingsMetadata) {
             const builder = createPersistObjectBuilder();
-            Object.keys(settingsObj).forEach(key => {
+            Object.keys(settingsMetadata).forEach(key => {
                 const setting = settingsMetadata[key];
                 const adapted = convertValueToPBI(settingsObj, setting, dataView, includeHidden);
                 if (adapted) {
                     const { objName, propName } = getPBIObjectNameAndPropertyName(setting);
-                    builder.persist(objName, propName, adapted.adaptedValue);
+                    let value = adapted.adaptedValue;
+                    value = value && value.forEach ? value : [value];
+                    value.forEach((n: any) => {
+                        const isVisualInstance = !!(n && n.selector);
+                        const instance = n as powerbi.VisualObjectInstance;
+                        builder.persist(
+                            objName,
+                            propName,
+                            isVisualInstance ? instance.properties : n,
+                            undefined,
+                            instance.selector,
+                            instance.displayName,
+                            isVisualInstance);
+                    });
                 }
             });
             return builder.build();
@@ -72,14 +89,31 @@ export function buildEnumerationObjects<T>(
         settingsObj = fromJSON(ctor, settingsObj); // Just in case they pass in a JSON version
         const settingsMetadata = getSettingsMetadata(settingsObj);
         if (settingsMetadata) {
-            Object.keys(settingsObj).forEach(key => {
+            Object.keys(settingsMetadata).forEach(key => {
                 const setting = settingsMetadata[key];
                 const { objName, propName } = getPBIObjectNameAndPropertyName(setting);
                 const isSameCategory = objName === requestedObjectName;
                 if (isSameCategory) {
                     const adapted = convertValueToPBI(settingsObj, setting, dataView, includeHidden);
                     if (adapted) {
-                        instances[0].properties[propName] = adapted.adaptedValue;
+                        let value = adapted.adaptedValue;
+                        value = value && value.forEach ? value : [value];
+                        value.forEach((n: any) => {
+                            const isVisualInstance = !!(n && n.selector);
+                            let instance = n as powerbi.VisualObjectInstance;
+                            if (isVisualInstance) {
+                                instance = merge(instance, {
+                                    objectName: objName,
+                                });
+                                if (typeof instance.displayName === "undefined" || instance.displayName === null) { // tslint:disable-line
+                                    instance.displayName = "(Blank)";
+                                }
+                                instance.displayName = instance.displayName + ""; // Some times there are numbers
+                                instances.push(instance);
+                            } else {
+                                instances[0].properties[propName] = adapted.adaptedValue;
+                            }
+                        });
                     }
                 }
             });
@@ -87,7 +121,8 @@ export function buildEnumerationObjects<T>(
     }
 
     // If there are no settings, then return no instances
-    return Object.keys(instances[0].properties).length === 0 ? [] : instances;
+    instances = instances.filter(n => Object.keys(n.properties).length > 0);
+    return instances;
 }
 
 /**
@@ -101,9 +136,9 @@ export function buildCapabilitiesObjects<T>(settingsCtor: any): powerbi.data.Dat
         if (settingsMetadata) {
             objects = {};
             Object.keys(settingsMetadata).map(key => {
-                const { descriptor, propertyName } = settingsMetadata[key];
+                const { descriptor } = settingsMetadata[key];
                 const { objName, propName } = getPBIObjectNameAndPropertyName(settingsMetadata[key]);
-                let { category, name, displayName, defaultValue, config, description, persist } = descriptor;
+                let { category, displayName, defaultValue, config, description, persist } = descriptor;
                 if (persist !== false) {
                     const catObj = objects[objName] = objects[objName] || {
                         displayName: category || "General",
@@ -143,7 +178,7 @@ export function buildCapabilitiesObjects<T>(settingsCtor: any): powerbi.data.Dat
 export function fromJSON<T>(ctor: ISettingsClass<T>, json: any) {
     "use strict";
     const instance = (new ctor());
-    merge(instance, json);
+    assignIn(instance, json);
     return instance;
 }
 
@@ -184,12 +219,12 @@ export function getSetting(obj: any, key: string): ISettingDescriptor {
 /**
  * Gets the appropriate object name and property name for powerbi from the given descriptor
  */
-function getPBIObjectNameAndPropertyName(setting: ISetting) {
+export function getPBIObjectNameAndPropertyName(setting: ISetting) {
     "use strict";
     const { propertyName, descriptor: { name, category } } = setting;
     return {
         objName: camelize(category || "General"),
-        propName: camelize(name ? name.toLowerCase() : propertyName),
+        propName: (name || propertyName).replace(/\s/g, "_"),
     };
 }
 
@@ -199,16 +234,15 @@ function getPBIObjectNameAndPropertyName(setting: ISetting) {
 function convertValueToPBI(settingsObj: any, setting: ISetting, dataView: powerbi.DataView, includeHidden: boolean = false) {
     "use strict";
     const { descriptor, propertyName: fieldName } = setting;
-    const { hidden, persist, compose } = descriptor;
-    // Ignore ones that are "hidden" and ones that shouldn't be "persisted"
-    const isHidden = typeof hidden === "function" ? hidden(settingsObj, dataView) : !!hidden;
-    if ((includeHidden || !isHidden) && persist !== false) {
-        let value = settingsObj[fieldName];
+    const { persist, compose } = descriptor;
+    const enumerate = shouldEnumerate(settingsObj, descriptor, dataView);
+    if ((includeHidden || enumerate) && persist !== false) {
+        let value: IComposeResult = settingsObj[fieldName];
         if (compose) {
-            value = compose(value, descriptor, dataView);
+            value = compose(value, descriptor, dataView, setting);
         }
         return {
-            adaptedValue: value,
+            adaptedValue: value as IComposeResult|any,
         };
     }
 }
@@ -219,10 +253,10 @@ function convertValueToPBI(settingsObj: any, setting: ISetting, dataView: powerb
 function convertValueFromPBI(setting: ISetting, dv: powerbi.DataView) {
     "use strict";
     const objects: powerbi.DataViewObjects = ldget(dv, `metadata.objects`);
-    const { descriptor, descriptor: { defaultValue, parse }, propertyName } = setting;
+    const { descriptor, descriptor: { defaultValue, parse } } = setting;
     const { objName, propName } = getPBIObjectNameAndPropertyName(setting);
     let value = ldget(objects, `${objName}.${propName}`);
-    value = parse ? parse(value, descriptor, dv) : value;
+    value = parse ? parse(value, descriptor, dv, setting) : value;
     if (typeof value === "undefined") {
         value = defaultValue;
     }
@@ -239,4 +273,16 @@ function camelize(str: string) {
     return str.replace(/(?:^\w|[A-Z]|\b\w)/g, function(letter, index) {
         return index === 0 ? letter.toLowerCase() : letter.toUpperCase();
     }).replace(/\s+/g, "");
+}
+
+/**
+ * Determines if the given descriptor should be enumerated
+ */
+function shouldEnumerate(settingsObj: any, descriptor: ISettingDescriptor, dataView: powerbi.DataView) {
+    "use strict";
+    const { hidden, enumerable } = descriptor;
+    if (typeof enumerable !== "undefined") {
+        return !!(typeof enumerable === "function" ? enumerable(settingsObj, dataView) : enumerable);
+    }
+    return !(typeof hidden === "function" ? hidden(settingsObj, dataView) : hidden);
 }

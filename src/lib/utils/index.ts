@@ -25,3 +25,5 @@ export { default as buildContainsFilter } from "./buildContainsFilter";
 export { default as parseSelectionIds } from "./parseSelectionIds";
 export { default as createPersistObjectBuilder } from "./persistObjectBuilder";
 export { default as getSelectionIdsFromSelectors } from "./getSelectionIdsFromSelectors";
+export { default as get } from "./typesafeGet";
+export { default as calculateSegments } from "./calculateSegments";

@@ -4,7 +4,7 @@ import "powerbi-visuals/lib/powerbi-visuals";
  * Represents a setting
  */
 export interface ISetting {
-    /** 
+    /**
      * The property name within the class that this setting is for
      */
     propertyName: string;
@@ -44,11 +44,19 @@ export interface ISettingDescriptor {
     /**
      * If hidden, the setting will not show up in powerbi's formatting pane
      * @default false
+     * @deprecated
      */
     hidden?: boolean | IHiddenFn;
 
     /**
+     * If enumerable is false, then it will not show up in the formatting pane
+     * @default true
+     */
+    enumerable?: boolean | IHiddenFn;
+
+    /**
      * Whether or not this setting should be persisted to powerbi
+     * @default true
      */
     persist?: boolean;
 
@@ -65,30 +73,51 @@ export interface ISettingDescriptor {
     /**
      * A helper to parse the powerbi value into a setting value
      */
-    parse?: (
-        /**
-         * The PowerBI version of the value
-         */
-        pbiValue: any,
-
-        /**
-         * The descriptor that is requesting the value
-         */
-        descriptor?: ISettingDescriptor,
-
-        /**
-         * The options used for parsing
-         */
-        dataView?: powerbi.DataView) => any; // Controls how the value is parsed from pbi
+    parse?: ISettingsParser; // Controls how the value is parsed from pbi
 
     /**
      * A helper to convert the setting value into a powerbi value
      */
-    compose?: (
-        value: any,
-        descriptor?: ISettingDescriptor,
-        dataView?: powerbi.DataView) => any;
+    compose?: ISettingsComposer<any>;
 }
+
+/**
+ * Represents a settings parser
+ */
+export type ISettingsParser = (
+    /**
+     * The PowerBI version of the value
+     */
+    pbiValue: any,
+
+    /**
+     * The descriptor that is requesting the value
+     */
+    descriptor?: ISettingDescriptor,
+
+    /**
+     * The options used for parsing
+     */
+    dataView?: powerbi.DataView,
+
+    /**
+     * The setting for this parser
+     */
+    setting?: ISetting) => any;
+
+/**
+ * Represents a settings composer
+ */
+export type ISettingsComposer<T> = (
+        value: T,
+        descriptor?: ISettingDescriptor,
+        dataView?: powerbi.DataView,
+        setting?: ISetting) => IComposeResult;
+
+/**
+ * Represents a compose call result
+ */
+export type IComposeResult = powerbi.VisualObjectInstance|powerbi.VisualObjectInstance[]|any;
 
 /**
  * Represents a hidden function
@@ -103,3 +132,11 @@ export interface IHiddenFn {
 export interface ISettingsClass<T> {
     new (): T;
 }
+
+export type IDefaultValue<T> = T|(() => T);
+
+export type IDefaultInstanceValue<T> = ((idx: number, dataView?: powerbi.DataView, identity?: powerbi.DataViewScopeIdentity) => T);
+
+export type IDefaultInstanceColor = string|IDefaultInstanceValue<string>;
+
+export type IDefaultColor = string|IDefaultValue<string>;

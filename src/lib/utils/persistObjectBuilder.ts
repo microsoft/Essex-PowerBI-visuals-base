@@ -33,19 +33,31 @@ export default function createPersistObjectBuilder() {
         remove: {},
     };
     const me = {
-        persist: function addToPersist(objectName: string, property: string, value: any, operation?: string, selector?: string) {
+        persist: function addToPersist(
+            objectName: string,
+            property: string,
+            value: any,
+            operation?: string,
+            selector?: any,
+            displayName?: string,
+            asOwnInstance?: boolean) {
             "use strict";
             operation = operation || (typeof value === "undefined" ? "remove" : "merge");
             let obj = maps[operation][objectName];
-            if (!obj) {
+            if (asOwnInstance || !obj) {
                 obj = {
                     objectName: objectName,
                     selector: selector,
                     properties: {},
                 };
-                maps[operation][objectName] = obj;
+                if (!asOwnInstance) {
+                    maps[operation][objectName] = obj;
+                }
                 pbiState[operation] = pbiState[operation] || [];
                 pbiState[operation].push(obj);
+                if (displayName) {
+                    obj["displayName"] = displayName;
+                }
             }
             obj.properties[property] = value;
             return me;

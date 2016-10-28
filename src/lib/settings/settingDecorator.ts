@@ -13,10 +13,14 @@ export function setting(config: ISettingDescriptor) {
     "use strict";
     return function (target: any, key: string) {
         target.constructor[METADATA_KEY] = target.constructor[METADATA_KEY] || {};
-        target.constructor[METADATA_KEY][key] = {
+        let setting = {
             propertyName: key,
             descriptor: config,
         } as ISetting;
+        if (Object.freeze) {
+            setting = Object.freeze(setting);
+        }
+        target.constructor[METADATA_KEY][key] = setting;
         Object.defineProperty(target, key, {
             writable: true,
             enumerable: true,

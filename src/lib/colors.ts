@@ -67,3 +67,4 @@ colors.full = [
 ];
 
 export default colors;
+export const fullColors = colors.full;
