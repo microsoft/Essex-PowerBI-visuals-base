@@ -1,28 +1,7 @@
 import "powerbi-visuals/lib/powerbi-visuals";
 import * as jquery from "jquery";
 import "./testSetup"; // tslint:disable-line
-
-global["powerbi"] = {
-    visuals: {
-        utility: {
-            SelectionManager: () => {
-                return {
-                    getSelectionIds: () => <any[]>[],
-                };
-            },
-        },
-        SelectionId: {
-            createNull: () => ({
-                equals: () => false,
-            }),
-        },
-    },
-    VisualDataRoleKind: {
-    },
-    data: {
-        createDisplayNameGetter: () => ({}),
-    },
-};
+import "./mockPBI";
 
 global["$"] = jquery;
 export var Utils = { // tslint:disable-line

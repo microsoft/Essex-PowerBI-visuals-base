@@ -20,7 +20,7 @@ export class HasSettings {
     }
 
     /**
-     * Builds the capability objects for this settings class
+     * Creates a new instance of this class with the data from powerbi and the additional properties.
      */
     public static createFromPBI<T extends HasSettings>(dv?: powerbi.DataView, additionalProps?: any): T {
         return parseSettingsFromPBI(this, dv, additionalProps, false) as T;
