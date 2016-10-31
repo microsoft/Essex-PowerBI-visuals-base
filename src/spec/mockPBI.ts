@@ -1,3 +1,4 @@
+import global from "./testSetup"; // tslint:disable-line
 import * as jquery from "jquery";
 global["powerbi"] = jquery.extend(true, {
     VisualUpdateType: {},

@@ -1,6 +1,6 @@
 import "powerbi-visuals/lib/powerbi-visuals";
 import * as jquery from "jquery";
-import "./testSetup"; // tslint:disable-line
+import global from "./testSetup"; // tslint:disable-line
 import "./mockPBI";
 
 global["$"] = jquery;

@@ -14,3 +14,4 @@ if (typeof window === "undefined" || typeof document === "undefined") {
 myGlobal["$"] = require("jquery");
 myGlobal["d3"] = require("d3");
 myGlobal["_"] = require("lodash");
+export default myGlobal;
