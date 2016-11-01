@@ -248,12 +248,18 @@ function convertValueToPBI(settingsObj: any, setting: ISetting, dataView: powerb
 function convertValueFromPBI(setting: ISetting, dv: powerbi.DataView) {
     "use strict";
     const objects: powerbi.DataViewObjects = ldget(dv, `metadata.objects`);
-    const { descriptor, descriptor: { defaultValue, parse } } = setting;
+    const { descriptor, descriptor: { defaultValue, parse, min, max } } = setting;
     const { objName, propName } = getPBIObjectNameAndPropertyName(setting);
     let value = ldget(objects, `${objName}.${propName}`);
     value = parse ? parse(value, descriptor, dv, setting) : value;
     if (typeof value === "undefined") {
         value = defaultValue;
+    }
+    if (typeof min !== "undefined") {
+        value = Math.max(min, value);
+    }
+    if (typeof max !== "undefined") {
+        value = Math.min(max, value);
     }
     return {
         adaptedValue: value,

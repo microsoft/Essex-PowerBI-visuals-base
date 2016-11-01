@@ -16,9 +16,24 @@ export interface ISetting {
 }
 
 /**
+ * Represents a setting descriptor that has a numerical value
+ */
+export interface INumericalSettingDescriptor {
+    /**
+     * The minimum value for this setting
+     */
+    min?: number;
+
+    /**
+     * The maximum value for this setting
+     */
+    max?: number;
+}
+
+/**
  * The setting descriptor
  */
-export interface ISettingDescriptor {
+export interface ISettingDescriptor extends INumericalSettingDescriptor {
 
     /**
      * The display name of the setting
