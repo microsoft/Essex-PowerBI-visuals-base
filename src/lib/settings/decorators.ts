@@ -6,34 +6,33 @@ import { coloredObjectInstanceComposer, colorComposer } from "./composers";
 /**
  * Defines a text setting to be used with powerBI
  */
-export function textSetting(config?: ISettingDescriptor) {
+export function textSetting<T>(config?: ISettingDescriptor<T>) {
     "use strict";
-    return typedSetting({ text: {} }, config);
+    return typedSetting<T>({ text: {} }, config);
 }
 
 /**
  * Defines a bool setting to be used with powerBI
  */
-export function boolSetting(config?: ISettingDescriptor) {
+export function boolSetting<T>(config?: ISettingDescriptor<T>) {
     "use strict";
-    return typedSetting({ bool: true }, config);
+    return typedSetting<T>({ bool: true }, config);
 }
 
 /**
  * Defines a number setting to be used with powerBI
  */
-export function numberSetting(config?: ISettingDescriptor) {
+export function numberSetting<T>(config?: ISettingDescriptor<T>) {
     "use strict";
-    return typedSetting({ numeric: true }, config);
+    return typedSetting<T>({ numeric: true }, config);
 }
 
 /**
  * Defines a setting to be used with powerBI
  */
-export function colorSetting(config?: IColorSettingDescriptor) {
+export function colorSetting<T>(config?: IColorSettingDescriptor<T>) {
     "use strict";
     config = _.merge({}, {
-        category: "Data Point",
         config: {
             type: powerbi.visuals.StandardObjectProperties.fill.type,
         },
@@ -46,10 +45,9 @@ export function colorSetting(config?: IColorSettingDescriptor) {
 /**
  * Defines a setting to be used with powerBI
  */
-export function instanceColorSetting(config?: IColorInstanceSettingDescriptor, categorical?: boolean) {
+export function instanceColorSetting<T>(config?: IColorInstanceSettingDescriptor<T>, categorical?: boolean) {
     "use strict";
     config = _.merge({}, {
-        category: "Data Point",
         config: {
             type: powerbi.visuals.StandardObjectProperties.fill.type,
         },
@@ -60,22 +58,41 @@ export function instanceColorSetting(config?: IColorInstanceSettingDescriptor, c
 }
 
 /**
+ * Defines a setting that is an enumeration
+ */
+export function enumSetting<T>(enumType: any, config?: ISettingDescriptor<T>) {
+    "use strict";
+    return typedSetting({
+        enumeration: {
+            members(validMembers?: powerbi.EnumMemberValue[]): powerbi.IEnumMember[] {
+                const objValues = Object.keys(enumType).map(k => enumType[k]);
+                const names = objValues.filter(v => typeof v === "string") as string[];
+                return names.map(n => ({
+                    value: enumType[n],
+                    displayName: n,
+                }));
+            },
+        },
+    }, config);
+}
+
+/**
  * A setting that has a type associated with it
  */
-function typedSetting(type: any, config?: ISettingDescriptor) {
+function typedSetting<T>(type: any, config?: ISettingDescriptor<T>) {
     "use strict";
     config = _.merge({}, {
         config: {
             type: type,
         },
     }, config);
-    return setting(config);
+    return setting<T>(config);
 }
 
-export interface IColorSettingDescriptor extends ISettingDescriptor {
+export interface IColorSettingDescriptor<T> extends ISettingDescriptor<T> {
     defaultValue?: IDefaultColor;
 }
 
-export interface IColorInstanceSettingDescriptor extends ISettingDescriptor {
+export interface IColorInstanceSettingDescriptor<T> extends ISettingDescriptor<T> {
     defaultValue?: IDefaultInstanceColor;
 }

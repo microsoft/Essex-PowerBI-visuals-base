@@ -22,6 +22,8 @@
  * SOFTWARE.
  */
 
+import { IPersistObjectBuilder } from "./interfaces";
+
 /**
  * Creates a persistence object builder
  */
@@ -32,7 +34,7 @@ export default function createPersistObjectBuilder() {
         merge: {},
         remove: {},
     };
-    const me = {
+    const me: IPersistObjectBuilder = {
         persist: function addToPersist(
             objectName: string,
             property: string,
@@ -62,7 +64,27 @@ export default function createPersistObjectBuilder() {
             obj.properties[property] = value;
             return me;
         },
-        build: () => pbiState,
+        mergePersistObjects: (objects: powerbi.VisualObjectInstancesToPersist) => {
+            if (objects) {
+                const operations = ["merge", "remove"];
+                operations.forEach(operation => {
+                    (objects[operation] || []).forEach((po: powerbi.VisualObjectInstance) => {
+                        const props = Object.keys(po.properties);
+                        props.forEach(prop => {
+                            me.persist(
+                                po.objectName,
+                                prop,
+                                po[prop],
+                                operation,
+                                po.selector,
+                                po.displayName,
+                                props.length <= 1);
+                        });
+                    });
+                });
+            }
+        },
+        build: () => pbiState as powerbi.VisualObjectInstancesToPersist,
     };
     return me;
 }

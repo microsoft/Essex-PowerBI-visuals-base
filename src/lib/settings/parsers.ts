@@ -1,4 +1,4 @@
-import { ISettingsParser, IDefaultInstanceColor, IDefaultValue, IDefaultColor } from "./interfaces";
+import { ISettingsParser, IDefaultInstanceColor, IDefaultValue, IDefaultColor, ISettingDescriptor, ISetting } from "./interfaces"; // tslint:disable-line
 import get from "../utils/typesafeGet";
 import { getPBIObjectNameAndPropertyName } from "./helpers";
 const ldget = require("lodash/get"); // tslint:disable-line
@@ -6,9 +6,9 @@ const ldget = require("lodash/get"); // tslint:disable-line
 /**
  * A parser which parses colors for each instance in a categorical dataset
  */
-export function colorCategoricalInstanceObjectParser(defaultColor: IDefaultInstanceColor = "#ccc") {
+export function colorCategoricalInstanceObjectParser<T>(defaultColor: IDefaultInstanceColor = "#ccc") {
     "use strict";
-    return coloredInstanceObjectParser(defaultColor, (dv: powerbi.DataView) => {
+    return coloredInstanceObjectParser<T>(defaultColor, (dv: powerbi.DataView) => {
         const values = get(dv, (v) => v.categorical.values, []);
         return (values && values.grouped && values.grouped()) || [];
     });
@@ -17,7 +17,7 @@ export function colorCategoricalInstanceObjectParser(defaultColor: IDefaultInsta
 /**
  * A basic color object parser which parses colors per some instance, using the valuesGetter
  */
-export function coloredInstanceObjectParser(
+export function coloredInstanceObjectParser<T>(
     defaultColor: IDefaultInstanceColor = "#ccc",
     valuesGetter: (dv: powerbi.DataView) => {
         objects?: any,
@@ -41,13 +41,13 @@ export function coloredInstanceObjectParser(
                 };
             });
         }
-    }) as ISettingsParser;
+    }) as ISettingsParser<T, { name: string; color: string; identity: any }[]>;
 }
 
 /**
  * Provides a basic parser for PBI settings
  */
-export function basicParser(path: string, defaultValue?: IDefaultValue<any>) {
+export function basicParser<T, J>(path: string, defaultValue?: IDefaultValue<any>) {
     "use strict";
     return ((val) => {
         let result = ldget(val, path);
@@ -55,14 +55,14 @@ export function basicParser(path: string, defaultValue?: IDefaultValue<any>) {
             result = typeof defaultValue === "function" ? defaultValue() : defaultValue;
         }
         return result;
-    }) as ISettingsParser;
+    }) as ISettingsParser<T, J>;
 }
 
 /**
  * Provides a basic parser for PBI settings
  */
-export function colorParser(defaultColor?: IDefaultColor) {
+export function colorParser<T>(defaultColor?: IDefaultColor) {
     "use strict";
-    return basicParser("solid.color", defaultColor) as ISettingsParser;
+    return basicParser<T, string>("solid.color", defaultColor);
 }
 
