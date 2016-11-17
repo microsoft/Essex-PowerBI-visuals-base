@@ -1,12 +1,12 @@
 import "powerbi-visuals/lib/powerbi-visuals";
 import UpdateType from "./UpdateType";
-import calcUpdateType from "./calcUpdateType";
+import { default as calcUpdateType, ICalcUpdateTypeOptions } from "./calcUpdateType";
 import VisualUpdateOptions = powerbi.VisualUpdateOptions;
 
 /**
  * Decorator indicating that a given visual is stateful
  */
-export function receiveUpdateType(defaultUnknownToData: boolean = false) {
+export function receiveUpdateType(addlOptions: ICalcUpdateTypeOptions|boolean = false) {
     "use strict";
     return function decorateReceiveUpdateType(target: UpdateTypeReceiverClass<any>): any {
         "use strict";
@@ -16,7 +16,7 @@ export function receiveUpdateType(defaultUnknownToData: boolean = false) {
                 if (super.update) {
                     super.update(options);
                 }
-                let updateType = calcUpdateType(prevOptions, options, defaultUnknownToData);
+                let updateType = calcUpdateType(prevOptions, options, addlOptions);
                 this.updateWithType(options, updateType);
                 prevOptions = options;
             }

@@ -1,5 +1,6 @@
 import createPersistObjectBuilder from "../utils/persistObjectBuilder";
 import { ISetting, ISettingDescriptor, ISettingsClass, IComposeResult } from "./interfaces";
+import { IPersistObjectBuilder } from "../utils/interfaces";
 
 /* tslint:disable */
 const ldget = require("lodash/get");
@@ -88,7 +89,7 @@ function buildPersistObject(
     settingsObj: any,
     dataView: powerbi.DataView,
     includeHidden = true,
-    builder: any) {
+    builder: IPersistObjectBuilder) {
     "use strict";
     const adapted = convertValueToPBI(settingsObj, setting, dataView, includeHidden);
     if (adapted) {
@@ -101,10 +102,10 @@ function buildPersistObject(
             builder.persist(
                 objName,
                 propName,
-                isVisualInstance ? instance.properties : n,
+                (isVisualInstance && instance) ? instance.properties : n,
                 undefined,
-                instance.selector,
-                instance.displayName,
+                instance && instance.selector,
+                instance && instance.displayName,
                 isVisualInstance);
         });
     }
@@ -214,15 +215,18 @@ export function buildCapabilitiesObjects<T>(settingsClass: ISettingsClass<T>): p
                     }
                 } else {
                     const catObj = buildCapabilitiesObject(setting);
-                    const { objectName } = catObj;
-                    const finalObj = objects[objectName] || catObj;
+                    // TODO: Test.  This can fail if setting.persist is false
+                    if (catObj) {
+                        const { objectName } = catObj;
+                        const finalObj = objects[objectName] || catObj;
 
-                    // This ensures all properties are merged into the final capabilities object
-                    // otherwise if we did assignIn at the "object" level, then the last
-                    // settings objects will prevail.  We also cannot use merge, cause it loses
-                    // functions
-                    assignIn(finalObj.properties, catObj.properties);
-                    objects[objectName] = finalObj;
+                        // This ensures all properties are merged into the final capabilities object
+                        // otherwise if we did assignIn at the "object" level, then the last
+                        // settings objects will prevail.  We also cannot use merge, cause it loses
+                        // functions
+                        assignIn(finalObj.properties, catObj.properties);
+                        objects[objectName] = finalObj;
+                    }
                 }
             });
         }

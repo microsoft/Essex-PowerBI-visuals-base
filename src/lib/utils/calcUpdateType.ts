@@ -1,23 +1,40 @@
 import "powerbi-visuals/lib/powerbi-visuals";
 import VisualUpdateOptions = powerbi.VisualUpdateOptions;
 import UpdateType from "./UpdateType";
+const assignIn = require("lodash/assignIn"); // tslint:disable-line
+
+export const DEFAULT_CALCULATE_SETTINGS: ICalcUpdateTypeOptions = {
+    checkHighlights: false,
+    defaultUnkownToData: false,
+    ignoreCategoryOrder: true,
+};
+
+Object.freeze(DEFAULT_CALCULATE_SETTINGS);
+
 
 /**
  * Calculates the updates that have occurred between the two updates
  */
-export default function calcUpdateType(oldOpts: VisualUpdateOptions, newOpts: VisualUpdateOptions, defaultUnkownToData = false) {
+export default function calcUpdateType(
+    oldOpts: VisualUpdateOptions,
+    newOpts: VisualUpdateOptions,
+    addlOptions?: ICalcUpdateTypeOptions|boolean) {
     "use strict";
     let updateType = UpdateType.Unknown;
+    const options = assignIn({},
+        typeof addlOptions === "boolean" ?
+            { defaultUnkownToData: addlOptions } : (addlOptions || {} ),
+        DEFAULT_CALCULATE_SETTINGS);
 
-    if (hasResized(oldOpts, newOpts)) {
+    if (hasResized(oldOpts, newOpts, options)) {
         updateType ^= UpdateType.Resize;
     }
 
-    if (hasDataChanged2(oldOpts, newOpts)) {
+    if (hasDataChanged2(oldOpts, newOpts, options)) {
         updateType ^= UpdateType.Data;
     }
 
-    if (hasSettingsChanged(oldOpts, newOpts)) {
+    if (hasSettingsChanged(oldOpts, newOpts, options)) {
         updateType ^= UpdateType.Settings;
     }
 
@@ -25,14 +42,14 @@ export default function calcUpdateType(oldOpts: VisualUpdateOptions, newOpts: Vi
         updateType ^= UpdateType.Initial;
     }
 
-    if (defaultUnkownToData && updateType === UpdateType.Unknown) {
+    if (options.defaultUnkownToData && updateType === UpdateType.Unknown) {
         updateType = UpdateType.Data;
     }
 
     return updateType;
 }
 
-function hasDataChanged2(oldOptions: VisualUpdateOptions, newOptions: VisualUpdateOptions) {
+function hasDataChanged2(oldOptions: VisualUpdateOptions, newOptions: VisualUpdateOptions, options: ICalcUpdateTypeOptions) {
     "use strict";
     const oldDvs = (oldOptions && oldOptions.dataViews) || [];
     const dvs = newOptions.dataViews || [];
@@ -41,7 +58,7 @@ function hasDataChanged2(oldOptions: VisualUpdateOptions, newOptions: VisualUpda
         return true;
     }
     for (let i = 0; i < oldDvs.length; i++) {
-        if (hasDataViewChanged(oldDvs[i], dvs[i])) {
+        if (hasDataViewChanged(oldDvs[i], dvs[i], options)) {
             dvs.forEach(dv => markDataViewState(dv));
             return true;
         }
@@ -51,7 +68,7 @@ function hasDataChanged2(oldOptions: VisualUpdateOptions, newOptions: VisualUpda
 }
 
 
-function hasSettingsChanged(oldOptions: VisualUpdateOptions, newOptions: VisualUpdateOptions) {
+function hasSettingsChanged(oldOptions: VisualUpdateOptions, newOptions: VisualUpdateOptions, options: ICalcUpdateTypeOptions) {
     "use strict";
     const oldDvs = (oldOptions && oldOptions.dataViews) || [];
     const dvs = newOptions.dataViews || [];
@@ -70,7 +87,7 @@ function hasSettingsChanged(oldOptions: VisualUpdateOptions, newOptions: VisualU
     }
 }
 
-function hasResized(oldOptions: VisualUpdateOptions, newOptions: VisualUpdateOptions) {
+function hasResized(oldOptions: VisualUpdateOptions, newOptions: VisualUpdateOptions, options: ICalcUpdateTypeOptions) {
     "use strict";
     return !oldOptions || newOptions.resizeMode;
 }
@@ -133,18 +150,24 @@ function hasCategoryChanged(dc1: powerbi.DataViewCategoryColumn, dc2: powerbi.Da
     return changed;
 }
 
-function hasDataViewChanged(dv1: powerbi.DataView, dv2: powerbi.DataView) {
+function hasDataViewChanged(dv1: powerbi.DataView, dv2: powerbi.DataView, options: ICalcUpdateTypeOptions) {
     "use strict";
     let cats1 = (dv1.categorical && dv1.categorical.categories) || [];
     let cats2 = (dv2.categorical && dv2.categorical.categories) || [];
+    let vals1 = (dv1.categorical && dv1.categorical.values) || <powerbi.DataViewValueColumns>[];
+    let vals2 = (dv2.categorical && dv2.categorical.values) || <powerbi.DataViewValueColumns>[];
     let cols1 = (dv1.metadata && dv1.metadata.columns) || [];
     let cols2 = (dv2.metadata && dv2.metadata.columns) || [];
     if (cats1.length !== cats2.length ||
-        cols1.length !== cols2.length) {
+        cols1.length !== cols2.length ||
+        vals1.length !== vals2.length) {
         return true;
     }
-    cols1 = cols1.sort((a, b) => a.queryName.localeCompare(b.queryName));
-    cols2 = cols2.sort((a, b) => a.queryName.localeCompare(b.queryName));
+
+    if (options.ignoreCategoryOrder) {
+        cols1 = cols1.sort((a, b) => a.queryName.localeCompare(b.queryName));
+        cols2 = cols2.sort((a, b) => a.queryName.localeCompare(b.queryName));
+    }
 
     for (let i = 0; i < cols1.length; i++) {
         // The underlying column has changed, or if the roles have changed
@@ -158,5 +181,29 @@ function hasDataViewChanged(dv1: powerbi.DataView, dv2: powerbi.DataView) {
             return true;
         }
     }
+
+    if (options.checkHighlights) {
+        for (let i = 0; i < vals1.length; i++) {
+            if (hasValuesChanged(vals1[i], vals2[i])) {
+                return true;
+            }
+        }
+    }
     return false;
+}
+
+function hasValuesChanged(val1: powerbi.DataViewValueColumn, val2: powerbi.DataViewValueColumn) {
+    "use strict";
+    if (val1 && val2) {
+        const h1 = val1.highlights || [];
+        const h2 = val2.highlights || [];
+        return h1.length !== h2.length;
+    }
+    return false;
+}
+
+export interface ICalcUpdateTypeOptions {
+    checkHighlights?: boolean;
+    ignoreCategoryOrder?: boolean;
+    defaultUnkownToData?: boolean;
 }

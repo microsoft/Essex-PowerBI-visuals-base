@@ -27,3 +27,14 @@ export interface IPersistObjectBuilder {
      */
     build(): powerbi.VisualObjectInstancesToPersist;
 }
+
+export interface PBIServices  {
+    SemanticQuerySerializer: {
+        serializeExpr(expr: powerbi.data.SQExpr): ISerializedExpr;
+        deserializeExpr(expr: ISerializedExpr): powerbi.data.SQExpr;
+    };
+}
+
+export interface ISerializedExpr {
+    serializedExpr: any;
+};
