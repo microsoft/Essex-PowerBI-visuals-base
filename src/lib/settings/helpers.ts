@@ -13,36 +13,44 @@ export const METADATA_KEY = "__settings__";
 
 /**
  * Parses settings from powerbi dataview objects
+ * @param settingsClass The class type of the class with the settings
+ * @param dv The dataview to construct the settings from
+ * @param props Any additional properties to merge into the settings object
+ * @param propsHavePrecedence If true, the additional properties passed in should override any that are retrieved from PBI
  */
 export function parseSettingsFromPBI<T>(
     settingClass: ISettingsClass<T>,
     dv?: powerbi.DataView,
-    additionalProps?: any,
-    addPropsAfter = true): T {
+    props = {},
+    propsHavePrecedence = true): T {
     "use strict";
     const settingsMetadata = getSettingsMetadata(settingClass);
     const newSettings = new settingClass();
-    const mixin = () => additionalProps ? assignIn(newSettings, additionalProps) : 0;
-    if (!addPropsAfter) {
-        mixin();
-    }
+
+    // Merge the additional props in the beginning, cause the PBI parsed settings will override these
+    // if necessary.
+    assignIn(newSettings, props);
+
     if (settingsMetadata) {
         Object.keys(settingsMetadata).forEach(n => {
             const setting = settingsMetadata[n];
+            const propertyName = setting.propertyName;
+            const addlProp = props[propertyName];
             let value: any;
             if (setting.isChildSettings) {
-                value = parseSettingsFromPBI(setting.childClassType as any, dv);
+                value = parseSettingsFromPBI(setting.childClassType as any, dv, addlProp, propsHavePrecedence);
             } else {
-                const adapted = convertValueFromPBI(setting, dv);
-                value = adapted.adaptedValue;
+                if (propsHavePrecedence && (addlProp || props.hasOwnProperty(propertyName))) {
+                    value = addlProp;
+                } else {
+                    const adapted = convertValueFromPBI(setting, dv);
+                    value = adapted.adaptedValue;
+                }
             }
-            newSettings[setting.propertyName] = value;
+            newSettings[propertyName] = value;
         });
     }
 
-    if (addPropsAfter) {
-        mixin();
-    }
     return newSettings;
 }
 
@@ -281,7 +289,11 @@ function buildCapabilitiesObject(setting: ISetting) {
  */
 export function toJSON<T>(settingsClass: ISettingsClass<T>, instance: any) {
     "use strict";
-    return JSON.parse(stringify(instance));
+
+    // Preserve keys even though they are undefined.
+    const newObj = JSON.parse(stringify(instance, (k: any, v: any) => v === undefined ? null : v)); // tslint:disable-line
+    replaceNullWithUndefined(newObj);
+    return newObj;
 }
 
 /**
@@ -351,9 +363,10 @@ export function convertValueFromPBI(setting: ISetting, dv: powerbi.DataView) {
     const { descriptor, descriptor: { defaultValue, parse, min, max } } = setting;
     const { objName, propName } = getPBIObjectNameAndPropertyName(setting);
     let value = ldget(objects, `${objName}.${propName}`);
+    const hasDefaultValue = typeof defaultValue !== "undefined" || descriptor.hasOwnProperty("defaultValue");
     value = parse ? parse(value, descriptor, dv, setting) : value;
-    if (typeof value === "undefined" || value === null) { // tslint:disable-line
-        value = typeof defaultValue !== "undefined" ? defaultValue : null; // tslint:disable-line
+    if (hasDefaultValue && (value === null || typeof value === "undefined")) { // tslint:disable-line
+        value = defaultValue; // tslint:disable-line
     }
     if (typeof min !== "undefined") {
         value = Math.max(min, value);
@@ -362,7 +375,7 @@ export function convertValueFromPBI(setting: ISetting, dv: powerbi.DataView) {
         value = Math.min(max, value);
     }
     return {
-        adaptedValue: value,
+        adaptedValue: value/*typeof value === "undefined" ? null : value*/, //tslint:disable-line
     };
 }
 
@@ -436,4 +449,21 @@ export function createObjectSelectorForColumn(column: powerbi.DataViewMetadataCo
         metadata: column.queryName,
         id: id,
     };
+}
+
+/**
+ * Replaces all "null" values with undefined
+ */
+function replaceNullWithUndefined(obj: any) {
+    "use strict";
+    for (let property in obj) {
+        if (obj.hasOwnProperty(property)) {
+            if (typeof obj[property] === "object") {
+                replaceNullWithUndefined(obj[property]);
+            } else {
+                const value = obj[property];
+                obj[property] = value === null ? undefined : value; //tslint:disable-line
+            }
+        }
+    }
 }
