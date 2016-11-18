@@ -149,7 +149,7 @@ function defineSettingsMetadata<T>(target: ISettingsClass<T>) {
 /**
  * Defines the given setting on the given class
  */
-function defineSetting<T>(target: ISettingsClass<T>, propName: string, value: ISettingDescriptor<T>) {
+export function defineSetting<T>(target: ISettingsClass<T>, propName: string, value: ISetting) {
     "use strict";
     defineSettingsMetadata(target)[propName] = value;
 }

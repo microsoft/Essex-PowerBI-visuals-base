@@ -325,7 +325,7 @@ export function getPBIObjectNameAndPropertyName(setting: ISetting) {
 /**
  * Converts the value for the given setting on the object to a powerbi compatible value
  */
-function convertValueToPBI(settingsObj: any, setting: ISetting, dataView: powerbi.DataView, includeHidden: boolean = false) {
+export function convertValueToPBI(settingsObj: any, setting: ISetting, dataView: powerbi.DataView, includeHidden: boolean = false) {
     "use strict";
     const { descriptor, propertyName: fieldName } = setting;
     const { compose } = descriptor;
@@ -345,15 +345,15 @@ function convertValueToPBI(settingsObj: any, setting: ISetting, dataView: powerb
 /**
  * Converts the value for the given setting in PBI to a regular setting value
  */
-function convertValueFromPBI(setting: ISetting, dv: powerbi.DataView) {
+export function convertValueFromPBI(setting: ISetting, dv: powerbi.DataView) {
     "use strict";
     const objects: powerbi.DataViewObjects = ldget(dv, `metadata.objects`);
     const { descriptor, descriptor: { defaultValue, parse, min, max } } = setting;
     const { objName, propName } = getPBIObjectNameAndPropertyName(setting);
     let value = ldget(objects, `${objName}.${propName}`);
     value = parse ? parse(value, descriptor, dv, setting) : value;
-    if (typeof value === "undefined") {
-        value = defaultValue;
+    if (typeof value === "undefined" || value === null) { // tslint:disable-line
+        value = typeof defaultValue !== "undefined" ? defaultValue : null; // tslint:disable-line
     }
     if (typeof min !== "undefined") {
         value = Math.max(min, value);
