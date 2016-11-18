@@ -37,6 +37,7 @@ export default class VisualBase extends CatchingVisualBase implements IUpdateTyp
 
     protected element: JQuery;
     protected container: JQuery;
+    protected loadSandboxed: boolean;
     private parent: JQuery;
     private _sandboxed: boolean;
     private width: number;
@@ -84,7 +85,7 @@ export default class VisualBase extends CatchingVisualBase implements IUpdateTyp
         this.width = options.viewport.width;
         this.height = options.viewport.height;
         this.container = options.element;
-        this.attach(VisualBase.DEFAULT_SANDBOX_ENABLED);
+        this.attach(typeof this.loadSandboxed !== "undefined" ? this.loadSandboxed : VisualBase.DEFAULT_SANDBOX_ENABLED);
     }
 
     /**
@@ -134,7 +135,16 @@ export default class VisualBase extends CatchingVisualBase implements IUpdateTyp
         this._sandboxed = isSandboxed;
         this.element.detach();
 
-        let classedEle: JQuery;
+        /**
+         * Adds the module class name to given element
+         */
+        const addClassName = (ele: JQuery) => {
+            const classNameToAdd = this.cssModule && this.cssModule.locals && this.cssModule.locals.className;
+            if (ele && classNameToAdd) {
+                log("Attach::Adding Classes");
+                ele.addClass(classNameToAdd);
+            }
+        };
 
         if (this.parent) {
             log("Attach::Remove Parent");
@@ -156,6 +166,7 @@ export default class VisualBase extends CatchingVisualBase implements IUpdateTyp
                     setTimeout(() => {
                         this.HACK_fonts();
                         this.parent.contents().find("body").append(this.element);
+                        addClassName(this.parent.contents().find("html"));
                     }, 0);
                 };
             } else {
@@ -163,20 +174,14 @@ export default class VisualBase extends CatchingVisualBase implements IUpdateTyp
                 this.parent.contents().find("head").append($('<meta http-equiv="X-UA-Compatible" content="IE=edge">'));
                 this.parent.contents().find("body").append(this.element);
                 this.HACK_fonts();
-                classedEle = this.parent.contents().find("html");
+                addClassName(this.parent.contents().find("html"));
             }
         } else {
             log("Attach::Not Sandboxed");
             this.parent = $(`<div style="width:${this.width}px;height:${this.height}px;border:0;margin:0;padding:0"/>`);
             this.parent.append(this.element);
             this.container.append(this.parent);
-            classedEle = this.parent;
-        }
-
-        const classNameToAdd = this.cssModule && this.cssModule.locals && this.cssModule.locals.className;
-        if (classNameToAdd) {
-            log("Attach::Adding Classes");
-            classedEle.addClass(classNameToAdd);
+            addClassName(this.parent);
         }
     }
 

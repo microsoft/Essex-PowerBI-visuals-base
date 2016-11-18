@@ -1,4 +1,5 @@
 import { ISettingsComposer, IDefaultInstanceColor, IDefaultValue, IDefaultColor } from "./interfaces";
+import { HasIdentity } from "../utils/interfaces";
 import { getPBIObjectNameAndPropertyName } from "./helpers";
 const ldset = require("lodash/set"); //tslint:disable-line
 
@@ -67,15 +68,4 @@ export interface IColoredObject extends HasIdentity {
      * The color of the object
      */
     color: string;
-}
-
-/**
- * Indicates that a given object has a unique identity
- */
-export interface HasIdentity {
-
-    /**
-     * The identity of this object
-     */
-    identity?: powerbi.DataViewScopeIdentity;
 }

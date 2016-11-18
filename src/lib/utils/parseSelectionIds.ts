@@ -1,5 +1,5 @@
 import "powerbi-visuals/lib/powerbi-visuals";
-import getSelectionIdsFromSelectors from "./getSelectionIdsFromSelectors";
+import { getSelectionIdsFromSelectors } from "./getSelectionIdsFromSelectors";
 import SelectionId = powerbi.visuals.SelectionId;
 const ldget = require("lodash/get"); // tslint:disable-line
 
