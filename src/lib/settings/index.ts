@@ -5,3 +5,4 @@ export * from "./interfaces";
 export * from "./composers";
 export * from "./parsers";
 export * from "./decorators";
+export * from "./gradient";
