@@ -17,8 +17,9 @@ export interface DimensionReceiverClass<T extends IReceiveDimensions>{
 export function receiveDimensions<T extends IReceiveDimensions>(target: DimensionReceiverClass<T>): any {
     "use strict";
     class ReceivesUpdateClass extends (target as DimensionReceiverClass<IReceiveDimensions>) {
-        constructor() {
-            super();
+        constructor(...args: any[]) {
+            args = args || [];
+            super(...args);
         }
         public init(options: powerbi.VisualInitOptions) {
             super.init(options);

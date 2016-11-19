@@ -10,15 +10,15 @@ export function receiveUpdateType(addlOptions: ICalcUpdateTypeOptions|boolean = 
     "use strict";
     return function decorateReceiveUpdateType(target: UpdateTypeReceiverClass<any>): any {
         "use strict";
-        let prevOptions: VisualUpdateOptions;
         class ReceivesUpdateType extends (target as UpdateTypeReceiverClass<IUpdateTypeReceiver>) {
+            private __prevOptions: VisualUpdateOptions;
             public update(options: VisualUpdateOptions) {
                 if (super.update) {
                     super.update(options);
                 }
-                let updateType = calcUpdateType(prevOptions, options, addlOptions);
+                let updateType = calcUpdateType(this.__prevOptions, options, addlOptions);
                 this.updateWithType(options, updateType);
-                prevOptions = options;
+                this.__prevOptions = options;
             }
         }
         return ReceivesUpdateType as any;

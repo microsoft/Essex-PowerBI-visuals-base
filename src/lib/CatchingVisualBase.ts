@@ -2,12 +2,12 @@ import "powerbi-visuals/lib/powerbi-visuals";
 
 /**
  * A base implementation of IVisual that adds try/catch hooks around common lifecycle methods.
- * 
- * Optional functions in the interfaces have an empty default delegate implementation. 
- * Required methods have abstract delegates. 
+ *
+ * Optional functions in the interfaces have an empty default delegate implementation.
+ * Required methods have abstract delegates.
  */
 export abstract class CatchingVisualBase implements powerbi.IVisual {
-    constructor(protected visualName: string) { // tslint:disable-line
+    constructor(protected visualName: string, protected throwErrors = false) { // tslint:disable-line
     }
 
     /**
@@ -20,25 +20,27 @@ export abstract class CatchingVisualBase implements powerbi.IVisual {
             this.doInit(options);
         } catch (err) {
             console.log("%s::init error", this.visualName, err);
+            this.rethrow(err);
         }
     }
 
     protected abstract doInit(options: powerbi.VisualInitOptions): void;
 
-    /** 
-     * Notifies the visual that it is being destroyed, and to do any cleanup necessary 
-     * (such as unsubscribing event handlers). 
+    /**
+     * Notifies the visual that it is being destroyed, and to do any cleanup necessary
+     * (such as unsubscribing event handlers).
      */
     public destroy() {
         try {
             this.doDestroy();
         } catch (err) {
             console.log("%s::destroy error", this.visualName, err);
+            this.rethrow(err);
         }
     }
 
     protected doDestroy() {
-        // extend this method if necessary        
+        // extend this method if necessary
     }
 
     /**
@@ -49,6 +51,7 @@ export abstract class CatchingVisualBase implements powerbi.IVisual {
             this.doUpdate(options);
         } catch (err) {
             console.log("%s:update error", this.visualName, err);
+            this.rethrow(err);
         }
     }
 
@@ -67,6 +70,7 @@ export abstract class CatchingVisualBase implements powerbi.IVisual {
             this.doOnResizing(finalViewport, resizeMode);
         } catch (err) {
             console.log("%s:onResizing error", this.visualName, err);
+            this.rethrow(err);
         }
     }
 
@@ -83,6 +87,7 @@ export abstract class CatchingVisualBase implements powerbi.IVisual {
             this.handleOnDataChanged(options);
         } catch (err) {
             console.log("%s:onDataChanged error", this.visualName, err);
+            this.rethrow(err);
         }
     }
 
@@ -90,14 +95,15 @@ export abstract class CatchingVisualBase implements powerbi.IVisual {
         // extend this method if necessary
     }
 
-    /** 
-     * Notifies the IVisual to change view mode if applicable. 
+    /**
+     * Notifies the IVisual to change view mode if applicable.
      */
     public onViewModeChanged?(viewMode: powerbi.ViewMode) {
         try {
             this.handleOnViewModeChanged(viewMode);
         } catch (err) {
             console.log("%s:onDataChanged error", this.visualName, err);
+            this.rethrow(err);
         }
     }
 
@@ -105,14 +111,15 @@ export abstract class CatchingVisualBase implements powerbi.IVisual {
         // extend this method if necessary
     }
 
-    /** 
-     * Notifies the IVisual to clear any selection. 
+    /**
+     * Notifies the IVisual to clear any selection.
      */
     public onClearSelection() {
         try {
             this.handleOnClearSelection();
         } catch (err) {
             console.log("%s:onClearSelection error", this.visualName, err);
+            this.rethrow(err);
         }
     }
 
@@ -120,14 +127,15 @@ export abstract class CatchingVisualBase implements powerbi.IVisual {
         // extend this method if necessary
     }
 
-    /** 
-     * Gets a value indicating whether the IVisual can be resized to the given viewport. 
+    /**
+     * Gets a value indicating whether the IVisual can be resized to the given viewport.
      */
     public canResizeTo(viewport: powerbi.IViewport): boolean {
         try {
             return this.handleCanResizeTo(viewport);
         } catch (err) {
             console.log("%s:onResizeTo error", this.visualName, err);
+            this.rethrow(err);
         }
     }
 
@@ -136,14 +144,15 @@ export abstract class CatchingVisualBase implements powerbi.IVisual {
         return true;
     }
 
-    /** 
-     * Gets the set of objects that the visual is currently displaying. 
+    /**
+     * Gets the set of objects that the visual is currently displaying.
      */
     public enumerateObjectInstances(options: powerbi.EnumerateVisualObjectInstancesOptions): powerbi.VisualObjectInstanceEnumeration {
         try {
             return this.handleEnumerateObjectInstances(options);
         } catch (err) {
             console.log("%s:enumerateObjectInstances error", err);
+            this.rethrow(err);
         }
     }
 
@@ -153,18 +162,25 @@ export abstract class CatchingVisualBase implements powerbi.IVisual {
         return undefined;
     }
 
-    /** 
-     * Gets the set of object repetitions that the visual can display. 
+    /**
+     * Gets the set of object repetitions that the visual can display.
      */
     public enumerateObjectRepetition(): powerbi.VisualObjectRepetition[] {
         try {
             return this.handleEnumerateObjectRepetition();
         } catch (err) {
             console.log("%s:enumerateObjectRepetition error", err);
+            this.rethrow(err);
         }
     }
 
     protected handleEnumerateObjectRepetition(): powerbi.VisualObjectRepetition[] {
         return undefined;
+    }
+
+    private rethrow(err: any) {
+        if (this.throwErrors) {
+            throw err;
+        }
     }
 }
