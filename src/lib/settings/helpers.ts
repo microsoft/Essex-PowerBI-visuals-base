@@ -292,7 +292,6 @@ export function toJSON<T>(settingsClass: ISettingsClass<T>, instance: any) {
 
     // Preserve keys even though they are undefined.
     const newObj = JSON.parse(stringify(instance, (k: any, v: any) => v === undefined ? null : v)); // tslint:disable-line
-    replaceNullWithUndefined(newObj);
     return newObj;
 }
 
@@ -449,21 +448,4 @@ export function createObjectSelectorForColumn(column: powerbi.DataViewMetadataCo
         metadata: column.queryName,
         id: id,
     };
-}
-
-/**
- * Replaces all "null" values with undefined
- */
-function replaceNullWithUndefined(obj: any) {
-    "use strict";
-    for (let property in obj) {
-        if (obj.hasOwnProperty(property)) {
-            if (typeof obj[property] === "object") {
-                replaceNullWithUndefined(obj[property]);
-            } else {
-                const value = obj[property];
-                obj[property] = value === null ? undefined : value; //tslint:disable-line
-            }
-        }
-    }
 }
