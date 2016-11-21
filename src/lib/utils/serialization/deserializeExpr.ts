@@ -23,7 +23,8 @@
  */
 
 import "powerbi-visuals/lib/powerbi-visuals";
-import { PBIServices, ISerializedExpr } from "../interfaces";
+import { ISerializedExpr } from "../interfaces";
+const ldget = require("lodash/get"); //tslint:disable-line
 
 /**
  * Deserializes the given expression
@@ -33,7 +34,8 @@ export function deserializeExpr(expr: ISerializedExpr): powerbi.data.SQExpr {
     if (expr) {
         const serializedExpr = expr.serializedExpr;
         if (serializedExpr) {
-            return (powerbi.data["services"] as PBIServices).SemanticQuerySerializer.deserializeExpr(serializedExpr);
+            const deserializer = ldget(powerbi, "data.services.SemanticQuerySerializer", { deserializeExpr: JSON.parse });
+            return deserializer.deserializeExpr(serializedExpr);
         } else {
             throw new Error("Not a valid serialized expression");
         }

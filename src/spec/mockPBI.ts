@@ -53,7 +53,11 @@ global["powerbi"] = jquery.extend(true, {
                         return 1;
                     },
                     getSelector() {
-                        return 1;
+                        return {
+                            data: [{
+                                expr: {},
+                            }],
+                        };
                     },
                 };
             },

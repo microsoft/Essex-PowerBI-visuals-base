@@ -23,13 +23,15 @@
  */
 
 import { ISerializedExpr, PBIServices } from "../interfaces";
+const ldget = require("lodash/get"); // tslint:disable-line
 
 /**
  * Serializes the given expression
  */
 export function serializeExpr(expr: powerbi.data.SQExpr): ISerializedExpr {
     "use strict";
+    const serializer = ldget(powerbi, "data.services.SemanticQuerySerializer", { serializeExpr: JSON.stringify });
     return {
-        serializedExpr: (powerbi.data["services"] as PBIServices).SemanticQuerySerializer.serializeExpr(expr),
+        serializedExpr: serializer.serializeExpr(expr),
     };
 }
