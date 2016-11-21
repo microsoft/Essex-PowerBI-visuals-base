@@ -20,7 +20,7 @@
     "Base"
   ],
   "author": "",
-  "license": "ISC",
+  "license": "MIT",
   "dependencies": {
     "@types/d3": "^3.5.36",
     "@types/gulp": "^3.8.32",

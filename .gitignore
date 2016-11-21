@@ -7,3 +7,4 @@ src/**/*.map
 spec/**/*.js
 spec/**/*.d.ts
 spec/**/*.map
+.scripts/
