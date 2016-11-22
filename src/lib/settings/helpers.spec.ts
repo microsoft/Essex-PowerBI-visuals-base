@@ -41,9 +41,9 @@ describe("Helpers", () => {
                 });
                 expect(settings).to.be.ok;
             });
-            function settingsMergeTest(props: any, propsHasPrecedence: boolean) {
+            function settingsMergeTest(props: any, propsHasPrecedence: boolean, coerceNull = false) {
                 const { settings, classType } = createClassWithSettings();
-                const result = helpers.parseSettingsFromPBI(classType, undefined, props, propsHasPrecedence);
+                const result = helpers.parseSettingsFromPBI(classType, undefined, props, propsHasPrecedence, coerceNull);
 
                 // Make sure all of the values returned from parse settings are equal to the settings default values
                 Object.keys(settings).forEach(n => {
@@ -52,13 +52,14 @@ describe("Helpers", () => {
                     if (props && props.hasOwnProperty(s.propertyName)) {
                         valueToCheck = propsHasPrecedence ? props[s.propertyName] : valueToCheck;
                         delete props[s.propertyName];
+                        valueToCheck = coerceNull && valueToCheck === null ? undefined : valueToCheck; // tslint:disable-line
                     }
-                    expect(result[s.propertyName]).to.be.equal(valueToCheck);
+                    expect(result[s.propertyName]).to.be.equal(valueToCheck); //tslint:disable-line
                 });
 
                 // Make sure that any prop passed that isn't a setting is also in the result
                 Object.keys(props).forEach(p => {
-                    expect(result[p]).to.be.equal(props[p]);
+                    expect(result[p]).to.be.equal(coerceNull && props[p] === null ? undefined : props[p]);//tslint:disable-line
                 });
             }
             it("should return all the default values of a settings class if there is no dataView", () => {
@@ -74,10 +75,15 @@ describe("Helpers", () => {
                     textSetting: undefined,
                 }, true);
             });
-            it("should apply props with 'null' on top of the values parsed from PBI if props has precedence", () => {
+            it("should apply props with 'null' as undefined on top of the values parsed from PBI if props has precedence, and coerce is true", () => { // tslint:disable-line
                 settingsMergeTest({
                     textSetting: null, // tslint:disable-line
-                }, true);
+                }, true, true);
+            });
+            it("should apply props with 'null' as 'null' on top of the values parsed from PBI if props has precedence, and coerce is false", () => { // tslint:disable-line
+                settingsMergeTest({
+                    textSetting: null, // tslint:disable-line
+                }, true, false);
             });
             it("should add any additional props that aren't settings if props has precedence", () => {
                 settingsMergeTest({

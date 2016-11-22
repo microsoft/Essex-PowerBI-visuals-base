@@ -41,12 +41,14 @@ export const METADATA_KEY = "__settings__";
  * @param dv The dataview to construct the settings from
  * @param props Any additional properties to merge into the settings object
  * @param propsHavePrecedence If true, the additional properties passed in should override any that are retrieved from PBI
+ * @param coerceNullAsUndefined If true, the props that are 'null' will get converted to `undefined`
  */
 export function parseSettingsFromPBI<T>(
     settingClass: ISettingsClass<T>,
     dv?: powerbi.DataView,
     props = {},
-    propsHavePrecedence = true): T {
+    propsHavePrecedence = true,
+    coerceNullAsUndefined = true): T {
     "use strict";
     const settingsMetadata = getSettingsMetadata(settingClass);
     const newSettings = new settingClass();
@@ -65,7 +67,7 @@ export function parseSettingsFromPBI<T>(
                 value = parseSettingsFromPBI(setting.childClassType as any, dv, addlProp, propsHavePrecedence);
             } else {
                 if (propsHavePrecedence && (addlProp || props.hasOwnProperty(propertyName))) {
-                    value = addlProp;
+                    value = coerceNullAsUndefined && addlProp === null ? undefined : addlProp; // tslint:disable-line
                 } else {
                     const adapted = convertValueFromPBI(setting, dv);
                     value = adapted.adaptedValue;
