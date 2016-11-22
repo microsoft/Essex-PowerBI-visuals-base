@@ -23,7 +23,7 @@
  */
 
 import { ISettingsComposer, IDefaultInstanceColor, IDefaultValue, IDefaultColor } from "./interfaces";
-import { HasIdentity } from "../utils/interfaces";
+import { IColoredObject } from "../utils/interfaces";
 import { getPBIObjectNameAndPropertyName } from "./helpers";
 const ldset = require("lodash/set"); //tslint:disable-line
 
@@ -32,20 +32,19 @@ const ldset = require("lodash/set"); //tslint:disable-line
  */
 export function coloredObjectInstanceComposer(defaultColor: IDefaultInstanceColor = "#ccc") {
     "use strict";
-    return ((val, desc, dv, setting) => {
+    return ((val, desc, dv, setting, b) => {
         if (val) {
             const { propName } = getPBIObjectNameAndPropertyName(setting);
             return (((<any>val).forEach ? val : [val]) as IColoredObject[]).map((n, i) => {
                 const instanceColor = typeof defaultColor === "function" ? defaultColor(i, dv, n.identity) : defaultColor;
+                const finalColor = n.color || instanceColor;
                 return {
                     displayName: n.name,
                     selector: n.identity ? powerbi.visuals.ColorHelper.normalizeSelector(
                         powerbi.visuals.SelectionId.createWithId(n.identity).getSelector(), // Not sure if all of this is necessary
                     false) : undefined,
                     properties: {
-                        [propName]: {
-                            solid: { color: n.color || instanceColor },
-                        },
+                        [propName]: finalColor,
                     },
                 };
             });
@@ -77,19 +76,4 @@ export function basicObjectComposer(path?: string, defaultValue?: IDefaultValue<
 export function colorComposer(defaultColor: IDefaultColor = "#ccc") {
     "use strict";
     return basicObjectComposer(undefined, defaultColor) as ISettingsComposer<string>;
-}
-
-/**
- * Represents an object that that has both a color and an identity.
- */
-export interface IColoredObject extends HasIdentity {
-    /**
-     * The name of the colored object
-     */
-    name: string;
-
-    /**
-     * The color of the object
-     */
-    color: string;
 }

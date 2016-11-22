@@ -91,7 +91,7 @@ export function buildPersistObjects<T>(
     "use strict";
     if (settingsObj) {
         settingsObj = parseSettingsFromPBI(settingsClass, undefined, settingsObj); // Just in case they pass in a JSON version
-        const settingsMetadata = getSettingsMetadata(settingsObj);
+        const settingsMetadata = getSettingsMetadata(settingsClass);
         if (settingsMetadata) {
             const builder = createPersistObjectBuilder();
             Object.keys(settingsMetadata).forEach(key => {
@@ -131,12 +131,12 @@ function buildPersistObject(
         let value = adapted.adaptedValue;
         value = value && value.forEach ? value : [value];
         value.forEach((n: any) => {
-            const isVisualInstance = !!(n && n.selector);
+            const isVisualInstance = !!(n && n.properties);
             const instance = n as powerbi.VisualObjectInstance;
             builder.persist(
                 objName,
                 propName,
-                (isVisualInstance && instance) ? instance.properties : n,
+                n,
                 undefined,
                 instance && instance.selector,
                 instance && instance.displayName,
@@ -162,7 +162,7 @@ export function buildEnumerationObjects<T>(
     }] as powerbi.VisualObjectInstance[];
     if (settingsObj) {
         settingsObj = parseSettingsFromPBI(settingsClass, undefined, settingsObj); // Just in case they pass in a JSON version
-        const settingsMetadata = getSettingsMetadata(settingsObj);
+        const settingsMetadata = getSettingsMetadata(settingsClass);
         if (settingsMetadata) {
             Object.keys(settingsMetadata).forEach(key => {
                 const setting = settingsMetadata[key];
@@ -212,7 +212,7 @@ function buildEnumerationObject(
         let value = adapted.adaptedValue;
         value = value && value.forEach ? value : [value];
         value.forEach((n: any) => {
-            const isVisualInstance = !!(n && n.selector);
+            const isVisualInstance = !!(n && n.properties);
             let instance = n as powerbi.VisualObjectInstance;
             if (isVisualInstance) {
                 instance = merge(instance, {

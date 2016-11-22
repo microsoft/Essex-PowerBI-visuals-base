@@ -67,4 +67,17 @@ export class GradientSettings extends HasSettings {
         description: "The value to use as the end color",
     })
     public endValue?: number;
+
+    /**
+     * Determines if this color settings is equal to another
+     */
+    public equals(other: GradientSettings) {
+        if (other) {
+            return (this.startColor || undefined) === (other.startColor || undefined) &&
+                (this.endColor || undefined) === (other.endColor || undefined) &&
+                (this.endValue || undefined) === (other.endValue || undefined) &&
+                (this.startValue || undefined) === (other.startValue || undefined);
+        }
+        return false;
+    }
 }

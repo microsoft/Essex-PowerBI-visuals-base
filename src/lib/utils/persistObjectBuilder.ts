@@ -23,7 +23,8 @@
  */
 
 import { IPersistObjectBuilder } from "./interfaces";
-
+const assignIn = require("lodash/assignIn"); // tslint:disable-line
+``
 /**
  * Creates a persistence object builder
  */
@@ -61,7 +62,13 @@ export default function createPersistObjectBuilder() {
                     obj["displayName"] = displayName;
                 }
             }
-            obj.properties[property] = value;
+
+            // If it is a persist object, then just mix it into the object
+            if (value && value.hasOwnProperty("properties")) {
+                assignIn(obj, value);
+            } else {
+                obj.properties[property] = value;
+            }
             return me;
         },
         mergePersistObjects: (objects: powerbi.VisualObjectInstancesToPersist) => {
@@ -74,7 +81,7 @@ export default function createPersistObjectBuilder() {
                             me.persist(
                                 po.objectName,
                                 prop,
-                                po[prop],
+                                po.properties[prop],
                                 operation,
                                 po.selector,
                                 po.displayName,

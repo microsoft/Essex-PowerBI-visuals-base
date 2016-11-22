@@ -22,12 +22,14 @@
  * SOFTWARE.
  */
 
-export * from "./helpers";
-export * from "./settingDecorator";
-export * from "./HasSettings";
-export * from "./interfaces";
-export * from "./composers";
-export * from "./parsers";
-export * from "./decorators";
-export * from "./gradient";
-export * from "./coloredObjects";
+import { ISettingDescriptor } from "../interfaces";
+import { settings } from "../settingDecorator";
+import { ColoredObjectsSettings } from "./ColoredObjectsSettings";
+
+/**
+ * A setting for a gradient
+ */
+export function coloredObjectsSettings<T>(config?: ISettingDescriptor<T>) {
+    "use strict";
+    return settings<T>(ColoredObjectsSettings, config);
+}

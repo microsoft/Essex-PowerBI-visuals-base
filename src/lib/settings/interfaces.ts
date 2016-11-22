@@ -174,7 +174,8 @@ export type ISettingsComposer<T> = (
         descriptor?: ISettingDescriptor<T>,
         dataView?: powerbi.DataView,
         setting?: ISetting,
-        builder?: IPersistObjectBuilder) => IComposeResult;
+        builder?: IPersistObjectBuilder,
+        enumerate?: boolean) => IComposeResult;
 
 /**
  * Represents a compose call result

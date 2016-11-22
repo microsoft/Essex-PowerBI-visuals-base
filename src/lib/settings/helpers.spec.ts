@@ -24,14 +24,40 @@
 
 import * as helpers from "./helpers";
 import { ISetting } from "./interfaces";
-// import { defineSetting } from "./settingDecorator";
 import { expect } from "chai";
 import * as _ from "lodash";
 
 describe("Helpers", () => {
-    // describe("buildPersistObjects", () => {
-    //     it("should not crash if a 'setting' returns undefined");
-    // });
+    describe("buildPersistObjects", () => {
+        it("should not crash if a 'setting' returns undefined from compose", () => {
+            const { settings, classType } = createClassWithSettings();
+            helpers.buildPersistObjects(classType, new classType(), undefined);
+        });
+        it("should correctly persist settings that return a set of VisualObjectInstances", () => {
+            const { settings, classType } = createClassWithSettings();
+            const result = helpers.buildPersistObjects(classType, new classType(), undefined);
+            expect(result.merge.length).to.be.eq(3); // There are 3 settings with actual values in `createClassWithSettings`.
+
+            const misettingsObjects = result.merge.filter(n => n.objectName === "misettings");
+            expect(misettingsObjects.length).to.be.equal(2); // There are two instances in this setting
+
+            expect(misettingsObjects).to.be.deep.equal([{
+                objectName: "misettings",
+                selector: "A",
+                properties: {
+                    settingThatReturnsMultipleInstances: true,
+                    someOtherValue: "5",
+                },
+            }, {
+                objectName: "misettings",
+                selector: "B",
+                properties: {
+                    settingThatReturnsMultipleInstances: false,
+                    someOtherValue: "12",
+                },
+            }]);
+        });
+    });
 
     describe("parseSettingsFromPBI", () => {
         describe("without a dataView", () => {
@@ -329,8 +355,28 @@ function createClassWithSettings() {
         textSetting: createFakeSetting("TEST", "textSetting", ClassWithSettings),
         numberSetting: createFakeSetting(0, "numberSetting", ClassWithSettings),
         boolSetting: createFakeSetting(false, "boolSetting", ClassWithSettings),
+        settingWithComposeReturningUndefined:
+            createFakeSetting(null, "settingWithComposeReturningUndefined", ClassWithSettings, "undefinedsettings", () => { // tslint:disable-line
+                return <any>undefined;
+            }),
         settingWithNullDefaultValue: createFakeSetting(null, "settingWithNullDefaultValue", ClassWithSettings), // tslint:disable-line
         settingWithNoDefaultValue: createFakeSetting(undefined, "settingWithNoDefaultValue", ClassWithSettings),
+        settingThatReturnsMultipleInstances:
+            createFakeSetting(undefined, "settingThatReturnsMultipleInstances", ClassWithSettings, "misettings", () => {
+                return [{
+                    selector: "A",
+                    properties: {
+                        settingThatReturnsMultipleInstances: true,
+                        someOtherValue: "5",
+                    },
+                }, {
+                    selector: "B",
+                    properties: {
+                        settingThatReturnsMultipleInstances: false,
+                        someOtherValue: "12",
+                    },
+                }];
+            }),
     };
     ClassWithSettings.constructor[helpers.METADATA_KEY] = {
         settings,
@@ -344,14 +390,15 @@ function createClassWithSettings() {
 
 
 class ClassWithNoSettings { }
-function createFakeSetting(defaultValue?: any, name?: string, classType?: any) {
+function createFakeSetting(defaultValue?: any, name?: string, classType?: any, category?: any, compose?: any) {
     "use strict";
     return {
         propertyName: name || "fakeprop",
         descriptor: {
-            category: "fakecategory",
+            category: category || "fakecategory",
             name: name || "fakename",
             defaultValue: defaultValue,
+            compose: compose,
         },
         classType: classType || ClassWithNoSettings,
         isChildSettings: false,

@@ -52,3 +52,5 @@ export * from "./getSelectionIdsFromSelectors";
 export { default as get } from "./typesafeGet";
 export { default as calculateSegments } from "./calculateSegments";
 export * from "./serialization";
+export * from "./convertItemsWithSegments";
+export * from "./interfaces";

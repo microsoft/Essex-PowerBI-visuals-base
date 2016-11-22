@@ -96,3 +96,157 @@ export interface HasSerializedIdentity {
     identity: ISerializedIdentity;
 }
 
+/**
+ * Represents an object that that has both a color and an identity.
+ */
+export interface IColoredObject extends HasIdentity {
+    /**
+     * The name of the colored object
+     */
+    name: string;
+
+    /**
+     * The color of the object
+     */
+    color: string;
+}
+
+
+export interface ItemWithValueSegments {
+
+    /**
+     * The unique identifier for this item
+     */
+    id: string;
+
+    /**
+     * The name of the item
+     * TODO: Better name, legacy naming right now
+     */
+    match: any;
+
+    /**
+     * The color of the item
+     */
+    color?: string;
+
+    /**
+     * The raw value of this item (the count of values in this item)
+     */
+    value: any;
+
+    /**
+     * Returns true if this == b
+     */
+    equals: (b: ItemWithValueSegments) => boolean;
+
+    /**
+     * Called when an item is created
+     */
+    onCreate?: (ele: JQuery) => void;
+
+    /**
+     * The segments that make up this items value, the total of the widths must === 100
+     */
+    valueSegments?: IValueSegment[];
+
+    /**
+     * The percentage value that should be displayed (0 - 100)
+     * TODO: Better name, basically it is the value that should be displayed in the histogram
+     */
+    renderedValue?: number;
+}
+
+export interface IValueSegment {
+    /**
+     * The raw value of the segment
+     */
+    value: any;
+
+    /**
+     * The display value of the segment
+     */
+    displayValue: any;
+
+    /**
+     * The percentage width of this segment
+     */
+    width: number;
+
+    /**
+     * The percentage of the width which should be highlighted
+     */
+    highlightWidth?: number;
+
+    /**
+     * The color of this segment
+     */
+    color: string;
+}
+
+/**
+ * Indicates a mode of coloring an object
+ */
+export enum ColorMode {
+    /**
+     * Gradient coloring should be used
+     */
+    Gradient,
+
+    /**
+     * Instance specific coloring should be used
+     */
+    Instance,
+}
+
+/**
+ * Interface represents the color related settings
+ */
+export interface IColorSettings {
+
+    /**
+     * The mode of colorization
+     */
+    colorMode: ColorMode;
+
+    /**
+     * The gradient to use
+     */
+    gradient: IGradient;
+
+    /**
+     * The specific colors
+     */
+    instanceColors: IColoredObject[];
+
+    /**
+     * If true, the order of the bars will be reversed
+     */
+    reverseOrder?: boolean;
+}
+
+/**
+ * Contains all of the info necessary to create a gradient
+ */
+export interface IGradient {
+
+    /**
+     * The start color for the gradient
+     */
+    startColor?: string;
+
+    /**
+     * The end color of the gradient
+     */
+    endColor?: string;
+
+    /**
+     * The start value of the gradient
+     */
+    startValue?: any;
+
+    /**
+     * The end value of the gradient
+     */
+    endValue?: any;
+}

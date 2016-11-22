@@ -26,6 +26,7 @@ import * as d3 from "d3";
 import * as _ from "lodash";
 import { fullColors } from "../colors";
 import "powerbi-visuals/lib/powerbi-visuals";
+import { IGradient } from "./interfaces";
 
 /**
  * Calculates the segments that are required to represent the pbi values
@@ -52,7 +53,7 @@ export default function calculateSegments(
         const minValue = typeof startValue !== "undefined" ? startValue : d3.min(segmentInfo.map(n => n.name));
         const maxValue = typeof endValue !== "undefined" ? endValue : d3.max(segmentInfo.map(n => n.name));
         gradientScale = d3.scale.linear<string, number>()
-                .domain([minValue, maxValue])
+                .domain([isNaN(minValue) ? 0 : minValue, isNaN(maxValue) ? segmentInfo.length - 1 : maxValue])
                 .interpolate(d3.interpolateRgb as any)
                 .range([startColor as any, endColor as any]);
     }
@@ -62,7 +63,7 @@ export default function calculateSegments(
         if (segmentColors && segmentColors[i]) {
             color = segmentColors[i].color;
         } else if (gradientScale) {
-            color = gradientScale(v.name) as any;
+            color = gradientScale(isNaN(v.name) ? i : v.name) as any;
         } else {
             color = defaultColor || fullColors[i];
         }
@@ -73,11 +74,4 @@ export default function calculateSegments(
             color,
         };
     });
-}
-
-export interface IGradient {
-    startColor: string;
-    endColor: string;
-    startValue?: any;
-    endValue?: any;
 }

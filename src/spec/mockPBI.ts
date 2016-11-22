@@ -76,6 +76,7 @@ global["powerbi"] = jquery.extend(true, {
 
 global["jsCommon"] = $.extend(true, {
     PixelConverter: {
+        fromPointToPixel: function (value: any) { return value; },
         toPoint: function (value: any) { return value; },
     },
 }, global["jsCommon"] || {});
