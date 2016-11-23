@@ -22,7 +22,6 @@
  * SOFTWARE.
  */
 
-
 /**
  * Creates html from the given things to log, supports chrome log style coloring (%c)
  * See: https://developer.chrome.com/devtools/docs/console-api#consolelogobject-object

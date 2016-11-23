@@ -25,7 +25,8 @@
 import "powerbi-visuals/lib/powerbi-visuals";
 
 /**
- * Decorator indicating that a given visual is stateful
+ * Decorator that indicates that a given visual contains a set of capabilities.
+ * @param value The capabilities
  */
 export function capabilities(value: any) {
     "use strict";

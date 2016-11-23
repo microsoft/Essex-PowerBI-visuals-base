@@ -29,6 +29,9 @@ const ldget = require("lodash/get"); // tslint:disable-line
 
 /**
  * Parses the list of selection ids from PBI
+ * @param objects The objects to parse selection ids from
+ * @param selectionObjectPath The path to the selection data within the objects
+ * @param filterObjectPath The path to the filter within the objects.
  */
 export default function parseSelectionIds(
     objects: powerbi.DataViewObjects,

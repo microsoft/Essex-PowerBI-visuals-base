@@ -24,14 +24,15 @@
 
 import { colorSetting as color, numberSetting as num } from "../decorators";
 import { HasSettings } from "../HasSettings";
+import { IGradient } from "../../utils/interfaces";
 
 /**
- * Represents a set of gradient settings
+ * A set of gradient settings
  */
-export class GradientSettings extends HasSettings {
+export class GradientSettings extends HasSettings implements IGradient {
 
     /**
-     * If the gradient color scheme should be used when coloring the values in the slicer
+     * The start color for the gradient
      */
     @color({
         displayName: "Start color",
@@ -41,7 +42,7 @@ export class GradientSettings extends HasSettings {
     public startColor?: string;
 
     /**
-     * If the gradient color scheme should be used when coloring the values in the slicer
+     * The end color for the gradient
      */
     @color({
         displayName: "End color",
@@ -51,20 +52,20 @@ export class GradientSettings extends HasSettings {
     public endColor?: string;
 
     /**
-     * The value to use as the start color
+     * The start value of the gradient
      */
     @num({
         displayName: "Start Value",
-        description: "The value to use as the start color",
+        description: "The value to use as the start value",
     })
     public startValue?: number;
 
     /**
-     * The value to use as the end color
+     * The end value of the gradient
      */
     @num({
         displayName: "End Value",
-        description: "The value to use as the end color",
+        description: "The value to use as the end value",
     })
     public endValue?: number;
 

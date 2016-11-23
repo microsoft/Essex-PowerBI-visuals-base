@@ -28,6 +28,7 @@ import { deserializeExpr } from "./serialization";
 
 /**
  * Returns a list of selection ids from a list of selectors
+ * @param selectors The list of selectors to get the selection ids from
  */
 export function getSelectionIdsFromSelectors(selectors: powerbi.data.Selector[]) {
     "use strict";
@@ -39,10 +40,11 @@ export function getSelectionIdsFromSelectors(selectors: powerbi.data.Selector[])
 
 /**
  * Builds a SQExpr from a serialized version of a selected item
+ * @param selector The selector to build an expression from
  */
-function buildSQExprFromSerializedSelection(n: powerbi.data.Selector) {
+function buildSQExprFromSerializedSelection(selector: powerbi.data.Selector) {
     "use strict";
-    const firstItem = n.data[0] as any;
+    const firstItem = selector.data[0] as any;
     if (firstItem) {
         const compareExpr = (firstItem.expr || firstItem["_expr"]) as powerbi.data.SQCompareExpr;
 

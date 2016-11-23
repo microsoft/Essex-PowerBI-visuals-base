@@ -37,7 +37,11 @@ Object.freeze(DEFAULT_CALCULATE_SETTINGS);
 
 
 /**
- * Calculates the updates that have occurred between the two updates
+ * Calculates the type of update that has occurred between two visual update options, this gives greater granularity than what
+ * powerbi has.
+ * @param oldOpts The old options
+ * @param newOpts The new options
+ * @param addlOptions The additional options to use when calculating the update type.
  */
 export default function calcUpdateType(
     oldOpts: VisualUpdateOptions,

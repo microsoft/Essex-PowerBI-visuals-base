@@ -22,7 +22,6 @@
  * SOFTWARE.
  */
 
-
 /**
  * Processes a difference found in a list
  */

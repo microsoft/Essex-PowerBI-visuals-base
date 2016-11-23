@@ -22,11 +22,13 @@
  * SOFTWARE.
  */
 
-import { ISerializedExpr, PBIServices } from "../interfaces";
+import { ISerializedExpr } from "../interfaces";
 const ldget = require("lodash/get"); // tslint:disable-line
 
 /**
  * Serializes the given expression
+ * @param expr The expression to serialize
+ * @returns The serialized expression
  */
 export function serializeExpr(expr: powerbi.data.SQExpr): ISerializedExpr {
     "use strict";

@@ -32,6 +32,9 @@ import * as $ from "jquery";
 
 const log = require("debug")("essex:PbiBase"); // tslint:disable-line
 
+/**
+ * A optional base visual which contains some base functionality for visuals inheriting from it.
+ */
 @receiveUpdateType()
 export default class VisualBase extends CatchingVisualBase implements IUpdateTypeReceiver {
     // TODO: Switch this to a build config
@@ -104,7 +107,10 @@ export default class VisualBase extends CatchingVisualBase implements IUpdateTyp
         }
     }
 
-    /** This is called once when the visual is initialially created */
+    /**
+     * This is called once when the visual is initialially created
+     * @param options The init options
+     */
     protected doInit(options: powerbi.VisualInitOptions): void {
         this.width = options.viewport.width;
         this.height = options.viewport.height;
@@ -114,6 +120,8 @@ export default class VisualBase extends CatchingVisualBase implements IUpdateTyp
 
     /**
      * Notifies the IVisual of an update (data, viewmode, size change).
+     * @param options The options for the update
+     * @param updateType The update type that was performed
      */
     public updateWithType(options: powerbi.VisualUpdateOptions, updateType: UpdateType) {
         this.width = options.viewport.width;
@@ -210,7 +218,7 @@ export default class VisualBase extends CatchingVisualBase implements IUpdateTyp
     }
 
     /**
-     *
+     * Getter for whether or not this visual is sandboxed
      */
     public get sandboxed() {
         return this._sandboxed;

@@ -90,5 +90,8 @@ colors.full = [
     "#544848",
 ];
 
+/**
+ * Defines a set of colors that complement PBIs color set
+ */
 export default colors;
 export const fullColors = colors.full;

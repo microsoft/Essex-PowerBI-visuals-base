@@ -29,22 +29,26 @@ import "powerbi-visuals/lib/powerbi-visuals";
 import { IGradient } from "./interfaces";
 
 /**
- * Calculates the segments that are required to represent the pbi values
- * Colorizing operation: "#ccc" < defaultColor < gradient < segmentColors
+ * A utility method that takes a dataView, and breaks down the values into named segments with colors
+ * Colorizing prority: "#ccc" < defaultColor < gradient < segmentColors
+ * @param columns The set of columns in the dataView
+ * @param defaultColor The default color to use
+ * @param gradient The gradient to use
+ * @param segmentColors The colors for the individual instances of segments to use
  */
 export default function calculateSegments(
-    values: powerbi.DataViewValueColumns,
+    columns: powerbi.DataViewValueColumns,
     defaultColor?: string,
     gradient?: IGradient, // The gradient used to color the individual segments
     segmentColors?: { color: string; identity?: any }[]) {  /* The colors for each segment */
     "use strict";
     let segmentInfo: { name: any, identity?: any }[] = [];
-    if (values && values.length) {
-        const isSeriesData = !!(values.source && values.source.roles["Series"]);
+    if (columns && columns.length) {
+        const isSeriesData = !!(columns.source && columns.source.roles["Series"]);
         segmentInfo =
             (isSeriesData ?
-                <any>values.grouped() :
-                values.map((n, i) => ({ name: (i + 1) + "", identity: n.identity })));
+                <any>columns.grouped() :
+                columns.map((n, i) => ({ name: (i + 1) + "", identity: n.identity })));
     }
 
     let gradientScale: d3.scale.Linear<string, number>;

@@ -81,7 +81,11 @@ export function parseSettingsFromPBI<T>(
 }
 
 /**
- * Builds persist objects from a given settings object
+ * Builds a set of persistance objects to be persisted from the current set of settings.  Can be used with IVisualHost.persistProperties
+ * @param settingsClass The class type of the class with the settings
+ * @param settingsObj The instance of the class to read the current setting values from
+ * @param dataView The dataview to construct the settings from
+ * @param includeHidden If True, 'hidden' settings will be returned
  */
 export function buildPersistObjects<T>(
     settingsClass: ISettingsClass<T>,
@@ -116,7 +120,12 @@ export function buildPersistObjects<T>(
 }
 
 /**
- * Builds a single persist object
+ * Builds a single persist object for the given setting
+ * @param setting The setting to persist the value for
+ * @param settingsObj The instance of the class to read the current setting values from
+ * @param dataView The dataview to construct the settings from
+ * @param includeHidden If True, 'hidden' settings will be returned
+ * @param builder The persist object builder to add the setting value to
  */
 function buildPersistObject(
     setting: ISetting,
@@ -147,17 +156,22 @@ function buildPersistObject(
 
 /**
  * Builds the enumeration objects for the given settings object
+ * @param settingsClass The class type of the class with the settings
+ * @param settingsObj The instance of the class to read the current setting values from
+ * @param objectName The objectName being requested from enumerateObjectInstances
+ * @param dataView The dataview to construct the settings from
+ * @param includeHidden If True, 'hidden' settings will be returned
  */
 export function buildEnumerationObjects<T>(
     settingsClass: ISettingsClass<T>,
     settingsObj: T,
-    requestedObjectName: string,
+    objectName: string,
     dataView: powerbi.DataView,
     includeHidden = false): powerbi.VisualObjectInstance[] {
     "use strict";
     let instances = [{
         selector: null, // tslint:disable-line
-        objectName: requestedObjectName,
+        objectName: objectName,
         properties: {},
     }] as powerbi.VisualObjectInstance[];
     if (settingsObj) {
@@ -173,14 +187,14 @@ export function buildEnumerationObjects<T>(
                             buildEnumerationObjects(
                                 setting.childClassType as any,
                                 childSettings,
-                                requestedObjectName,
+                                objectName,
                                 dataView,
                                 includeHidden)
                             );
                     }
                 } else {
                     const { objName } = getPBIObjectNameAndPropertyName(setting);
-                    const isSameCategory = objName === requestedObjectName;
+                    const isSameCategory = objName === objectName;
                     if (isSameCategory) {
                         buildEnumerationObject(setting, settingsObj, dataView, includeHidden, instances);
                     }
@@ -195,9 +209,14 @@ export function buildEnumerationObjects<T>(
 }
 
 /**
- * Builds a single enumeration object for the give setting and adds it to the list of instances
+ * Builds a single enumeration object for the given setting and adds it to the list of instances
  * TODO: Think about removing the `instances` param, and just returning an instance and making the caller
  * deal with how to add it
+ * @param setting The setting to get the enumeration object for
+ * @param settingsObj The instance of the class to read the current setting values from
+ * @param dataView The dataview to construct the settings from
+ * @param includeHidden If True, 'hidden' settings will be returned
+ * @param instances The set of instances to add to
  */
 function buildEnumerationObject(
     setting: ISetting,
@@ -232,6 +251,7 @@ function buildEnumerationObject(
 
 /**
  * Builds the capabilities objects dynamically from a settings class
+ * @param settingsClass The settings class type to generate the capabilities object from
  */
 export function buildCapabilitiesObjects<T>(settingsClass: ISettingsClass<T>): powerbi.data.DataViewObjectDescriptors {
     "use strict";
@@ -270,12 +290,13 @@ export function buildCapabilitiesObjects<T>(settingsClass: ISettingsClass<T>): p
 
 /**
  * Builds a single capabilities object for the given setting
+ * @param setting The setting to generate the capabilities object from
  */
 function buildCapabilitiesObject(setting: ISetting) {
     "use strict";
     const { objName, propName } = getPBIObjectNameAndPropertyName(setting);
     let { category, displayName, defaultValue, config, description, persist } = setting.descriptor;
-    const defaultCategory = "General";//ldget(setting, "parentSetting.descriptor.category", "General");
+    const defaultCategory = "General";
     if (persist !== false) {
         const catObj = {
             objectName: objName,
@@ -312,6 +333,8 @@ function buildCapabilitiesObject(setting: ISetting) {
 
 /**
  * Converts the given settings object into a JSON object
+ * @param settingsClass The settings class type to generate the JSON object for
+ * @param instance The instance of settingsClass to get the values from
  */
 export function toJSON<T>(settingsClass: ISettingsClass<T>, instance: any) {
     "use strict";
@@ -323,6 +346,7 @@ export function toJSON<T>(settingsClass: ISettingsClass<T>, instance: any) {
 
 /**
  * Gets the settings metadata from the given object
+ * @param obj The object to attempt to get the settings from
  */
 function getSettingsMetadata(obj: ISettingsClass<any>|any): { [key: string]: ISetting } {
     "use strict";
@@ -338,6 +362,8 @@ function getSettingsMetadata(obj: ISettingsClass<any>|any): { [key: string]: ISe
 
 /**
  * Gets the settings metadata from the given object
+ * @param obj The object to get the setting from
+ * @param key The name of the setting
  */
 export function getSetting(obj: any, key: string): ISettingDescriptor<any> {
     "use strict";
@@ -348,7 +374,8 @@ export function getSetting(obj: any, key: string): ISettingDescriptor<any> {
 }
 
 /**
- * Gets the appropriate object name and property name for powerbi from the given descriptor
+ * Gets the appropriate object name and property name for powerbi from the given setting
+ * @param setting The setting to get the powerbi objectName and property name for.
  */
 export function getPBIObjectNameAndPropertyName(setting: ISetting) {
     "use strict";
@@ -360,7 +387,11 @@ export function getPBIObjectNameAndPropertyName(setting: ISetting) {
 }
 
 /**
- * Converts the value for the given setting on the object to a powerbi compatible value
+ * Converts the value of the given setting on the object to a powerbi compatible value
+ * @param settingsObj The instance of a settings object
+ * @param setting The setting to get the value for
+ * @param dataView The dataView to pass to the setting
+ * @param includeHidden If True, 'hidden' settings will be returned
  */
 export function convertValueToPBI(settingsObj: any, setting: ISetting, dataView: powerbi.DataView, includeHidden: boolean = false) {
     "use strict";
@@ -381,6 +412,8 @@ export function convertValueToPBI(settingsObj: any, setting: ISetting, dataView:
 
 /**
  * Converts the value for the given setting in PBI to a regular setting value
+ * @param setting The setting to get the value for
+ * @param dv The dataView to pass to the setting
  */
 export function convertValueFromPBI(setting: ISetting, dv: powerbi.DataView) {
     "use strict";
@@ -406,6 +439,7 @@ export function convertValueFromPBI(setting: ISetting, dv: powerbi.DataView) {
 
 /**
  * Converts any string into a camel cased string
+ * @param str The string to conver to camel case
  */
 function camelize(str: string) {
     "use strict";
@@ -416,6 +450,9 @@ function camelize(str: string) {
 
 /**
  * Determines if the given descriptor should be enumerated
+ * @param settingsObj The instance of the settings class
+ * @param descriptor The descriptor to check
+ * @param dataView The current dataView
  */
 function shouldEnumerate(settingsObj: any, descriptor: ISettingDescriptor<any>, dataView: powerbi.DataView) {
     "use strict";
@@ -427,7 +464,8 @@ function shouldEnumerate(settingsObj: any, descriptor: ISettingDescriptor<any>, 
 }
 
 /**
- * Determines if the given setting should be persisted
+ * Determines if the given descriptor should be persisted
+ * @param descriptor The descriptor to check
  */
 function shouldPersist(descriptor: ISettingDescriptor<any>)  {
     "use strict";

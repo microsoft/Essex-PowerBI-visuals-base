@@ -33,6 +33,7 @@ const assignIn = require("lodash/assignIn"); // tslint:disable-line
 
 /**
  * Defines a setting to be used with powerBI
+ * @param config The configuration used to control how a setting operates
  */
 export function setting<T>(config: ISettingDescriptor<T>) {
     "use strict";
@@ -56,7 +57,9 @@ export function setting<T>(config: ISettingDescriptor<T>) {
 }
 
 /**
- * Defines a set of child settings
+ * Defines a setting that has a set of nested child settings
+ * @param config The child setting class type
+ * @param descriptor The additional set of configuration settings to control how a setting operates
  */
 export function settings<T>(config: Function, descriptor?: ISettingDescriptor<T>) {
     "use strict";
@@ -106,6 +109,8 @@ export function settings<T>(config: Function, descriptor?: ISettingDescriptor<T>
 
 /**
  * Creates an inherited setting
+ * @param parent The parent setting
+ * @param child The child setting
  */
 function inheritSetting(parent: ISetting, child: ISetting) {
     "use strict";
@@ -154,6 +159,8 @@ function setupChildInheritance(setting: ISetting) {
 
 /**
  * Defines the metadata object for the given class
+ * @param target The target to define the metadata on
+ * @param metadata The metadata to add
  */
 function defineMetadata<T>(target: ISettingsClass<T>, metadata?: any) {
     "use strict";
@@ -163,6 +170,7 @@ function defineMetadata<T>(target: ISettingsClass<T>, metadata?: any) {
 
 /**
  * Defines the settings metadata for the given class
+ * @param target The target to define the metadata on
  */
 function defineSettingsMetadata<T>(target: ISettingsClass<T>) {
     "use strict";
@@ -172,6 +180,9 @@ function defineSettingsMetadata<T>(target: ISettingsClass<T>) {
 
 /**
  * Defines the given setting on the given class
+ * @param target The target to define the metadata on
+ * @param propName The name of the metadata to add
+ * @param value The value of the metadata to add.
  */
 export function defineSetting<T>(target: ISettingsClass<T>, propName: string, value: ISetting) {
     "use strict";

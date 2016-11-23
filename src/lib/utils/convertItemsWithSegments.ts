@@ -25,11 +25,20 @@
 import get from "./typesafeGet";
 import { fullColors as full } from "../colors";
 import SelectionId = powerbi.visuals.SelectionId;
-import calculateSegments from "./calculateSegments";
-import { IColorSettings, ItemWithValueSegments, ColorMode, IValueSegment } from "./interfaces";
+import { default as calculateSegmentData } from "./calculateSegments";
+import { IColorSettings, ItemWithValueSegments, ColorMode, IValueSegment, IColoredObject } from "./interfaces";
 
 const ldget = require("lodash/get"); //tslint:disable-line
 
+/**
+ * Converts the dataView into a set of items that have a name, and a set of value segments.
+ * Value segments being the grouped values from the dataView mapped to a color
+ * *Note* This will only work with dataViews/dataViewMappings configured a certain way
+ * @param dataView The dataView to convert
+ * @param onSegmentCreated A function that gets called when a segment is created
+ * @param onCreateItem A function that gets called when an item is created
+ * @param settings The color settings to use when converting
+ */
 export function convertItemsWithSegments(
     dataView: powerbi.DataView,
     onSegmentCreated: any,
@@ -58,7 +67,7 @@ export function convertItemsWithSegments(
         const shouldAddInstanceColors = dataSupportsColorizedInstances(dataView) && !shouldUseGradient;
 
         // Calculate the segments
-        const segmentInfo = calculateSegments(
+        const segmentData = calculateSegmentData(
             values,
             defaultColor,
             shouldAddGradients ? settings.gradient : undefined,
@@ -69,7 +78,7 @@ export function convertItemsWithSegments(
             let total = 0;
             let segments: any;
             if (values) {
-                const result = createSegments(values, segmentInfo, catIdx);
+                const result = createSegments(values, segmentData, catIdx);
                 total = result.total;
                 segments = result.segments;
 
@@ -91,6 +100,8 @@ export function convertItemsWithSegments(
 
 /**
  * Computes the rendered values for the given set of items
+ * @param items The set of items to compute for
+ * @param minMax The min and max values
  */
 export function computeRenderedValues(items: ItemWithValueSegments[], minMax?: { min: number, max: number; }) {
     "use strict";
@@ -131,6 +142,7 @@ export function computeMinMaxes(items: ItemWithValueSegments[]) {
 
 /**
  * True if the given dataview supports multiple value segments
+ * @param dv The dataView to check
  */
 export function dataSupportsValueSegments(dv: powerbi.DataView) {
     "use strict";
@@ -139,6 +151,7 @@ export function dataSupportsValueSegments(dv: powerbi.DataView) {
 
 /**
  * Returns true if the data supports default colors
+ * @param dv The dataView to check
  */
 export function dataSupportsDefaultColor(dv: powerbi.DataView) {
     "use strict";
@@ -153,6 +166,7 @@ export function dataSupportsDefaultColor(dv: powerbi.DataView) {
 
 /**
  * Returns true if gradients can be used with the data
+ * @param dv The dataView to check
  */
 export function dataSupportsGradients(dv: powerbi.DataView) {
     "use strict";
@@ -166,6 +180,7 @@ export function dataSupportsGradients(dv: powerbi.DataView) {
 
 /**
  * Returns true if individiual instances of the dataset can be uniquely colored
+ * @param dv The dataView to check
  */
 export function dataSupportsColorizedInstances(dv: powerbi.DataView) {
     "use strict";
@@ -181,18 +196,21 @@ export function dataSupportsColorizedInstances(dv: powerbi.DataView) {
 
 /**
  * Creates segments for the given values, and the information on how the value is segmented
+ * @param columns The columns to create segment for
+ * @param segmentData The data for the segments
+ * @param column The column to generate the segment for
  */
 function createSegments(
-    values: powerbi.DataViewValueColumns,
-    segmentInfos: { name: string, identity: any; color: string }[],
+    columns: powerbi.DataViewValueColumns,
+    segmentData: IColoredObject[],
     column: number) {
     "use strict";
     let total = 0;
-    const segments = segmentInfos.map((segmentInfo, j) => {
+    const segments = segmentData.map((segmentInfo, j) => {
         // Highlight here is a numerical value, the # of highlighted items in the total
-        const highlights = (values[j].highlights || []);
+        const highlights = (columns[j].highlights || []);
         const highlight = highlights[column];
-        const value = values[j].values[column];
+        const value = columns[j].values[column];
         if (typeof value === "number") {
             total += <number>value;
         }

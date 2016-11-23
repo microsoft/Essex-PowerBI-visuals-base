@@ -27,7 +27,9 @@ import { ISerializedIdentity } from "../interfaces";
 import { deserializeExpr } from "./deserializeExpr";
 
 /**
- * Serializes the given identity object
+ * Deserializes the given identity object
+ * @param identity The identity to deserialize
+ * @returns The deserialized identity
  */
 export function deserializeIdentity(identity: powerbi.DataViewScopeIdentity|ISerializedIdentity): powerbi.DataViewScopeIdentity {
     "use strict";

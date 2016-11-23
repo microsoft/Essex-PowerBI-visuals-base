@@ -25,7 +25,7 @@
 import "powerbi-visuals/lib/powerbi-visuals";
 
 /**
- * Represents a class that handles the persistance of properties
+ * A class that provides a way to easily persist multiple objects at the same time without multiple calls to host.persistProperties
  */
 export default class PropertyPersister {
     constructor(
@@ -33,11 +33,10 @@ export default class PropertyPersister {
         private delay: number = 100 // tslint:disable-line
     ) {}
 
-    /* tslint:disable */
     /**
      * Queues the given property changes
      */
-    private propsToUpdate: { changes: powerbi.VisualObjectInstancesToPersist[], selection: boolean }[] = [];
+    private propsToUpdate: { changes: powerbi.VisualObjectInstancesToPersist[], selection: boolean }[] = []; // tslint:disable-line
     private propUpdater = _.debounce(() => {
         if (this.propsToUpdate && this.propsToUpdate.length) {
             const toUpdate = this.propsToUpdate.slice(0);
@@ -69,13 +68,13 @@ export default class PropertyPersister {
 
     /**
      * Queues a set of property changes for the next update
+     * @param selection True if the properties contains selection
      */
     public persist(selection: boolean, ...changes: powerbi.VisualObjectInstancesToPersist[]) {
         this.propsToUpdate.push({
             changes,
-            selection
+            selection,
         });
         this.propUpdater();
     }
-    /* tslint:enable */
 }

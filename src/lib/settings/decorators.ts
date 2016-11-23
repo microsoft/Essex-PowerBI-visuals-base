@@ -29,6 +29,7 @@ import { coloredObjectInstanceComposer, colorComposer } from "./composers";
 
 /**
  * Defines a text setting to be used with powerBI
+ * @param config The additional configuration to control how a setting operates
  */
 export function textSetting<T>(config?: ISettingDescriptor<T>) {
     "use strict";
@@ -37,6 +38,7 @@ export function textSetting<T>(config?: ISettingDescriptor<T>) {
 
 /**
  * Defines a bool setting to be used with powerBI
+ * @param config The additional configuration to control how a setting operates
  */
 export function boolSetting<T>(config?: ISettingDescriptor<T>) {
     "use strict";
@@ -45,6 +47,7 @@ export function boolSetting<T>(config?: ISettingDescriptor<T>) {
 
 /**
  * Defines a number setting to be used with powerBI
+ * @param config The additional configuration to control how a setting operates
  */
 export function numberSetting<T>(config?: ISettingDescriptor<T>) {
     "use strict";
@@ -53,6 +56,7 @@ export function numberSetting<T>(config?: ISettingDescriptor<T>) {
 
 /**
  * Defines a setting to be used with powerBI
+ * @param config The additional configuration to control how a setting operates
  */
 export function colorSetting<T>(config?: IColorSettingDescriptor<T>) {
     "use strict";
@@ -68,8 +72,9 @@ export function colorSetting<T>(config?: IColorSettingDescriptor<T>) {
 
 /**
  * Defines a setting to be used with powerBI
+ * @param config The additional configuration to control how a setting operates
  */
-export function instanceColorSetting<T>(config?: IColorInstanceSettingDescriptor<T>, categorical?: boolean) {
+export function instanceColorSetting<T>(config?: IColorInstanceSettingDescriptor<T>) {
     "use strict";
     config = _.merge({}, {
         config: {
@@ -83,6 +88,8 @@ export function instanceColorSetting<T>(config?: IColorInstanceSettingDescriptor
 
 /**
  * Defines a setting that is an enumeration
+ * @param enumType The enumeration to create a setting for
+ * @param config The additional configuration to control how a setting operates
  */
 export function enumSetting<T>(enumType: any, config?: ISettingDescriptor<T>) {
     "use strict";
@@ -102,6 +109,8 @@ export function enumSetting<T>(enumType: any, config?: ISettingDescriptor<T>) {
 
 /**
  * A setting that has a type associated with it
+ * @param type The powerbi type
+ * @param config The additional configuration to control how a setting operates
  */
 function typedSetting<T>(type: any, config?: ISettingDescriptor<T>) {
     "use strict";

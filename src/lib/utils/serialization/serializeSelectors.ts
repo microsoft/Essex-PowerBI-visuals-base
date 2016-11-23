@@ -27,6 +27,7 @@ import { serializeExpr } from "./serializeExpr";
 
 /**
  * Serializes a list of selectors, will ONLY work with selectors that are DataViewScopeIdentity
+ * @param selectors The list of selectors to serialize
  */
 export function serializeSelectors(selectors: powerbi.data.Selector[]): any[] {
     "use strict";

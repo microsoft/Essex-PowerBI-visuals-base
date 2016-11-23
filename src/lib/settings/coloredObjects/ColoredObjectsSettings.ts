@@ -36,7 +36,7 @@ import { fullColors } from "../../colors";
 export class ColoredObjectsSettings extends HasSettings implements IColorSettings {
 
     /**
-     * The colors to use for each of the series
+     * The colors to use for individual instances in the dataSet
      */
     @instanceColorSetting<ColoredObjectsSettings>({
         name: "fill",
@@ -46,7 +46,7 @@ export class ColoredObjectsSettings extends HasSettings implements IColorSetting
     public instanceColors: IColoredObject[];
 
     /**
-     * Represents the color mode to use
+     * The mode of colorization to use
      */
     @enumSetting(ColorMode, {
         displayName: "Color Mode",

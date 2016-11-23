@@ -26,7 +26,9 @@ import { some } from "lodash";
 
 /**
  * Returns if there is any more or less data in the new data
- * @param idEquality Returns true if a and b are referring to the same object, not necessarily if it has changed
+ * @param newData The new set of data
+ * @param oldData The old set of data
+ * @param equality Returns true if a and b are referring to the same object, not necessarily if it has changed
  */
 export default function hasDataChanged<T>(newData: T[], oldData: T[], equality: (a: T, b: T) => boolean) {
     "use strict";

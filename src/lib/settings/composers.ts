@@ -22,13 +22,15 @@
  * SOFTWARE.
  */
 
-import { ISettingsComposer, IDefaultInstanceColor, IDefaultValue, IDefaultColor } from "./interfaces";
-import { IColoredObject } from "../utils/interfaces";
+
+import { ISettingsComposer, IDefaultInstanceColor, IDefaultValue, IDefaultColor, ISetting, ISettingDescriptor } from "./interfaces"; // tslint:disable-line
+import { IColoredObject, IPersistObjectBuilder } from "../utils/interfaces"; // tslint:disable-line
 import { getPBIObjectNameAndPropertyName } from "./helpers";
 const ldset = require("lodash/set"); //tslint:disable-line
 
 /**
- * Creates a composer which composes IColoredObjects into PBI instances
+ * Creates a composer which composes IColoredObjects into PBI
+ * @param defaultColor The default color to use if a color instance is not found
  */
 export function coloredObjectInstanceComposer(defaultColor: IDefaultInstanceColor = "#ccc") {
     "use strict";
@@ -53,7 +55,9 @@ export function coloredObjectInstanceComposer(defaultColor: IDefaultInstanceColo
 }
 
 /**
- * Creates a composer which composes IColoredObjects into PBI instances
+ * Creates a basic composer which takes a path and a default value, and returns the powerbi value or the default value
+ * @param path The path in the object to return
+ * @param defaultValue The default value to return if the powerbi value is undefined
  */
 export function basicObjectComposer(path?: string, defaultValue?: IDefaultValue<any>) {
     "use strict";
@@ -72,6 +76,7 @@ export function basicObjectComposer(path?: string, defaultValue?: IDefaultValue<
 
 /**
  * Provides a basic color composer
+ * @param defaultColor The default color to use if the powerbi value is undefined.
  */
 export function colorComposer(defaultColor: IDefaultColor = "#ccc") {
     "use strict";

@@ -1,6 +1,6 @@
 # Essex PBI Base
 
-Utilities for creating custom visuals
+A collection of utilities for creating custom visuals.
 
 # Notes
 ## Bundling

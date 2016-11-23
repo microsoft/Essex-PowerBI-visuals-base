@@ -32,19 +32,22 @@ import {
 const assignIn = require("lodash/assignIn"); // tslint:disable-line
 
 /**
- * A simple class with methods to handle the basic settings manipulation
+ * A simple class with utility methods to facilitate settings parsing.
  */
 export class HasSettings {
 
     /**
      * Creates a new instance of this class
+     * @param props A set of additional properties to mixin to this settings class
      */
-    public static create<T extends HasSettings>(initialProps?: any): T {
-        return parseSettingsFromPBI(this, undefined, initialProps, true) as T;
+    public static create<T extends HasSettings>(props?: any): T {
+        return parseSettingsFromPBI(this, undefined, props, true) as T;
     }
 
     /**
      * Creates a new instance of this class with the data from powerbi and the additional properties.
+     * @param dv The dataview to create the settings from
+     * @param additionalProps The additional set of properties to mixin to this settings class
      */
     public static createFromPBI<T extends HasSettings>(dv?: powerbi.DataView, additionalProps?: any): T {
         return parseSettingsFromPBI(this, dv, additionalProps, false) as T;
@@ -58,28 +61,35 @@ export class HasSettings {
     }
 
     /**
-     * Recieves the given object and returns a new state with the object overlayed with the this set of settings
+     * Receives the given object and returns a new state with the object overlayed with the this set of settings
+     * @param props The properties to mixin to the resulting class
      */
-    public receive(newProps?: any) {
-        return (this.constructor as any).create(assignIn(this.toJSONObject(), newProps)) as this;
+    public receive(props?: any) {
+        return (this.constructor as any).create(assignIn(this.toJSONObject(), props)) as this;
     }
 
     /**
-     * Recieves the given pbi settings and returns a new state with the new pbi settings overlayed with the this state
+     * Receives the given pbi settings and returns a new state with the new pbi settings overlayed with the this state
+     * @param dv The dataView to receive
      */
     public receiveFromPBI(dv?: powerbi.DataView) {
         return (this.constructor as any).createFromPBI(dv, this.toJSONObject()) as this;
     }
 
     /**
-     * Builds the persist objects
+     * Builds the enumeration objects
+     * @param objectName The objectName being requested from enumerateObjectInstances
+     * @param dataView The currently loaded dataView
+     * @param includeHidden If true, 'hidden' settings will be returned
      */
     public buildEnumerationObjects(objectName: string, dataView: powerbi.DataView, includeHidden = false) {
         return buildEnumerationObjects(this.constructor as any, this, objectName, dataView, includeHidden);
     }
 
     /**
-     * Builds the persist objects
+     * Builds a set of persistance objects to be persisted from the current set of settings.
+     * @param dataView The currently loaded dataView
+     * @param includeHidden If true, 'hidden' settings will be returned
      */
     public buildPersistObjects(dataView: powerbi.DataView, includeHidden = false) {
         return buildPersistObjects(this.constructor as any, this, dataView, includeHidden);

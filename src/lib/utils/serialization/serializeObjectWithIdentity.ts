@@ -27,7 +27,8 @@ import { HasSerializedIdentity, HasIdentity } from "../interfaces";
 import { serializeIdentity } from "./serializeIdentity";
 
 /**
- * Serializes a list of objects that have identities
+ * Serializes an object that has an identity
+ * @param hasIdentity The object that has an identity
  */
 export function serializeObjectWithIdentity<T>(hasIdentity: (T & HasIdentity)): T & HasSerializedIdentity {
     "use strict";

@@ -24,9 +24,9 @@
 
 import { IPersistObjectBuilder } from "./interfaces";
 const assignIn = require("lodash/assignIn"); // tslint:disable-line
-``
+
 /**
- * Creates a persistence object builder
+ * Creates a builder that will build a set of VisualObjectInstancesToPersist using a fluent style syntax
  */
 export default function createPersistObjectBuilder() {
     "use strict";
@@ -36,6 +36,17 @@ export default function createPersistObjectBuilder() {
         remove: {},
     };
     const me: IPersistObjectBuilder = {
+
+        /**
+         * Persists the given value
+         * @param objectName The object name to use
+         * @param property The property to use
+         * @param value The value to persist
+         * @param operation The operation to use (merge/remove)
+         * @param selector The selector for the persist object
+         * @param displayName The display name for the persist object
+         * @param asOwnInstance If true, this value will be persisted as it's own instance
+         */
         persist: function addToPersist(
             objectName: string,
             property: string,
@@ -71,6 +82,11 @@ export default function createPersistObjectBuilder() {
             }
             return me;
         },
+
+        /**
+         * Merges another set of persist objects into this builder
+         * @param objects The set of objects to merge
+         */
         mergePersistObjects: (objects: powerbi.VisualObjectInstancesToPersist) => {
             if (objects) {
                 const operations = ["merge", "remove"];
@@ -91,6 +107,10 @@ export default function createPersistObjectBuilder() {
                 });
             }
         },
+
+        /**
+         * Builds the final persist object
+         */
         build: () => pbiState as powerbi.VisualObjectInstancesToPersist,
     };
     return me;

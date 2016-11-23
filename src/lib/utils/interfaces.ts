@@ -111,7 +111,9 @@ export interface IColoredObject extends HasIdentity {
     color: string;
 }
 
-
+/**
+ * An item that has value segments
+ */
 export interface ItemWithValueSegments {
 
     /**
@@ -157,7 +159,11 @@ export interface ItemWithValueSegments {
     renderedValue?: number;
 }
 
+/**
+ * An individual value segment
+ */
 export interface IValueSegment {
+
     /**
      * The raw value of the segment
      */
@@ -185,7 +191,7 @@ export interface IValueSegment {
 }
 
 /**
- * Indicates a mode of coloring an object
+ * A set of modes used to indicate how an object should be colored
  */
 export enum ColorMode {
     /**

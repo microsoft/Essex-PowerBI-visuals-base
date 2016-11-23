@@ -27,7 +27,7 @@ import { settings } from "../settingDecorator";
 import { ColoredObjectsSettings } from "./ColoredObjectsSettings";
 
 /**
- * A setting for a gradient
+ * A decorator for colored objects.
  */
 export function coloredObjectsSettings<T>(config?: ISettingDescriptor<T>) {
     "use strict";

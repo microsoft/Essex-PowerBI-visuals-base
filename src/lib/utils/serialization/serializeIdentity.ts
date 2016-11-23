@@ -28,6 +28,7 @@ import { serializeExpr } from "./serializeExpr";
 
 /**
  * Serializes the given identity object
+ * @param identity The identity to serialize
  */
 export function serializeIdentity(identity: powerbi.DataViewScopeIdentity|ISerializedIdentity): ISerializedIdentity {
     "use strict";
