@@ -67,7 +67,7 @@ export function convertItemsWithSegments(
         const shouldAddInstanceColors = dataSupportsColorizedInstances(dataView) && !shouldUseGradient;
 
         // Calculate the segments
-        const segmentData = calculateSegmentData(
+        const segmentInfo = calculateSegmentData(
             values,
             defaultColor,
             shouldAddGradients ? settings.gradient : undefined,
@@ -78,7 +78,7 @@ export function convertItemsWithSegments(
             let total = 0;
             let segments: any;
             if (values) {
-                const result = createSegments(values, segmentData, catIdx);
+                const result = createSegments(values, segmentInfo, catIdx);
                 total = result.total;
                 segments = result.segments;
 

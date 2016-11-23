@@ -50,9 +50,9 @@ export default function calcUpdateType(
     "use strict";
     let updateType = UpdateType.Unknown;
     const options = assignIn({},
+        DEFAULT_CALCULATE_SETTINGS,
         typeof addlOptions === "boolean" ?
-            { defaultUnkownToData: addlOptions } : (addlOptions || {} ),
-        DEFAULT_CALCULATE_SETTINGS);
+            { defaultUnkownToData: addlOptions } : (addlOptions || {} ));
 
     if (hasResized(oldOpts, newOpts, options)) {
         updateType ^= UpdateType.Resize;
@@ -212,7 +212,7 @@ function hasDataViewChanged(dv1: powerbi.DataView, dv2: powerbi.DataView, option
 
     if (options.checkHighlights) {
         for (let i = 0; i < vals1.length; i++) {
-            if (hasValuesChanged(vals1[i], vals2[i])) {
+            if (hasHighlightsChanged(vals1[i], vals2[i])) {
                 return true;
             }
         }
@@ -220,12 +220,25 @@ function hasDataViewChanged(dv1: powerbi.DataView, dv2: powerbi.DataView, option
     return false;
 }
 
-function hasValuesChanged(val1: powerbi.DataViewValueColumn, val2: powerbi.DataViewValueColumn) {
+function hasHighlightsChanged(val1: powerbi.DataViewValueColumn, val2: powerbi.DataViewValueColumn) {
     "use strict";
     if (val1 && val2) {
         const h1 = val1.highlights || [];
         const h2 = val2.highlights || [];
-        return h1.length !== h2.length;
+        if (h1 === h2) {
+            // TODO: This will not catch the case they reuse the array,
+            // ie clear the array, add new items with the same amount as the old one.
+            let prevLength = h1["$prevLength"];
+            let newLength = h1.length;
+            h1["$prevLength"] = newLength;
+            return prevLength !== newLength;
+        }
+        if (h1.length !== h2.length) {
+            return true;
+        }
+
+        // Check any highlights have changed.
+        return h1.some((h, i) => h !== h2[i]);
     }
     return false;
 }

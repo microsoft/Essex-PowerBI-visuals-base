@@ -35,14 +35,21 @@ export function receiveUpdateType(addlOptions: ICalcUpdateTypeOptions|boolean = 
     return function decorateReceiveUpdateType(target: UpdateTypeReceiverClass<any>): any {
         "use strict";
         class ReceivesUpdateType extends (target as UpdateTypeReceiverClass<IUpdateTypeReceiver>) {
-            private __prevOptions: VisualUpdateOptions;
+            private __prevOptions: VisualUpdateOptions; // tslint:disable-line
+            private __receivingUpdateType = false; // tslint:disable-line
             public update(options: VisualUpdateOptions) {
+                const doUpdateType = !this.__receivingUpdateType;
+                this.__receivingUpdateType = true;
                 if (super.update) {
                     super.update(options);
                 }
-                let updateType = calcUpdateType(this.__prevOptions, options, addlOptions);
-                this.updateWithType(options, updateType);
-                this.__prevOptions = options;
+                if (doUpdateType) {
+                    this.__receivingUpdateType = true;
+                    let updateType = calcUpdateType(this.__prevOptions, options, addlOptions);
+                    this.updateWithType(options, updateType);
+                    this.__prevOptions = options;
+                    this.__receivingUpdateType = false;
+                }
             }
         }
         return ReceivesUpdateType as any;
