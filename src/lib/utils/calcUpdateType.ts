@@ -26,6 +26,7 @@ import "powerbi-visuals/lib/powerbi-visuals";
 import VisualUpdateOptions = powerbi.VisualUpdateOptions;
 import UpdateType from "./UpdateType";
 const assignIn = require("lodash/assignIn"); // tslint:disable-line
+declare var _: any;
 
 export const DEFAULT_CALCULATE_SETTINGS: ICalcUpdateTypeOptions = {
     checkHighlights: false,

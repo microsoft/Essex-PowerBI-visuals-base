@@ -26,6 +26,7 @@ import { setting } from "./settingDecorator";
 import { ISettingDescriptor, IDefaultInstanceColor, IDefaultColor } from "./interfaces";
 import { colorParser, colorCategoricalInstanceObjectParser } from "./parsers";
 import { coloredObjectInstanceComposer, colorComposer } from "./composers";
+declare var _: any;
 
 /**
  * Defines a text setting to be used with powerBI

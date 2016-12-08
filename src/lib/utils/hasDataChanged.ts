@@ -21,8 +21,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-
-import { some } from "lodash";
+declare var _: any;
 
 /**
  * Returns if there is any more or less data in the new data
@@ -43,5 +42,5 @@ export default function hasDataChanged<T>(newData: T[], oldData: T[], equality: 
     }
 
     // If there are any elements in newdata that arent in the old data
-    return some(newData, (n: T) => !_.some(oldData, (m: T) => equality(m, n)));
+    return _.some(newData, (n: T) => !_.some(oldData, (m: T) => equality(m, n)));
 }

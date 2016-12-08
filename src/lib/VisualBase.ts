@@ -135,7 +135,7 @@ export default class VisualBase extends CatchingVisualBase implements IUpdateTyp
                 let sandboxed = experimental && experimental["sandboxed"];
                 sandboxed = typeof sandboxed === "undefined" ? VisualBase.DEFAULT_SANDBOX_ENABLED : sandboxed;
                 if (this.sandboxed !== sandboxed) {
-                    this._sandboxed = sandboxed;
+                    this._sandboxed = !!sandboxed;
                 }
             }
         }

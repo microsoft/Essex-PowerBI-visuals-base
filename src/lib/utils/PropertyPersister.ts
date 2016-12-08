@@ -23,6 +23,7 @@
  */
 
 import "powerbi-visuals/lib/powerbi-visuals";
+declare var _: any;
 
 /**
  * A class that provides a way to easily persist multiple objects at the same time without multiple calls to host.persistProperties

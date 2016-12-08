@@ -21,7 +21,6 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-
 require("../spec/testSetup"); // tslint:disable-line
 declare var global: any;
 global["powerbi"] = {
