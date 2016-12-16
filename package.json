@@ -20,7 +20,7 @@
     "PowerBI",
     "Base"
   ],
-  "author": "",
+  "author": "David Tittsworth <david.tittsworth@atsid.com>",
   "license": "MIT",
   "dependencies": {
     "@types/d3": "^3.5.36",
