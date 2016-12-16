@@ -1,5 +1,5 @@
 {
-  "name": "essex.powerbi.base",
+  "name": "@essex/pbi-base",
   "version": "0.8.19",
   "description": "Essex PowerBI visual base",
   "scripts": {
