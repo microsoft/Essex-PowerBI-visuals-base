@@ -1,6 +1,6 @@
 import calcUpdateType from "./calcUpdateType";
 import { expect } from "chai";
-import UpdateType from "./updateType";
+import UpdateType from "./UpdateType";
 
 describe("calcUpdateType", () => {
     const VALUES_ONLY_UPDATE = () => <any>{
