@@ -22,6 +22,6 @@
  * SOFTWARE.
  */
 
-import { logger, Logger } from "./logger";
+import { logger, Logger } from "./logger"; // tslint:disable-line
 const log = logger("essex:widget:Utils");
 export default log;

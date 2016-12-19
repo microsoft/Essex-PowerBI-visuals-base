@@ -22,7 +22,7 @@
  * SOFTWARE.
  */
 
-const debug = require("debug");
+const debug = require("debug"); // tslint:disable-line
 
 const logWriters: LogWriter[] = [consoleLogWriter()];
 

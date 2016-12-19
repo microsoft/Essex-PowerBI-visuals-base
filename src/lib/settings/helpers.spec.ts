@@ -384,7 +384,7 @@ function createClassWithSettings() {
 
     return {
         settings,
-        classType: ClassWithSettings
+        classType: ClassWithSettings,
     };
 };
 
