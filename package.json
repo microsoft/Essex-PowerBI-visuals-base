@@ -1,6 +1,6 @@
 {
   "name": "@essex/pbi-base",
-  "version": "0.8.19",
+  "version": "0.8.20",
   "description": "Essex PowerBI visual base",
   "scripts": {
     "tsc": "! tsc | grep -v \"^node_modules.*\"",
