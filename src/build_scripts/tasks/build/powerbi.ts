@@ -26,13 +26,14 @@ import * as fs from "fs";
 import * as path from "path";
 import { Gulp } from "gulp";
 import makeProjectConfig from "../../project";
-const del = require("del");
-const zip = require("gulp-zip");
-const gutil = require("gulp-util");
-const webpack = require("gulp-webpack");
-const replace = require("gulp-replace");
-const concat = require("gulp-concat");
-const modify = require("gulp-modify");
+
+const del = require("del"); // tslint:disable-line
+const zip = require("gulp-zip"); // tslint:disable-line
+const gutil = require("gulp-util"); // tslint:disable-line
+const webpack = require("gulp-webpack"); // tslint:disable-line
+const replace = require("gulp-replace"); // tslint:disable-line
+const concat = require("gulp-concat"); // tslint:disable-line
+const modify = require("gulp-modify"); // tslint:disable-line
 
 function string_src(filename: string, text: string) {
     "use strict";
