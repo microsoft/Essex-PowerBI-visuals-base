@@ -1,6 +1,7 @@
 .idea
 .vscode
 src/
+dist/spec/
 .editorconfig
 tsconfig.json
 tslint.json
