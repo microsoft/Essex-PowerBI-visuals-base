@@ -8,3 +8,4 @@ spec/**/*.js
 spec/**/*.d.ts
 spec/**/*.map
 .scripts/
+.idea/
