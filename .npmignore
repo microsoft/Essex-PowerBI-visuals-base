@@ -1,2 +1,9 @@
 .idea
 .vscode
+src/
+dist/spec/
+.editorconfig
+tsconfig.json
+tslint.json
+webpack.config.js
+.npmignore
