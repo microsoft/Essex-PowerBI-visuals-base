@@ -23,8 +23,6 @@
  */
 declare var _: any;
 
-// TODO: Remove?
-
 /**
  * Returns if there is any more or less data in the new data
  * @param newData The new set of data
