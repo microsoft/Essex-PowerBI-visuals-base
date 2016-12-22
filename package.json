@@ -15,7 +15,7 @@
   "typings": "dist/index.d.ts",
   "repository": {
     "type": "git",
-    "url": "https://msrp.visualstudio.com/DefaultCollection/Essex/_git/EssexPBIBase"
+    "url": "https://github.com/Microsoft/Essex-PowerBI-visuals-base"
   },
   "keywords": [
     "PowerBI",
