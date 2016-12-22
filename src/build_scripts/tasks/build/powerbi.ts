@@ -108,6 +108,9 @@ export default function powerbiTasks(gulp: Gulp, baseDir: string) {
             .pipe(modify({
                 fileModifier: function (file: string, contents: string) {
                     const pkg = JSON.parse(contents.toString());
+                    if (output.githubUrl) {
+                        pkg.visual.githubUrl = output.githubUrl;
+                    }
                     if (output.icon) {
                         pkg.images = pkg.images || {};
                         pkg.images.icon = {
