@@ -36,7 +36,14 @@ export function deserializeExpr(expr: ISerializedExpr): powerbi.data.SQExpr {
         const serializedExpr = expr.serializedExpr;
         if (serializedExpr) {
             const deserializer = ldget(powerbi, "data.services.SemanticQuerySerializer", { deserializeExpr: JSON.parse });
-            return deserializer.deserializeExpr(serializedExpr);
+            const deserializedExpr = deserializer.deserializeExpr(serializedExpr);
+            // For some reason, "schema" comes out null from the deserializer, and PBI can't handle that
+            // It was causing filtering to fail for the Attribute Slicer
+            const source = ldget(deserializedExpr, "left.source");
+            if (source && !source.schema) {
+                source.schema = undefined;
+            }
+            return deserializedExpr;
         } else {
             throw new Error("Not a valid serialized expression");
         }
