@@ -67,32 +67,73 @@ export function convertItemsWithSegments(
         const shouldAddInstanceColors = dataSupportsColorizedInstances(dataView) && !shouldUseGradient;
 
         // Calculate the segments
+        // Segment info is the list of segments that each row should contain, with the colors of the segements.
+        // i.e. [<Sum of Id: Color Blue>, <Average Grade: Color Red>]
         const segmentInfo = calculateSegmentData(
             values,
             defaultColor,
             shouldAddGradients ? settings.gradient : undefined,
             shouldAddInstanceColors ? settings.instanceColors : undefined);
 
-        items = categories.map((category, catIdx) => {
-            let id = SelectionId.createWithId(identities[catIdx]);
-            let total = 0;
+        const segmentDomains = segmentInfo.map(n => ({ min: undefined, max: undefined }));
+
+        // Iterate through each of the rows (or categories)
+        items = categories.map((category, rowIdx) => {
+            let id = SelectionId.createWithId(identities[rowIdx]);
+            let rowTotal = 0;
             let segments: any;
+
+            // If we have bars
             if (values) {
-                const result = createSegments(values, segmentInfo, catIdx);
-                total = result.total;
-                segments = result.segments;
+                segments = segmentInfo.map((si, colIdx) => {
+                    const highlights = (values[colIdx].highlights || []);
+                    const highlight = highlights[rowIdx];
+                    const segmentValue = values[colIdx].values[rowIdx];
+                    if (typeof segmentValue === "number") {
+                        const max = segmentDomains[colIdx].max;
+                        const min = segmentDomains[colIdx].min;
+                        if (max === undefined || segmentValue > max) {
+                            segmentDomains[colIdx].max = segmentValue;
+                        }
+                        if (min === undefined || segmentValue < min) {
+                            segmentDomains[colIdx].min = segmentValue;
+                        }
+                        rowTotal += segmentValue;
+                    }
+
+                    const { color, name } = si;
+
+                    // There is some sort of highlighting going on
+                    const segment = {
+                        name,
+                        color,
+                        value: segmentValue,
+                        displayValue: segmentValue,
+                        width: 0,
+                    } as IValueSegment;
+
+                    if (highlights && highlights.length) {
+                        let highlightWidth = 0;
+                        if (segmentValue && typeof segmentValue === "number" && highlight) {
+                            highlightWidth = (<number>highlight / segmentValue) * 100;
+                        }
+                        segment.highlightWidth = highlightWidth;
+                    }
+
+                    return segment;
+                });
 
                 if (settings && settings.reverseOrder) {
                     segments.reverse();
                 }
             }
-            const item = onCreateItem(dvCats, catIdx, total, id);
+            const item = onCreateItem(dvCats, rowIdx, rowTotal, id);
             item.valueSegments = segments;
             return item;
         });
 
         // Computes the rendered values for each of the items
-        computeRenderedValues(items);
+        computeRenderedValues(items, segmentDomains);
 
         return { items, segmentInfo };
     }
@@ -101,43 +142,55 @@ export function convertItemsWithSegments(
 /**
  * Computes the rendered values for the given set of items
  * @param items The set of items to compute for
+ * @param segmentDomains The totals for each of the segments.
  * @param minMax The min and max values
  */
-export function computeRenderedValues(items: ItemWithValueSegments[], minMax?: { min: number, max: number; }) {
+export function computeRenderedValues(items: ItemWithValueSegments[], segmentDomains?: IDomain[], minMax?: { min: number, max: number; }) {
     "use strict";
-    const { min, max } = minMax || computeMinMaxes(items);
-    const range = max - min;
-    items.forEach((c) => {
-        if (c.value) {
-            let renderedValue = 100;
-            if (range > 0) {
-                const offset = min > 0 ? 10 : 0;
-                renderedValue = (((c.value - min) / range) * (100 - offset)) + offset;
-            }
-            c.renderedValue = renderedValue;
-        }
-    });
+    segmentDomains = segmentDomains || computeSegmentDomains(items);
+    if (segmentDomains && segmentDomains.length) {
+        items.forEach(item => {
+            item.valueSegments.forEach((segment, segmentIdx) => {
+                const { min, max } = segmentDomains[segmentIdx];
+                const range = max - min;
+                let percentage = min > 0 || min < 0 ? 1 : 0;
+                if (range > 0) {
+                    // const offset = min > 0 ? 0.1 : 0;
+                    const offset = 0;
+                    percentage = (((segment.value - min) / range) * (1 - offset)) + offset;
+                }
+                segment.width = (percentage / segmentDomains.length) * 100;
+            });
+            item.renderedValue = 100;
+        });
+    }
 }
 
 /**
- * Computes the minimum and maximum values for the given set of items
+ * Computes the domain of each of the segments
  */
-export function computeMinMaxes(items: ItemWithValueSegments[]) {
+function computeSegmentDomains(items: ItemWithValueSegments[]) {
     "use strict";
-    let maxValue: number;
-    let minValue: number;
-    items.forEach((c) => {
-        if (typeof maxValue === "undefined" || c.value > maxValue) {
-            maxValue = c.value;
-        }
-        if (typeof minValue === "undefined" || c.value < minValue) {
-            minValue = c.value;
-        }
-    });
-    return {
-        min: minValue,
-        max: maxValue,
-    };
+    const segmentDomains: IDomain[] = [];
+    if (items && items.length) {
+        items.forEach(item => {
+            (item.valueSegments || []).forEach((segment, colIdx) => {
+                const segmentValue = segment.value;
+                if (typeof segmentValue === "number") {
+                    segmentDomains[colIdx] = segmentDomains[colIdx] || { min: undefined, max: undefined };
+                    const max = segmentDomains[colIdx].max;
+                    const min = segmentDomains[colIdx].min;
+                    if (max === undefined || segmentValue > max) {
+                        segmentDomains[colIdx].max = segmentValue;
+                    }
+                    if (min === undefined || segmentValue < min) {
+                        segmentDomains[colIdx].min = segmentValue;
+                    }
+                }
+            });
+        });
+    }
+    return segmentDomains;
 }
 
 /**
@@ -239,4 +292,13 @@ function createSegments(
         s.width = (s.value / total) * 100;
     });
     return { segments, total };
+}
+
+
+/**
+ * Represents a domain of some value
+ */
+export interface IDomain {
+    min: number;
+    max: number;
 }
