@@ -88,7 +88,7 @@ export function convertItemsWithSegments(
                     segments.reverse();
                 }
             }
-            const item = onCreateItem(dvCats, rowIdx, rowTotal, id);
+            const item = onCreateItem(dvCats, rowIdx, rowTotal, id, segments);
             item.valueSegments = segments;
             return item;
         });
