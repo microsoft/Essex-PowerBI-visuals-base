@@ -35,13 +35,11 @@ const ldget = require("lodash/get"); //tslint:disable-line
  * Value segments being the grouped values from the dataView mapped to a color
  * *Note* This will only work with dataViews/dataViewMappings configured a certain way
  * @param dataView The dataView to convert
- * @param onSegmentCreated A function that gets called when a segment is created
  * @param onCreateItem A function that gets called when an item is created
  * @param settings The color settings to use when converting
  */
 export function convertItemsWithSegments(
     dataView: powerbi.DataView,
-    onSegmentCreated: any,
     onCreateItem: any,
     settings?: IColorSettings) {
     "use strict";
@@ -67,26 +65,30 @@ export function convertItemsWithSegments(
         const shouldAddInstanceColors = dataSupportsColorizedInstances(dataView) && !shouldUseGradient;
 
         // Calculate the segments
+        // Segment info is the list of segments that each row should contain, with the colors of the segements.
+        // i.e. [<Sum of Id: Color Blue>, <Average Grade: Color Red>]
         const segmentInfo = calculateSegmentData(
             values,
             defaultColor,
             shouldAddGradients ? settings.gradient : undefined,
             shouldAddInstanceColors ? settings.instanceColors : undefined);
 
-        items = categories.map((category, catIdx) => {
-            let id = SelectionId.createWithId(identities[catIdx]);
-            let total = 0;
+        // Iterate through each of the rows (or categories)
+        items = categories.map((category, rowIdx) => {
+            let id = SelectionId && SelectionId.createWithId ? SelectionId.createWithId(identities[rowIdx]) : rowIdx;
+            let rowTotal = 0;
             let segments: any;
-            if (values) {
-                const result = createSegments(values, segmentInfo, catIdx);
-                total = result.total;
-                segments = result.segments;
 
+            // If we have bars
+            if (values) {
+                const segmentData = createSegments(values, segmentInfo, rowIdx);
+                segments = segmentData.segments;
+                rowTotal = segmentData.total;
                 if (settings && settings.reverseOrder) {
                     segments.reverse();
                 }
             }
-            const item = onCreateItem(dvCats, catIdx, total, id);
+            const item = onCreateItem(dvCats, rowIdx, rowTotal, id, segments);
             item.valueSegments = segments;
             return item;
         });
@@ -101,43 +103,52 @@ export function convertItemsWithSegments(
 /**
  * Computes the rendered values for the given set of items
  * @param items The set of items to compute for
- * @param minMax The min and max values
  */
-export function computeRenderedValues(items: ItemWithValueSegments[], minMax?: { min: number, max: number; }) {
+export function computeRenderedValues(items: ItemWithValueSegments[]) {
     "use strict";
-    const { min, max } = minMax || computeMinMaxes(items);
-    const range = max - min;
-    items.forEach((c) => {
-        if (c.value) {
-            let renderedValue = 100;
-            if (range > 0) {
-                const offset = min > 0 ? 10 : 0;
-                renderedValue = (((c.value - min) / range) * (100 - offset)) + offset;
+    if (items && items.length) {
+        const range = computeRange(items);
+        let maxWidth = 0;
+        items.forEach(item => {
+            const segments = (item.valueSegments || []);
+            let rowWidth = 0;
+            segments.forEach((segment, segmentIdx) => {
+                segment.width = (Math.abs(segment.value) / range.max / segments.length) * 100;
+                rowWidth += segment.width;
+            });
+            if (rowWidth > maxWidth) {
+                maxWidth = rowWidth;
             }
-            c.renderedValue = renderedValue;
+        });
+        if (maxWidth > 0) {
+            items.forEach(item => {
+                item.renderedValue = 100 * (100 / maxWidth);
+            });
         }
-    });
+    }
 }
 
 /**
- * Computes the minimum and maximum values for the given set of items
+ * Computes the range of all of the value segments
  */
-export function computeMinMaxes(items: ItemWithValueSegments[]) {
+function computeRange(items: ItemWithValueSegments[]) {
     "use strict";
-    let maxValue: number;
-    let minValue: number;
-    items.forEach((c) => {
-        if (typeof maxValue === "undefined" || c.value > maxValue) {
-            maxValue = c.value;
-        }
-        if (typeof minValue === "undefined" || c.value < minValue) {
-            minValue = c.value;
-        }
-    });
-    return {
-        min: minValue,
-        max: maxValue,
-    };
+    // const segmentDomains: IDomain[] = [];
+    let max = 0;
+    if (items && items.length) {
+        items.forEach(item => {
+            (item.valueSegments || []).forEach((segment, colIdx) => {
+                const segmentValue = segment.value;
+                if (typeof segmentValue === "number") {
+                    const absVal = Math.abs(segmentValue);
+                    if (absVal > max) {
+                        max = absVal;
+                    }
+                }
+            });
+        });
+    }
+    return { min: 0, max };
 }
 
 /**
@@ -186,7 +197,7 @@ export function dataSupportsColorizedInstances(dv: powerbi.DataView) {
     "use strict";
 
     // If there are no value segments, then there is definitely going to be no instances
-    if (dataSupportsValueSegments(dv)) {
+    if (dataSupportsValueSegments(dv) && dv.categorical.values.grouped) {
         // We can uniquely color items that have an identity associated with it
         const grouped = dv.categorical.values.grouped();
         return grouped.filter(n => !!n.identity).length > 0;
@@ -198,45 +209,51 @@ export function dataSupportsColorizedInstances(dv: powerbi.DataView) {
  * Creates segments for the given values, and the information on how the value is segmented
  * @param columns The columns to create segment for
  * @param segmentData The data for the segments
- * @param column The column to generate the segment for
+ * @param rowIdx The row to generate the segment for
  */
 function createSegments(
     columns: powerbi.DataViewValueColumns,
     segmentData: IColoredObject[],
-    column: number) {
+    rowIdx: number) {
     "use strict";
     let total = 0;
-    const segments = segmentData.map((segmentInfo, j) => {
-        // Highlight here is a numerical value, the # of highlighted items in the total
-        const highlights = (columns[j].highlights || []);
-        const highlight = highlights[column];
-        const value = columns[j].values[column];
-        if (typeof value === "number") {
-            total += <number>value;
+    const segments = segmentData.map((si, colIdx) => {
+        const highlights = (columns[colIdx].highlights || []);
+        const highlight = highlights[rowIdx];
+        const segmentValue = columns[colIdx].values[rowIdx];
+        if (typeof segmentValue === "number") {
+            total += segmentValue;
         }
-        const { color, name } = segmentInfo;
+
+        const { color, name } = si;
 
         // There is some sort of highlighting going on
         const segment = {
-            name: name,
-            color: color,
-            value: value,
-            displayValue: value,
+            name,
+            color,
+            value: segmentValue,
+            displayValue: segmentValue,
             width: 0,
         } as IValueSegment;
 
         if (highlights && highlights.length) {
             let highlightWidth = 0;
-            if (value && typeof value === "number" && highlight) {
-                highlightWidth = (<number>highlight / value) * 100;
+            if (segmentValue && typeof segmentValue === "number" && highlight) {
+                highlightWidth = (<number>highlight / segmentValue) * 100;
             }
             segment.highlightWidth = highlightWidth;
         }
 
         return segment;
     });
-    segments.forEach((s: any) => {
-        s.width = (s.value / total) * 100;
-    });
     return { segments, total };
+}
+
+
+/**
+ * Represents a domain of some value
+ */
+export interface IDomain {
+    min: number;
+    max: number;
 }
