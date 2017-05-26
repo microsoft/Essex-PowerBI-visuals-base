@@ -120,9 +120,11 @@ export function computeRenderedValues(items: ItemWithValueSegments[]) {
                 maxWidth = rowWidth;
             }
         });
-        items.forEach(item => {
-            item.renderedValue = 100 * (100 / maxWidth);
-        });
+        if (maxWidth > 0) {
+            items.forEach(item => {
+                item.renderedValue = 100 * (100 / maxWidth);
+            });
+        }
     }
 }
 
