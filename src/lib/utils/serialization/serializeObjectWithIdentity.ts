@@ -22,7 +22,6 @@
  * SOFTWARE.
  */
 
-import "powerbi-visuals/lib/powerbi-visuals";
 import { HasSerializedIdentity, HasIdentity } from "../interfaces";
 import { serializeIdentity } from "./serializeIdentity";
 

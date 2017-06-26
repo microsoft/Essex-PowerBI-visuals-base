@@ -21,7 +21,6 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-import "powerbi-visuals/lib/powerbi-visuals";
 import { ISerializedExpr } from "../interfaces";
 const ldget = require("lodash/get"); //tslint:disable-line
 

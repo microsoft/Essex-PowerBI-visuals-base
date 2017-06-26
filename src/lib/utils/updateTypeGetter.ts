@@ -22,7 +22,6 @@
  * SOFTWARE.
  */
 
-import "powerbi-visuals/lib/powerbi-visuals";
 import IVisual = powerbi.IVisual;
 import VisualUpdateOptions = powerbi.VisualUpdateOptions;
 import UpdateType from "./UpdateType";

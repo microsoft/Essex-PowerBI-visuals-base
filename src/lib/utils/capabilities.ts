@@ -22,8 +22,6 @@
  * SOFTWARE.
  */
 
-import "powerbi-visuals/lib/powerbi-visuals";
-
 /**
  * Decorator that indicates that a given visual contains a set of capabilities.
  * @param value The capabilities

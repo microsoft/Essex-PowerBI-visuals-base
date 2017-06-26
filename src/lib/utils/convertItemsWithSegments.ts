@@ -24,9 +24,9 @@
 
 import get from "./typesafeGet";
 import { fullColors as full } from "../colors";
-import SelectionId = powerbi.visuals.SelectionId;
 import { default as calculateSegmentData } from "./calculateSegments";
 import { IColorSettings, ItemWithValueSegments, ColorMode, IValueSegment, IColoredObject } from "./interfaces";
+import ISelectionIdBuilder = powerbi.visuals.ISelectionIdBuilder;
 
 const ldget = require("lodash/get"); //tslint:disable-line
 
@@ -41,12 +41,12 @@ const ldget = require("lodash/get"); //tslint:disable-line
 export function convertItemsWithSegments(
     dataView: powerbi.DataView,
     onCreateItem: any,
-    settings?: IColorSettings) {
+    settings?: IColorSettings,
+    createIdBuilder?: () => ISelectionIdBuilder) {
     "use strict";
     let items: ItemWithValueSegments[];
     const dvCats = get(dataView, x => x.categorical.categories);
     const categories = get(dataView, x => x.categorical.categories[0].values);
-    const identities = get(dataView, x => x.categorical.categories[0].identity);
     const values = get(dataView, x => x.categorical.values);
     if (categories) {
         settings = <any>settings || {};
@@ -75,7 +75,11 @@ export function convertItemsWithSegments(
 
         // Iterate through each of the rows (or categories)
         items = categories.map((category, rowIdx) => {
-            let id = SelectionId && SelectionId.createWithId ? SelectionId.createWithId(identities[rowIdx]) : rowIdx;
+            let id = createIdBuilder ?
+                createIdBuilder()
+                    .withCategory(dvCats[rowIdx], 0)
+                    .createSelectionId()
+                : rowIdx;
             let rowTotal = 0;
             let segments: any;
 

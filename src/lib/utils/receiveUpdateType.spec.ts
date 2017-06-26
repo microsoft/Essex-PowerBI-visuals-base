@@ -23,7 +23,6 @@
  */
 
 import "mocha";
-import "powerbi-visuals/lib/powerbi-visuals";
 import { expect } from "chai";
 import { IUpdateTypeReceiver } from "./receiveUpdateType";
 import UpdateType from "./UpdateType";

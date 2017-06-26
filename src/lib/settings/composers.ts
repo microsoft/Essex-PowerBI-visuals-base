@@ -42,9 +42,7 @@ export function coloredObjectInstanceComposer(defaultColor: IDefaultInstanceColo
                 const finalColor = n.color || instanceColor;
                 return {
                     displayName: n.name,
-                    selector: n.identity ? powerbi.visuals.ColorHelper.normalizeSelector(
-                        powerbi.visuals.SelectionId.createWithId(n.identity).getSelector(), // Not sure if all of this is necessary
-                    false) : undefined,
+                    selector: n.identity,
                     properties: {
                         [propName]: finalColor,
                     },

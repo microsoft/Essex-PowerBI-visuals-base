@@ -253,9 +253,9 @@ function buildEnumerationObject(
  * Builds the capabilities objects dynamically from a settings class
  * @param settingsClass The settings class type to generate the capabilities object from
  */
-export function buildCapabilitiesObjects<T>(settingsClass: ISettingsClass<T>): powerbi.data.DataViewObjectDescriptors {
+export function buildCapabilitiesObjects<T>(settingsClass: ISettingsClass<T>): any {
     "use strict";
-    let objects: powerbi.data.DataViewObjectDescriptors;
+    let objects: any;
     if (settingsClass) {
         const settingsMetadata = getSettingsMetadata(settingsClass);
         if (settingsMetadata) {
@@ -303,7 +303,7 @@ function buildCapabilitiesObject(setting: ISetting) {
             displayName: category || defaultCategory,
             properties: {},
         };
-        let type: powerbi.data.DataViewObjectPropertyTypeDescriptor;
+        let type: any;
         if (typeof defaultValue === "number") {
             type = { numeric: true };
         } else if (typeof defaultValue === "boolean") {
@@ -312,7 +312,7 @@ function buildCapabilitiesObject(setting: ISetting) {
             type = { text: {} };
         }
         config = config || <any>{};
-        const finalObj: powerbi.data.DataViewObjectPropertyDescriptor = {
+        const finalObj: any = {
             displayName: config.displayName || displayName || propName,
             description: config.description || description,
             type: config.type || type,

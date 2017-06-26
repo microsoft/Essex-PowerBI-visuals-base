@@ -29,7 +29,7 @@ import PropertyPersister from "./PropertyPersister";
  * @param host The host to persist properties for
  * @param delay The debounce delay to use before calling host.persistProperties
  */
-export default function createPropertyPersister(host: powerbi.IVisualHostServices, delay: number) {
+export default function createPropertyPersister(host: powerbi.extensibility.visual.IVisualHost, delay: number) {
     "use strict";
     return new PropertyPersister(host, delay);
 }

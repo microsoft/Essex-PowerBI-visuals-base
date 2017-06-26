@@ -22,7 +22,6 @@
  * SOFTWARE.
  */
 
-import "powerbi-visuals/lib/powerbi-visuals";
 import { IPersistObjectBuilder } from "../utils/interfaces";
 
 /**
@@ -123,7 +122,7 @@ export interface ISettingDescriptor<T> extends INumericalSettingDescriptor {
     /**
      * Additional configuration options
      */
-    config?: powerbi.data.DataViewObjectPropertyDescriptor;
+    config?: any;
 
     /**
      * The name of the setting
@@ -199,7 +198,7 @@ export interface ISettingsClass<T> {
 
 export type IDefaultValue<T> = T|(() => T);
 
-export type IDefaultInstanceValue<T> = ((idx: number, dataView?: powerbi.DataView, identity?: powerbi.DataViewScopeIdentity) => T);
+export type IDefaultInstanceValue<T> = ((idx: number, dataView?: powerbi.DataView, identity?: powerbi.visuals.ISelectionId) => T);
 
 export type IDefaultInstanceColor = string|IDefaultInstanceValue<string>;
 

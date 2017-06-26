@@ -25,8 +25,6 @@
 /**
  * The key used to store settings metadata on the settings class
  */
-import "powerbi-visuals/lib/powerbi-visuals";
-
 import { ISetting, ISettingDescriptor, ISettingsClass } from "./interfaces";
 import { METADATA_KEY } from "./helpers";
 const assignIn = require("lodash/assignIn"); // tslint:disable-line

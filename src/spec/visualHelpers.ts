@@ -22,7 +22,6 @@
  * SOFTWARE.
  */
 
-import "powerbi-visuals/lib/powerbi-visuals";
 import * as jquery from "jquery";
 import global from "./testSetup"; // tslint:disable-line
 import "./mockPBI";
@@ -71,7 +70,7 @@ export var Utils = { // tslint:disable-line
     },
 
     createUpdateOptionsWithSmallData: () => {
-        return <powerbi.VisualUpdateOptions>{
+        return <powerbi.extensibility.VisualUpdateOptions>{
             viewport: {
                 width: 100,
                 height: 100,
@@ -81,7 +80,7 @@ export var Utils = { // tslint:disable-line
     },
 
     createUpdateOptionsWithData: () => {
-        return <powerbi.VisualUpdateOptions>{
+        return <powerbi.extensibility.VisualUpdateOptions>{
             viewport: {
                 width: 100,
                 height: 100,
@@ -91,19 +90,19 @@ export var Utils = { // tslint:disable-line
     },
 
     createFakeHost: () => {
-        return <powerbi.IVisualHostServices>{
+        return <powerbi.extensibility.visual.IVisualHost>{
             persistProperties: (<any>function() {}) // tslint:disable-line
         };
     },
 
-    createFakeInitOptions: () => {
-        return <powerbi.VisualInitOptions>{
-            element: Utils.createElement(),
+    createFakeConstructorOptions: () => {
+        return <powerbi.extensibility.visual.VisualConstructorOptions>{
+            element: Utils.createElement()[0],
             host: Utils.createFakeHost(),
-            viewport: {
-                width: 100,
-                height: 100,
-            },
+            // viewport: {
+            //     width: 100,
+            //     height: 100,
+            // },
         };
     },
 };

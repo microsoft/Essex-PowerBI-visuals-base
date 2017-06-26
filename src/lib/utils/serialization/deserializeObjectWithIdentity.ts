@@ -21,8 +21,6 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-
-import "powerbi-visuals/lib/powerbi-visuals";
 import { HasSerializedIdentity, HasIdentity } from "../interfaces";
 import { deserializeIdentity } from "./deserializeIdentity";
 

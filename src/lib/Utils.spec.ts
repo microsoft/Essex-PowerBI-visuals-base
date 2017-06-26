@@ -45,23 +45,21 @@ global["powerbi"] = {
     },
 };
 import { colorizedLog, updateTypeGetter, UpdateType } from "./utils";
-import VisualBase from "./VisualBase";
 import { expect } from "chai";
 import * as _ from "lodash";
 import "mocha";
 declare var window: any;
-import "powerbi-visuals/lib/powerbi-visuals";
 
 const fakeVisual = {
     update: () => 0,
-} as any as VisualBase;
+} as any;
 
 describe("Utils", () => {
     describe("updateTypeGetter", () => {
         /**
          * Runs a update test that validates that the given update options returns the given update type
          */
-        const runUpdateTest = (options: powerbi.VisualUpdateOptions, updateType: UpdateType, directCompare = false) => {
+        const runUpdateTest = (options: powerbi.extensibility.VisualUpdateOptions, updateType: UpdateType, directCompare = false) => {
             const getter = updateTypeGetter(fakeVisual);
             fakeVisual.update(options);
             let expected = getter();
@@ -71,8 +69,8 @@ describe("Utils", () => {
             expect(expected).to.eq(updateType);
         };
         const runMultipleUpdateTests = (
-            o1: powerbi.VisualUpdateOptions,
-            o2: powerbi.VisualUpdateOptions,
+            o1: powerbi.extensibility.VisualUpdateOptions,
+            o2: powerbi.extensibility.VisualUpdateOptions,
             updateType: UpdateType, directCompare = false) => {
             const getter = updateTypeGetter(fakeVisual);
             fakeVisual.update(o1);
@@ -87,7 +85,7 @@ describe("Utils", () => {
         const resizeAndDataUpdateOptions = {
             dataViews: [{}],
             resizeMode: 1,
-        } as any as powerbi.VisualUpdateOptions;
+        } as any as powerbi.extensibility.VisualUpdateOptions;
 
         const simpleSettingsUpdateOptions = {
             dataViews: [{
@@ -97,7 +95,7 @@ describe("Utils", () => {
                     },
                 },
             }],
-        } as any as powerbi.VisualUpdateOptions;
+        } as any as powerbi.extensibility.VisualUpdateOptions;
 
         const dataRoleTest = (role1: string, role2: string, type: UpdateType, directCompare = false) => {
             runMultipleUpdateTests({

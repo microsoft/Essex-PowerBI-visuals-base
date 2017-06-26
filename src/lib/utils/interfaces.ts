@@ -22,8 +22,6 @@
  * SOFTWARE.
  */
 
-import "powerbi-visuals/lib/powerbi-visuals";
-
 /**
  * Represents an object that can build persistence objects
  */
@@ -53,16 +51,6 @@ export interface IPersistObjectBuilder {
 }
 
 /**
- * PBI Services
- */
-export interface PBIServices  {
-    SemanticQuerySerializer: {
-        serializeExpr(expr: powerbi.data.SQExpr): ISerializedExpr;
-        deserializeExpr(expr: ISerializedExpr): powerbi.data.SQExpr;
-    };
-}
-
-/**
  * Represents a expression that has been serialized.
  */
 export interface ISerializedExpr {
@@ -77,7 +65,7 @@ export interface HasIdentity {
     /**
      * The identity of this object
      */
-    identity?: powerbi.DataViewScopeIdentity;
+    identity?: powerbi.visuals.ISelectionId;
 }
 
 /**

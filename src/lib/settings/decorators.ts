@@ -29,6 +29,17 @@ import { coloredObjectInstanceComposer, colorComposer } from "./composers";
 declare var _: any;
 
 /**
+ * Defines the type for a color in powerbi
+ */
+const FILL_TYPE = {
+    fill: {
+        solid: {
+            color: true,
+        },
+    },
+};
+
+/**
  * Defines a text setting to be used with powerBI
  * @param config The additional configuration to control how a setting operates
  */
@@ -63,7 +74,7 @@ export function colorSetting<T>(config?: IColorSettingDescriptor<T>) {
     "use strict";
     config = _.merge({}, {
         config: {
-            type: powerbi.visuals.StandardObjectProperties.fill.type,
+            type: FILL_TYPE,
         },
         compose: colorComposer(config ? config.defaultValue : "#ccc"),
         parse: colorParser(config ? config.defaultValue : "#ccc"),
@@ -79,7 +90,7 @@ export function instanceColorSetting<T>(config?: IColorInstanceSettingDescriptor
     "use strict";
     config = _.merge({}, {
         config: {
-            type: powerbi.visuals.StandardObjectProperties.fill.type,
+            type: FILL_TYPE,
         },
         compose: coloredObjectInstanceComposer(config ? config.defaultValue : "#ccc"),
         parse: colorCategoricalInstanceObjectParser(config ? config.defaultValue : "#ccc"),

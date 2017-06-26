@@ -22,7 +22,6 @@
  * SOFTWARE.
  */
 
-import "powerbi-visuals/lib/powerbi-visuals";
 declare var _: any;
 
 /**
@@ -30,7 +29,7 @@ declare var _: any;
  */
 export default class PropertyPersister {
     constructor(
-        private host: powerbi.IVisualHostServices, // tslint:disable-line
+        private host: powerbi.extensibility.visual.IVisualHost, // tslint:disable-line
         private delay: number = 100 // tslint:disable-line
     ) {}
 
@@ -59,10 +58,10 @@ export default class PropertyPersister {
 
             });
 
-            // SUPER important that these guys happen together, otherwise the selection does not update properly
-            if (isSelection) {
-                this.host.onSelect({ data: [] } as any); // TODO: Change this to visualObjects: []?
-            }
+            // // SUPER important that these guys happen together, otherwise the selection does not update properly
+            // if (isSelection) {
+            //     this.host.onSelect({ data: [] } as any); // TODO: Change this to visualObjects: []?
+            // }
             this.host.persistProperties(final);
         }
     }, this.delay);
