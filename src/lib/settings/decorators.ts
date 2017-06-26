@@ -26,7 +26,7 @@ import { setting } from "./settingDecorator";
 import { ISettingDescriptor, IDefaultInstanceColor, IDefaultColor } from "./interfaces";
 import { colorParser, colorCategoricalInstanceObjectParser } from "./parsers";
 import { coloredObjectInstanceComposer, colorComposer } from "./composers";
-declare var _: any;
+import * as _ from "lodash";
 
 /**
  * Defines the type for a color in powerbi

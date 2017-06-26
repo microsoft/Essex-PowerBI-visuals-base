@@ -27,7 +27,7 @@ export interface IDimensions {
     height: number;
 };
 
-export interface IReceiveDimensions extends powerbi.IVisual {
+export interface IReceiveDimensions extends powerbi.extensibility.visual.IVisual {
     setDimensions(dimensions: IDimensions): void;
 }
 
@@ -45,13 +45,7 @@ export function receiveDimensions<T extends IReceiveDimensions>(target: Dimensio
             args = args || [];
             super(...args);
         }
-        public init(options: powerbi.VisualInitOptions) {
-            super.init(options);
-            const { width, height } = options.viewport;
-            this.setDimensions({ width, height });
-        }
-
-        public update(options: powerbi.VisualUpdateOptions) {
+        public update(options: powerbi.extensibility.visual.VisualUpdateOptions) {
             const { width, height } = options.viewport;
             this.setDimensions({ width, height });
             if (super.update) {

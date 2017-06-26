@@ -77,7 +77,7 @@ export function convertItemsWithSegments(
         items = categories.map((category, rowIdx) => {
             let id = createIdBuilder ?
                 createIdBuilder()
-                    .withCategory(dvCats[rowIdx], 0)
+                    .withCategory(dvCats[0], rowIdx)
                     .createSelectionId()
                 : rowIdx;
             let rowTotal = 0;

@@ -21,7 +21,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-import VisualUpdateOptions = powerbi.VisualUpdateOptions;
+import VisualUpdateOptions = powerbi.extensibility.visual.VisualUpdateOptions;
 import UpdateType from "./UpdateType";
 const assignIn = require("lodash/assignIn"); // tslint:disable-line
 declare var _: any;
@@ -116,7 +116,9 @@ function hasSettingsChanged(oldOptions: VisualUpdateOptions, newOptions: VisualU
 
 function hasResized(oldOptions: VisualUpdateOptions, newOptions: VisualUpdateOptions, options: ICalcUpdateTypeOptions) {
     "use strict";
-    return !oldOptions || newOptions.resizeMode;
+    return !oldOptions ||
+        newOptions.viewport.height !== oldOptions.viewport.height ||
+        newOptions.viewport.width !== oldOptions.viewport.width;
 }
 
 function markDataViewState(dv: powerbi.DataView) {
