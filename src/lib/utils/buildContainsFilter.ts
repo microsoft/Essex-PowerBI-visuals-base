@@ -21,7 +21,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-import data = powerbi.data;
+import * as models from "powerbi-models";
 
 /**
  * Builds a "contains" filter from the given search value, and the given dataView
@@ -31,30 +31,38 @@ import data = powerbi.data;
  */
 export default function buildContainsFilter(source: powerbi.DataViewMetadataColumn, searchVal: any) {
     "use strict";
-    let filterExpr: data.SQExpr;
-    let filter: data.SemanticFilter;
+    let filter: models.AdvancedFilter;
     if (source) {
         const sourceType = source.type;
         // Only support "contains" with text columns
-        // if (sourceType.extendedType === powerbi.ValueType.fromDescriptor({ text: true }).extendedType) {
+
+        const target: models.IFilterColumnTarget = {
+            table: source.queryName.substr(0, source.queryName.indexOf(".")),
+            column: source.displayName,
+        };
+
         if (searchVal) {
             if (sourceType.text) {
-                let containsTextExpr = data.SQExprBuilder.text(searchVal);
-                filterExpr = data.SQExprBuilder.contains(<any>source["expr"], containsTextExpr);
+                filter = new models.AdvancedFilter(target, "And", {
+                    operator: <models.AdvancedFilterConditionOperators>"Contains",
+                    value: searchVal,
+                });
             } else {
-                let rightExpr: data.SQExpr;
                 if (sourceType.numeric) {
-                    rightExpr = data.SQExprBuilder.typedConstant(parseFloat(searchVal), sourceType);
+                    filter = new models.AdvancedFilter(target, "And", {
+                        operator: <models.AdvancedFilterConditionOperators>"Is",
+                        value: searchVal,
+                    });
                 } else if (sourceType.bool) {
-                    rightExpr = data.SQExprBuilder.boolean(searchVal === "1" || searchVal === "true");
-                }
-                if (rightExpr) {
-                    filterExpr = data.SQExprBuilder.equal(<any>source["expr"], rightExpr);
+                    filter = new models.AdvancedFilter(target, "Or", [{
+                        operator: <models.AdvancedFilterConditionOperators>"Is",
+                        value: "1",
+                    }, {
+                        operator: <models.AdvancedFilterConditionOperators>"Is",
+                        value: "true",
+                    }]);
                 }
             }
-        }
-        if (filterExpr) {
-            filter = data.SemanticFilter.fromSQExpr(filterExpr);
         }
     }
     return filter;

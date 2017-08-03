@@ -3057,6 +3057,10 @@ jsdom@^9.6.0:
     whatwg-url "^4.1.0"
     xml-name-validator ">= 2.0.1 < 3.0.0"
 
+jsen@^0.6.1:
+  version "0.6.6"
+  resolved "https://registry.yarnpkg.com/jsen/-/jsen-0.6.6.tgz#0240c18cf11350ac021456f48a7eb13bd67e0420"
+
 jsesc@~0.5.0:
   version "0.5.0"
   resolved "https://registry.yarnpkg.com/jsesc/-/jsesc-0.5.0.tgz#e7dee66e35d6fc16f710fe91d5cf69f70f08911d"
@@ -4587,6 +4591,12 @@ postcss@^5.0.0, postcss@^5.0.10, postcss@^5.0.11, postcss@^5.0.12, postcss@^5.0.
     js-base64 "^2.1.9"
     source-map "^0.5.6"
     supports-color "^3.1.2"
+
+powerbi-models@^0.11.3:
+  version "0.11.3"
+  resolved "https://registry.yarnpkg.com/powerbi-models/-/powerbi-models-0.11.3.tgz#7a0c6d297f0863ebc8c7ccfa3f5fea5e3488e316"
+  dependencies:
+    jsen "^0.6.1"
 
 powerbi-visuals-package-validator@^1.0.0:
   version "1.0.0"

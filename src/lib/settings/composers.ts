@@ -42,7 +42,9 @@ export function coloredObjectInstanceComposer(defaultColor: IDefaultInstanceColo
                 const finalColor = n.color || instanceColor;
                 return {
                     displayName: n.name,
-                    selector: n.identity,
+                    selector: {
+                        data: [n.identity],
+                    },
                     properties: {
                         [propName]: finalColor,
                     },
