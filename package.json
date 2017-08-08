@@ -23,7 +23,6 @@
   "license": "MIT",
   "dependencies": {
     "@types/d3": "^3.5.36",
-    "@types/gulp": "^3.8.32",
     "@types/jquery": "^2.0.33",
     "@types/lodash": "^4.14.37",
     "@types/node": "^6.0.45",
