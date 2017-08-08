@@ -1,1 +1,1 @@
-/// <reference path="./node_modules/powerbi-visuals-tools/templates/visuals/.api/v1.3.0/PowerBI-Visuals.d.ts"/>
+/// <reference path="./node_modules/powerbi-visuals-tools/templates/visuals/.api/v1.3.0/PowerBI-visuals.d.ts"/>
