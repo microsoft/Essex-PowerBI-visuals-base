@@ -4,7 +4,7 @@
     "module": "commonjs",
     "experimentalDecorators": true,
     "declaration": true,
-    "noImplicitAny": true,
+    "noImplicitAny": false,
     "sourceMap": true,
     "suppressImplicitAnyIndexErrors": true,
     "outDir": "dist"
@@ -13,6 +13,7 @@
   "files": [
     "./src/index.ts",
     "./src/spec/index.ts",
-    "./powerbi.d.ts"
+    "./powerbi.d.ts",
+    "./src/lib/powerbi-visuals-utils/index.ts"
   ]
 }
