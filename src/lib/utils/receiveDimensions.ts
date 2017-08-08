@@ -45,11 +45,11 @@ export function receiveDimensions<T extends IReceiveDimensions>(target: Dimensio
             args = args || [];
             super(...args);
         }
-        public update(options: powerbi.extensibility.visual.VisualUpdateOptions) {
+        public update(options: powerbi.extensibility.visual.VisualUpdateOptions, ...args: any[]) {
             const { width, height } = options.viewport;
             this.setDimensions({ width, height });
             if (super.update) {
-                super.update(options);
+                return super.update.apply(this, [options, ...args]);
             }
         }
     }

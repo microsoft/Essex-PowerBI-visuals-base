@@ -16,14 +16,6 @@
   dependencies:
     "@types/node" "*"
 
-"@types/gulp@^3.8.32":
-  version "3.8.32"
-  resolved "https://registry.yarnpkg.com/@types/gulp/-/gulp-3.8.32.tgz#83c59c681cc233d1ec7f82d269555566fa133156"
-  dependencies:
-    "@types/node" "*"
-    "@types/orchestrator" "*"
-    "@types/vinyl" "*"
-
 "@types/handlebars@^4.0.31":
   version "4.0.31"
   resolved "https://registry.yarnpkg.com/@types/handlebars/-/handlebars-4.0.31.tgz#a7fba66fafe42713aee88eeca8db91192efe6e72"
@@ -62,25 +54,9 @@
   version "6.0.52"
   resolved "https://registry.yarnpkg.com/@types/node/-/node-6.0.52.tgz#1ac3a99b42320f9e463482f25af4c2359473aaa6"
 
-"@types/orchestrator@*":
-  version "0.0.30"
-  resolved "https://registry.yarnpkg.com/@types/orchestrator/-/orchestrator-0.0.30.tgz#dcdda8d647b568b7b1e34178cb1f0b44ac9a98e5"
-  dependencies:
-    "@types/q" "*"
-
-"@types/q@*":
-  version "0.0.32"
-  resolved "https://registry.yarnpkg.com/@types/q/-/q-0.0.32.tgz#bd284e57c84f1325da702babfc82a5328190c0c5"
-
 "@types/shelljs@^0.7.0":
   version "0.7.2"
   resolved "https://registry.yarnpkg.com/@types/shelljs/-/shelljs-0.7.2.tgz#c2bdb3fe80cd7a3da08750ca898ae44c589671f3"
-  dependencies:
-    "@types/node" "*"
-
-"@types/vinyl@*":
-  version "2.0.0"
-  resolved "https://registry.yarnpkg.com/@types/vinyl/-/vinyl-2.0.0.tgz#fd213bf7f4136dde21fe1895500b12c186f8c268"
   dependencies:
     "@types/node" "*"
 
@@ -2407,6 +2383,10 @@ jsdom@^9.6.0:
 jsen@^0.6.1:
   version "0.6.6"
   resolved "https://registry.yarnpkg.com/jsen/-/jsen-0.6.6.tgz#0240c18cf11350ac021456f48a7eb13bd67e0420"
+
+json-loader@^0.5.7:
+  version "0.5.7"
+  resolved "https://registry.yarnpkg.com/json-loader/-/json-loader-0.5.7.tgz#dca14a70235ff82f0ac9a3abeb60d337a365185d"
 
 json-schema@0.2.3:
   version "0.2.3"

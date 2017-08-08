@@ -26,6 +26,8 @@ import * as jquery from "jquery";
 import global from "./testSetup"; // tslint:disable-line
 import "./mockPBI";
 
+const noop = (<any>function() {}); // tslint:disable-line
+
 global["$"] = jquery;
 export var Utils = { // tslint:disable-line
     FAKE_TABLE_DATA_ONE_COLUMN: <powerbi.DataView>{
@@ -91,7 +93,11 @@ export var Utils = { // tslint:disable-line
 
     createFakeHost: () => {
         return <powerbi.extensibility.visual.IVisualHost>{
-            persistProperties: (<any>function() {}) // tslint:disable-line
+            createSelectionIdBuilder: noop,
+            persistProperties: noop,
+            createSelectionManager: () => ({
+                getSelectionIds: () => <any[]>[],
+            }),
         };
     },
 
