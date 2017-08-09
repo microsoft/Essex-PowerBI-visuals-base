@@ -67,6 +67,34 @@ export function numberSetting<T>(config?: ISettingDescriptor<T>) {
 }
 
 /**
+ * Defines a JSON setting to be used with PowerBI
+ * @param config The additional configuration to control how a setting operates
+ */
+export function jsonSetting<J, T>(config?: ISettingDescriptor<T>) {
+    "use strict";
+    config = _.merge({}, {
+        config: {
+            type: {
+                text: true,
+            },
+        },
+        compose: val => val && JSON.stringify(val),
+        parse: val => val && JSON.parse(val),
+    }, config);
+    return setting(config);
+}
+
+/**
+ * Defines a selection setting to be used with powerBI
+ * @param config The additional configuration to control how a setting operates
+ */
+export function selectionSetting<J, T>(config?: ISettingDescriptor<T>) {
+    "use strict";
+    return jsonSetting<J, T>(config);
+}
+
+
+/**
  * Defines a setting to be used with powerBI
  * @param config The additional configuration to control how a setting operates
  */
