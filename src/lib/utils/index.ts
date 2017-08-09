@@ -41,3 +41,4 @@ export { default as createPersistObjectBuilder } from "./persistObjectBuilder";
 export { default as get } from "./typesafeGet";
 export * from "./convertItemsWithSegments";
 export * from "./interfaces";
+export {default as calculateSegments} from "./calculateSegments";
