@@ -1,16 +1,16 @@
 {
-  "name": "@essex/pbi-base",
+  "name": "@essex/visual-utils",
   "version": "0.9.0",
-  "description": "Essex PowerBI visual base",
+  "description": "A collection of utilities to help in the creation of powerbi visuals",
   "scripts": {
-    "clean": "rimraf dist",
+    "clean": "rimraf lib",
     "lint": "tslint {src,spec}/**/*.ts",
     "docs": "typedoc --out docs --ignoreCompilerErrors ./ --externalPattern **/node_modules/**/*.* --exclude **/src/**/*.spec.ts",
     "mocha": "mocha --require ts-node/register \"src/lib/settings/**/*.spec.ts\"",
     "test": "npm run clean && tsc && npm-run-all docs lint mocha"
   },
-  "main": "dist/index.js",
-  "typings": "dist/index.d.ts",
+  "main": "lib/index.js",
+  "typings": "lib/index.d.ts",
   "repository": {
     "type": "git",
     "url": "https://github.com/Microsoft/Essex-PowerBI-visuals-base"
