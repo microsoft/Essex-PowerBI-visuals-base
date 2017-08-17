@@ -21,6 +21,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
+/// <reference path="../node_modules/powerbi-visuals-tools/templates/visuals/.api/v1.3.0/PowerBI-visuals.d.ts"/>
 import "mocha";
 import { expect } from "chai";
 import {
@@ -28,28 +29,26 @@ import {
     IReceiveDimensions,
     receiveDimensions,
 } from "./receiveDimensions";
-
+import VisualUpdateOptions = powerbi.extensibility.visual.VisualUpdateOptions;
 
 class BaseRawDimensional implements IReceiveDimensions {
     public dimensions: IDimensions;
-    public initOptions: powerbi.VisualInitOptions;
+    public updateOptions: VisualUpdateOptions;
 
     public setDimensions(dimensions: IDimensions) {
         this.dimensions = dimensions;
     }
-    public init(options: powerbi.VisualInitOptions) {
-        this.initOptions = options;
+
+    public update(options: VisualUpdateOptions) {
+        this.updateOptions = options;
     }
 }
 
 
-class BasePBIDimensional extends BaseRawDimensional implements powerbi.IVisual {
-    public updateOptions: powerbi.VisualUpdateOptions;
+class BasePBIDimensional extends BaseRawDimensional implements powerbi.extensibility.visual.IVisual {
+    public updateOptions: VisualUpdateOptions;
 
-    public init(options: powerbi.VisualInitOptions) {
-        this.initOptions = options;
-    }
-    public update(options: powerbi.VisualUpdateOptions) {
+    public update(options: VisualUpdateOptions) {
         this.updateOptions = options;
     }
 }
@@ -73,12 +72,9 @@ describe("receiveDimensions", () => {
         expect(instance instanceof BaseRawDimensional).to.be.true;
         expect(instance instanceof BasePBIDimensional).to.be.true;
 
-        instance.init({ viewport: {width: 10, height: 100} } as powerbi.VisualInitOptions);
-        expect(instance.dimensions).to.deep.equal({width: 10, height: 100});
-        instance.update({ viewport: {width: 30, height: 40} } as powerbi.VisualUpdateOptions);
+        instance.update({ viewport: {width: 30, height: 40} } as VisualUpdateOptions);
         expect(instance.dimensions).to.deep.equal({width: 30, height: 40});
 
-        expect(instance.initOptions).to.be.ok;
         expect(instance.updateOptions).to.be.ok;
     });
 });

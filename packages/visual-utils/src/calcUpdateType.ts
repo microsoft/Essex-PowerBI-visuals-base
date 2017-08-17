@@ -23,8 +23,8 @@
  */
 import VisualUpdateOptions = powerbi.extensibility.visual.VisualUpdateOptions;
 import UpdateType from "./UpdateType";
-const assignIn = require("lodash/assignIn"); // tslint:disable-line
-declare var _: any;
+const assignIn = require("lodash.assignin"); // tslint:disable-line
+import * as _ from "lodash";
 
 export const DEFAULT_CALCULATE_SETTINGS: ICalcUpdateTypeOptions = {
     checkHighlights: false,

@@ -42,3 +42,4 @@ export { default as get } from "./typesafeGet";
 export * from "./convertItemsWithSegments";
 export * from "./interfaces";
 export {default as calculateSegments} from "./calculateSegments";
+export { default as listDiff } from "./listDiff";

@@ -29,7 +29,7 @@ import {
     buildEnumerationObjects,
     parseSettingsFromPBI,
 } from "./helpers";
-const assignIn = require("lodash/assignIn"); // tslint:disable-line
+const assignIn = require("lodash.assignin"); // tslint:disable-line
 
 /**
  * A simple class with utility methods to facilitate settings parsing.

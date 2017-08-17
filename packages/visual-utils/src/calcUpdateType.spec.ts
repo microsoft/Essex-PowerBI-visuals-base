@@ -1,6 +1,10 @@
+
+/// <reference path="../node_modules/powerbi-visuals-tools/templates/visuals/.api/v1.3.0/PowerBI-visuals.d.ts"/>
+
 import calcUpdateType from "./calcUpdateType";
 import { expect } from "chai";
 import UpdateType from "./UpdateType";
+import VisualUpdateOptions =  powerbi.extensibility.visual.VisualUpdateOptions;
 
 describe("calcUpdateType", () => {
     const VALUES_ONLY_UPDATE = () => <any>{
@@ -48,15 +52,18 @@ describe("calcUpdateType", () => {
     /**
      * Runs a update test that validates that the given update options returns the given update type
      */
-    const runUpdateTest = (options: powerbi.VisualUpdateOptions, updateType: UpdateType, directCompare = false) => {
+    const runUpdateTest = (options: VisualUpdateOptions, updateType: UpdateType, directCompare = false) => {
+        if (options) { options.viewport = <any>{}; }
         let expected = calcUpdateType(undefined, options);
         if (!directCompare) {
             expected &= updateType;
         }
         expect(expected).to.eq(updateType);
     };
-    const runMultipleUpdateTests = (o1: powerbi.VisualUpdateOptions, o2: powerbi.VisualUpdateOptions,
+    const runMultipleUpdateTests = (o1: VisualUpdateOptions, o2: VisualUpdateOptions,
         updateType: UpdateType, directCompare = false) => {
+        if (o1) { o1.viewport = <any>{}; }
+        if (o2) { o2.viewport = <any>{}; }
         calcUpdateType(undefined, o1);
         let expected = calcUpdateType(o1, o2);
         if (!directCompare) {
@@ -68,7 +75,7 @@ describe("calcUpdateType", () => {
     const resizeAndDataUpdateOptions = {
         dataViews: [{}],
         resizeMode: 1,
-    } as any as powerbi.VisualUpdateOptions;
+    } as any as VisualUpdateOptions;
 
     const simpleSettingsUpdateOptions = {
         dataViews: [{
@@ -78,7 +85,7 @@ describe("calcUpdateType", () => {
                 },
             },
         }],
-    } as any as powerbi.VisualUpdateOptions;
+    } as any as VisualUpdateOptions;
 
     const dataRoleTest = (role1: string, role2: string, type: UpdateType, directCompare = false) => {
         runMultipleUpdateTests({

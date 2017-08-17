@@ -6,8 +6,7 @@
     "clean": "rimraf lib",
     "lint": "tslint {src,spec}/**/*.ts",
     "docs": "typedoc --out docs --ignoreCompilerErrors ./ --externalPattern **/node_modules/**/*.* --exclude **/src/**/*.spec.ts",
-    "mocha": "mocha --require ts-node/register \"src/lib/settings/**/*.spec.ts\"",
-    "test": "npm run clean && tsc && npm-run-all docs lint mocha"
+    "test": "npm run clean && tsc && npm-run-all docs lint"
   },
   "main": "lib/index.js",
   "typings": "lib/index.d.ts",
@@ -32,7 +31,11 @@
     "jquery": "^2.2.3",
     "json-loader": "^0.5.7",
     "json-stringify-safe": "^5.0.1",
-    "lodash": "^4.11.0",
+    "lodash": "3.6.0",
+    "lodash.assignin": "^4.2.0",
+    "lodash.get": "^4.4.2",
+    "lodash.merge": "^4.6.0",
+    "lodash.set": "^4.3.2",
     "powerbi-models": "^0.11.3",
     "powerbi-visuals-tools": "^1.7.0",
     "powerbi-visuals-utils-dataviewutils": "^1.2.0",

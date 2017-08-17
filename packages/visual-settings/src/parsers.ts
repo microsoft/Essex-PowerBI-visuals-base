@@ -25,7 +25,7 @@
 import { ISettingsParser, IDefaultInstanceColor, IDefaultValue, IDefaultColor, ISettingDescriptor, ISetting } from "./interfaces"; // tslint:disable-line
 import get from "../utils/typesafeGet";
 import { getPBIObjectNameAndPropertyName } from "./helpers";
-const ldget = require("lodash/get"); // tslint:disable-line
+const ldget = require("lodash.get"); // tslint:disable-line
 
 /**
  * A parser which parses colors for each instance in a categorical dataset

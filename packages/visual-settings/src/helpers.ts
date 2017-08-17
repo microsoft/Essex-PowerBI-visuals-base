@@ -27,9 +27,9 @@ import { ISetting, ISettingDescriptor, ISettingsClass, IComposeResult } from "./
 import { IPersistObjectBuilder } from "../utils/interfaces";
 
 /* tslint:disable */
-const ldget = require("lodash/get");
-const merge = require("lodash/merge");
-const assignIn = require("lodash/assignIn");
+const ldget = require("lodash.get");
+const merge = require("lodash.merge");
+const assignIn = require("lodash.assignin");
 const stringify = require("json-stringify-safe");
 /* tslint:enable */
 

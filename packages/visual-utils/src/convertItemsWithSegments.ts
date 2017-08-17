@@ -23,12 +23,12 @@
  */
 
 import get from "./typesafeGet";
-import { fullColors as full } from "../colors";
+import { fullColors as full } from "./colors";
 import { default as calculateSegmentData } from "./calculateSegments";
 import { IColorSettings, ItemWithValueSegments, ColorMode, IValueSegment, IColoredObject } from "./interfaces";
 import ISelectionIdBuilder = powerbi.visuals.ISelectionIdBuilder;
 
-const ldget = require("lodash/get"); //tslint:disable-line
+const ldget = require("lodash.get"); //tslint:disable-line
 
 /**
  * Converts the dataView into a set of items that have a name, and a set of value segments.

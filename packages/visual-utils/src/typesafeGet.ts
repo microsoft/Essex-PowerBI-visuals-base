@@ -22,7 +22,7 @@
  * SOFTWARE.
  */
 
-const ldget = require("lodash/get"); // tslint:disable-line
+const ldget = require("lodash.get"); // tslint:disable-line
 const pathFinder = /return\s+([^\;\}]+)/;
 
 /**

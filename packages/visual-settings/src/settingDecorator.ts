@@ -27,7 +27,7 @@
  */
 import { ISetting, ISettingDescriptor, ISettingsClass } from "./interfaces";
 import { METADATA_KEY } from "./helpers";
-const assignIn = require("lodash/assignIn"); // tslint:disable-line
+const assignIn = require("lodash.assignin"); // tslint:disable-line
 
 /**
  * Defines a setting to be used with powerBI

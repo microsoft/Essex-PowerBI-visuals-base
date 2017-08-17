@@ -72,7 +72,7 @@ export var Utils = { // tslint:disable-line
     },
 
     createUpdateOptionsWithSmallData: () => {
-        return <powerbi.extensibility.VisualUpdateOptions>{
+        return <powerbi.extensibility.visual.VisualUpdateOptions>{
             viewport: {
                 width: 100,
                 height: 100,
@@ -82,7 +82,7 @@ export var Utils = { // tslint:disable-line
     },
 
     createUpdateOptionsWithData: () => {
-        return <powerbi.extensibility.VisualUpdateOptions>{
+        return <powerbi.extensibility.visual.VisualUpdateOptions>{
             viewport: {
                 width: 100,
                 height: 100,
