@@ -11,4 +11,3 @@ export * from "./convertItemsWithSegments";
 export * from "./interfaces";
 export { default as calculateSegments } from "./calculateSegments";
 export { default as listDiff } from "./listDiff";
-export { fullColors, default as colors } from "./colors";

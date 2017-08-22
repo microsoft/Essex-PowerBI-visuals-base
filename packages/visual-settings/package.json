@@ -19,10 +19,11 @@
     "PowerBI",
     "Base"
   ],
-  "author": "David Tittsworth <david.tittsworth@atsid.com>",
+  "author": "Microsoft",
   "license": "MIT",
   "dependencies": {
     "@essex/visual-utils": "*",
+    "@essex/visual-styling": "*",
     "font-awesome": "^4.6.1",
     "json-stringify-safe": "^5.0.1",
     "lodash": "3.6.0",

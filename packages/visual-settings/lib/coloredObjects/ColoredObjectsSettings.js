@@ -40,6 +40,7 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 var visual_utils_1 = require("@essex/visual-utils");
+var visual_styling_1 = require("@essex/visual-styling");
 var decorators_1 = require("../decorators");
 var settingDecorator_1 = require("../settingDecorator");
 var HasSettings_1 = require("../HasSettings");
@@ -85,7 +86,7 @@ var ColoredObjectsSettings = (function (_super) {
 __decorate([
     decorators_1.instanceColorSetting({
         name: "fill",
-        defaultValue: function (idx) { return visual_utils_1.fullColors[idx] || "#ccc"; },
+        defaultValue: function (idx) { return visual_styling_1.fullColors[idx] || "#ccc"; },
         enumerable: function (s, dv) { return visual_utils_1.dataSupportsColorizedInstances(dv) && !(s.colorMode === visual_utils_1.ColorMode.Gradient); },
     })
 ], ColoredObjectsSettings.prototype, "instanceColors", void 0);

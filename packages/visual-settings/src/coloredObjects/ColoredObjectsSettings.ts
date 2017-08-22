@@ -29,8 +29,8 @@ import {
     dataSupportsValueSegments,
     dataSupportsColorizedInstances,
     dataSupportsGradients,
-    fullColors,
 } from "@essex/visual-utils";
+import { fullColors } from "@essex/visual-styling";
 import { instanceColorSetting, enumSetting } from "../decorators";
 import { setting } from "../settingDecorator";
 import { HasSettings } from "../HasSettings";

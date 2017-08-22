@@ -22,12 +22,7 @@
  * SOFTWARE.
  */
 
-export interface ColorsArray extends Array<string> {
-    primary: string[];
-    full: string[];
-}
-
-const colors: ColorsArray = <any>[
+const colors = [
     "#01B8AA",
    // "#374649",
     "#FD625E",
@@ -93,5 +88,5 @@ colors.full = [
 /**
  * Defines a set of colors that complement PBIs color set
  */
-export default colors;
-export const fullColors = colors.full;
+exports.default = colors;
+exports.fullColors = colors.full;

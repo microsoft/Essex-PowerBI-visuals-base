@@ -1,7 +1,4 @@
-/*
- * MIT License
- *
- * Copyright (c) 2016 Microsoft
+/* Copyright (c) 2016 Microsoft
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -21,25 +18,5 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-
-/* tslint:disable */
-const debug = require("debug");
-debug.save = function() { };
-if (process.env.DEBUG) {
-    debug.enable(process.env.DEBUG);
-}
-/* tslint:enable */
-
-export { default as calcUpdateType } from "./calcUpdateType";
-export { default as createPropertyPersister } from "./createPropertyPersister";
-export * from "./logger";
-export { default as PropertyPersister } from "./PropertyPersister";
-export * from "./receiveDimensions";
-export { default as UpdateType } from "./UpdateType";
-export { default as buildContainsFilter } from "./buildContainsFilter";
-export { default as createPersistObjectBuilder } from "./persistObjectBuilder";
-export { default as get } from "./typesafeGet";
-export * from "./convertItemsWithSegments";
-export * from "./interfaces";
-export {default as calculateSegments} from "./calculateSegments";
-export { default as listDiff } from "./listDiff";
+const { fullColors } = require("./colors");
+exports.fullColors = fullColors;

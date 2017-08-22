@@ -25,7 +25,7 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 var d3 = require("d3");
 var _ = require("lodash");
-var colors_1 = require("./colors");
+var visual_styling_1 = require("@essex/visual-styling");
 /**
  * A utility method that takes a dataView, and breaks down the values into named segments with colors
  * Colorizing prority: "#ccc" < defaultColor < gradient < segmentColors
@@ -56,7 +56,7 @@ function calculateSegments(columns, defaultColor, gradient, // The gradient used
             .range([startColor, endColor]);
     }
     return _.sortBy(segmentInfo, ["name"]).map(function (v, i) {
-        var color = colors_1.fullColors[i];
+        var color = visual_styling_1.fullColors[i];
         if (segmentColors && segmentColors[i]) {
             color = segmentColors[i].color;
         }
@@ -64,7 +64,7 @@ function calculateSegments(columns, defaultColor, gradient, // The gradient used
             color = gradientScale(isNaN(v.name) ? i : v.name);
         }
         else {
-            color = defaultColor || colors_1.fullColors[i];
+            color = defaultColor || visual_styling_1.fullColors[i];
         }
         color = color || "#ccc";
         return {

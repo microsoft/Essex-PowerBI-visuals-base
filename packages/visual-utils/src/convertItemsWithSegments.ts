@@ -23,7 +23,7 @@
  */
 
 import get from "./typesafeGet";
-import { fullColors as full } from "./colors";
+import { fullColors as full } from "@essex/visual-styling";
 import { default as calculateSegmentData } from "./calculateSegments";
 import { IColorSettings, ItemWithValueSegments, ColorMode, IValueSegment, IColoredObject } from "./interfaces";
 import ISelectionIdBuilder = powerbi.visuals.ISelectionIdBuilder;

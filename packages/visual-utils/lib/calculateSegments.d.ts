@@ -13,5 +13,5 @@ export default function calculateSegments(columns: powerbi.DataViewValueColumns,
 }[]): {
     name: any;
     identity: any;
-    color: string;
+    color: any;
 }[];

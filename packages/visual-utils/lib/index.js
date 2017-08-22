@@ -55,7 +55,4 @@ var calculateSegments_1 = require("./calculateSegments");
 exports.calculateSegments = calculateSegments_1.default;
 var listDiff_1 = require("./listDiff");
 exports.listDiff = listDiff_1.default;
-var colors_1 = require("./colors");
-exports.fullColors = colors_1.fullColors;
-exports.colors = colors_1.default;
 //# sourceMappingURL=index.js.map

@@ -24,7 +24,7 @@
  */
 Object.defineProperty(exports, "__esModule", { value: true });
 var typesafeGet_1 = require("./typesafeGet");
-var colors_1 = require("./colors");
+var visual_styling_1 = require("@essex/visual-styling");
 var calculateSegments_1 = require("./calculateSegments");
 var interfaces_1 = require("./interfaces");
 var ldget = require("lodash.get"); //tslint:disable-line
@@ -49,7 +49,7 @@ function convertItemsWithSegments(dataView, onCreateItem, settings, createIdBuil
         // We should only add gradients if the data supports gradients, and the user has gradients enabled
         var shouldAddGradients = dataSupportsGradients(dataView) && shouldUseGradient;
         // If the data supports default color, then use id.
-        var defaultColor = dataSupportsDefaultColor(dataView) ? colors_1.fullColors[0] : undefined;
+        var defaultColor = dataSupportsDefaultColor(dataView) ? visual_styling_1.fullColors[0] : undefined;
         // We should only colorize instances if the data supports colorized instances and the user isn't
         // trying to use gradients
         var shouldAddInstanceColors = dataSupportsColorizedInstances(dataView) && !shouldUseGradient;

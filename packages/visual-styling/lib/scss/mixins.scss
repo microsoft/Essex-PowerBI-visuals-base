@@ -1,0 +1,86 @@
+/*
+ * MIT License
+ *
+ * Copyright (c) 2016 Microsoft
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
+ */
+
+@import "./variables";
+
+/// Mixin to customize scrollbars
+/// Beware, this does not work in all browsers
+/// @author Hugo Giraudel
+/// @param {Length} $size - Horizontal scrollbar's height and vertical scrollbar's width
+/// @param {Color} $thumb-color - Scrollbar's color
+/// @param {Color} $track-color [mix($thumb-color, white, 50%)] - Scrollbar's color
+/// @example scss - Scrollbar styling
+///   @include scrollbars(.5em, slategray);
+@mixin scrollbars($size, $thumb-color, $track-color: mix($thumb-color, white,  50%), $hover-only:false) {
+
+  // For Google Chrome
+  &::-webkit-scrollbar {
+      width:  $size;
+      height: $size;
+      background-color: transparent;
+  }
+
+  &::-webkit-scrollbar-thumb {
+      @if $hover-only == false {
+          background: $thumb-color;
+      } @else {
+          background: transparent;
+      }
+  }
+
+  &::-webkit-scrollbar-track {
+      @if $hover-only == false {
+          background: $track-color;
+      } @else {
+          background: transparent;
+      }
+  }
+
+  @if $hover-only == true {
+    &:hover::-webkit-scrollbar-thumb {
+        background: $thumb-color;
+    }
+
+    &:hover::-webkit-scrollbar-track {
+        background: $track-color;
+    }
+  }
+
+  &::-webkit-scrollbar-track-piece {
+      background: 0 0;
+  }
+
+  & {
+      -ms-overflow-style: -ms-autohiding-scrollbar;
+      -ms-scrollbar-track-color: $track-color;
+      -ms-scrollbar-arrow-color: $thumb-color;
+      -ms-scrollbar-face-color: $thumb-color;
+  }
+
+  // For Internet Explorer
+  body {
+    scrollbar-face-color: $thumb-color;
+    scrollbar-track-color: $track-color;
+  }
+}

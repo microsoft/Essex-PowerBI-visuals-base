@@ -24,7 +24,7 @@
 
 import * as d3 from "d3";
 import * as _ from "lodash";
-import { fullColors } from "./colors";
+import { fullColors } from "@essex/visual-styling";
 import { IGradient } from "./interfaces";
 
 /**

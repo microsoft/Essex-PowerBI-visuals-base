@@ -13,7 +13,7 @@ export declare function convertItemsWithSegments(dataView: powerbi.DataView, onC
     segmentInfo: {
         name: any;
         identity: any;
-        color: string;
+        color: any;
     }[];
 };
 /**
