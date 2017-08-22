@@ -2,15 +2,9 @@
 
 # Essex PBI Base
 
-A collection of utilities for creating custom visuals.
+A collection of libraries to assist in the creation of PowerBI custom visuals.
 
-# Notes
-## Bundling
-Implementers should mark powerbi as an externally loaded resource so that the PowerBI client codebase
-is not bundled into custom visuals.
-
-```
-externals: {
-  "powerbi-visuals/lib/powerbi-visuals": "powerbi"
-}
-```
+# Building
+* Install [Yarn](https://yarnpkg.com)
+* Run `yarn` to install the dependencies
+* Run `yarn test` to symlink, build, lint, and test all of the projects within the packages folder
