@@ -10,3 +10,5 @@ spec/**/*.d.ts
 spec/**/*.map
 .scripts/
 .idea/
+lib/*
+!visual-styling/lib
