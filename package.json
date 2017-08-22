@@ -1,6 +1,6 @@
 {
   "name": "@essex/pbi-base",
-  "version": "0.9.0",
+  "version": "1.0.0",
   "private": true,
   "description": "Essex PowerBI visual base",
   "scripts": {

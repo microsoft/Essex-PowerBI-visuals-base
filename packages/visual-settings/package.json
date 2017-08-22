@@ -1,6 +1,6 @@
 {
   "name": "@essex/visual-settings",
-  "version": "0.9.0",
+  "version": "1.0.0",
   "description": "A library to parse and enumerate powerbi visual settings.",
   "scripts": {
     "clean": "rimraf lib",
