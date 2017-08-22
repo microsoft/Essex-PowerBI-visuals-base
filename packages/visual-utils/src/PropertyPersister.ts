@@ -58,10 +58,6 @@ export default class PropertyPersister {
 
             });
 
-            // // SUPER important that these guys happen together, otherwise the selection does not update properly
-            // if (isSelection) {
-            //     this.host.onSelect({ data: [] } as any); // TODO: Change this to visualObjects: []?
-            // }
             this.host.persistProperties(final);
         }
     }, this.delay);
