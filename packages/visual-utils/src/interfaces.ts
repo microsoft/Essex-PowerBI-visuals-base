@@ -22,6 +22,8 @@
  * SOFTWARE.
  */
 
+ import { JQuery } from "jquery";
+
 /**
  * Represents an object that can build persistence objects
  */

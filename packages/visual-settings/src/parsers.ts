@@ -23,7 +23,7 @@
  */
 
 import { ISettingsParser, IDefaultInstanceColor, IDefaultValue, IDefaultColor, ISettingDescriptor, ISetting } from "./interfaces"; // tslint:disable-line
-import get from "../utils/typesafeGet";
+import { get } from "@essex/visual-utils";
 import { getPBIObjectNameAndPropertyName } from "./helpers";
 const ldget = require("lodash.get"); // tslint:disable-line
 

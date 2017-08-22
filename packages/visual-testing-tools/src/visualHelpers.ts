@@ -22,13 +22,13 @@
  * SOFTWARE.
  */
 
-import * as jquery from "jquery";
+import * as $ from "jquery";
 import global from "./testSetup"; // tslint:disable-line
 import "./mockPBI";
 
 const noop = (<any>function() {}); // tslint:disable-line
 
-global["$"] = jquery;
+global["$"] = $;
 export var Utils = { // tslint:disable-line
     FAKE_TABLE_DATA_ONE_COLUMN: <powerbi.DataView>{
         metadata: <powerbi.DataViewMetadata>{},

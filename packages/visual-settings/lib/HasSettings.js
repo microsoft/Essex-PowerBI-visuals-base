@@ -24,7 +24,7 @@
  */
 Object.defineProperty(exports, "__esModule", { value: true });
 var helpers_1 = require("./helpers");
-var assignIn = require("lodash/assignIn"); // tslint:disable-line
+var assignIn = require("lodash.assignin"); // tslint:disable-line
 /**
  * A simple class with utility methods to facilitate settings parsing.
  */

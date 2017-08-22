@@ -23,11 +23,11 @@
  * SOFTWARE.
  */
 Object.defineProperty(exports, "__esModule", { value: true });
-var persistObjectBuilder_1 = require("../utils/persistObjectBuilder");
+var visual_utils_1 = require("@essex/visual-utils");
 /* tslint:disable */
-var ldget = require("lodash/get");
-var merge = require("lodash/merge");
-var assignIn = require("lodash/assignIn");
+var ldget = require("lodash.get");
+var merge = require("lodash.merge");
+var assignIn = require("lodash.assignin");
 var stringify = require("json-stringify-safe");
 /* tslint:enable */
 exports.METADATA_KEY = "__settings__";
@@ -87,7 +87,7 @@ function buildPersistObjects(settingsClass, settingsObj, dataView, includeHidden
         settingsObj = parseSettingsFromPBI(settingsClass, undefined, settingsObj); // Just in case they pass in a JSON version
         var settingsMetadata_1 = getSettingsMetadata(settingsClass);
         if (settingsMetadata_1) {
-            var builder_1 = persistObjectBuilder_1.default();
+            var builder_1 = visual_utils_1.createPersistObjectBuilder();
             Object.keys(settingsMetadata_1).forEach(function (key) {
                 var setting = settingsMetadata_1[key];
                 if (setting.isChildSettings) {

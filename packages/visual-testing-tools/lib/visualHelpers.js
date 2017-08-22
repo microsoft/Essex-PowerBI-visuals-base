@@ -23,11 +23,11 @@
  * SOFTWARE.
  */
 Object.defineProperty(exports, "__esModule", { value: true });
-var jquery = require("jquery");
+var $ = require("jquery");
 var testSetup_1 = require("./testSetup"); // tslint:disable-line
 require("./mockPBI");
 var noop = function () { }; // tslint:disable-line
-testSetup_1.default["$"] = jquery;
+testSetup_1.default["$"] = $;
 exports.Utils = {
     FAKE_TABLE_DATA_ONE_COLUMN: {
         metadata: {},

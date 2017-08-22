@@ -1,5 +1,5 @@
 
-/// <reference path="../node_modules/powerbi-visuals-tools/templates/visuals/.api/v1.3.0/PowerBI-visuals.d.ts"/>
+/// <reference path="../../../node_modules/powerbi-visuals-tools/templates/visuals/.api/v1.3.0/PowerBI-visuals.d.ts"/>
 
 import calcUpdateType from "./calcUpdateType";
 import { expect } from "chai";
@@ -8,6 +8,7 @@ import VisualUpdateOptions =  powerbi.extensibility.visual.VisualUpdateOptions;
 
 describe("calcUpdateType", () => {
     const VALUES_ONLY_UPDATE = () => <any>{
+        viewport: {},
         dataViews: [{
             categorical: {
                 values: [{
@@ -18,6 +19,7 @@ describe("calcUpdateType", () => {
         }],
     };
     const VALUES_ONLY_UPDATE_WITH_HIGHLIGHTS = () => <any>{
+        viewport: {},
         dataViews: [{
             categorical: {
                 values: [{
@@ -62,8 +64,8 @@ describe("calcUpdateType", () => {
     };
     const runMultipleUpdateTests = (o1: VisualUpdateOptions, o2: VisualUpdateOptions,
         updateType: UpdateType, directCompare = false) => {
-        if (o1) { o1.viewport = <any>{}; }
-        if (o2) { o2.viewport = <any>{}; }
+        if (o1 && !o1.viewport) { o1.viewport = <any>{}; }
+        if (o2 && !o2.viewport) { o2.viewport = <any>{}; }
         calcUpdateType(undefined, o1);
         let expected = calcUpdateType(o1, o2);
         if (!directCompare) {
@@ -326,6 +328,7 @@ describe("calcUpdateType", () => {
         () => {
             const identities = [{ key: "KEY1" }];
             const arr = {
+                viewport: {},
                 dataViews: [{
                     categorical: {
                         categories: [{
@@ -398,7 +401,10 @@ describe("calcUpdateType", () => {
             dataViews: dvs,
         } as any, {
             dataViews: dvs,
-            resizeMode: 1, // Just resized, data remained the same
+            viewport: {
+                width: 200,
+                height: 200,
+            },
         } as any,
         UpdateType.Resize,
         true);

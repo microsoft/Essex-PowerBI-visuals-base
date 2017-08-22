@@ -22,7 +22,7 @@
  * SOFTWARE.
  */
 
-import { IPersistObjectBuilder } from "../utils/interfaces";
+import { IPersistObjectBuilder } from "@essex/visual-utils";
 
 /**
  * Represents a setting

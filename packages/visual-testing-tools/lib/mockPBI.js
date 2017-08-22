@@ -24,8 +24,8 @@
  */
 Object.defineProperty(exports, "__esModule", { value: true });
 var testSetup_1 = require("./testSetup"); // tslint:disable-line
-var jquery = require("jquery");
-testSetup_1.default["powerbi"] = jquery.extend(true, {
+var $ = require("jquery");
+testSetup_1.default["powerbi"] = $.extend(true, {
     VisualUpdateType: {},
     VisualDataRoleKind: {},
     data: {

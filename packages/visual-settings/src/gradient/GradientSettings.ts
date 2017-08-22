@@ -24,7 +24,7 @@
 
 import { colorSetting as color, numberSetting as num } from "../decorators";
 import { HasSettings } from "../HasSettings";
-import { IGradient } from "../../utils/interfaces";
+import { IGradient } from "@essex/visual-utils";
 
 /**
  * A set of gradient settings

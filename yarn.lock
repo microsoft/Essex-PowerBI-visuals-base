@@ -6,10 +6,6 @@
   version "3.4.34"
   resolved "https://registry.yarnpkg.com/@types/chai/-/chai-3.4.34.tgz#d5335792823bb09cddd5e38c3d211b709183854d"
 
-"@types/d3@^3.5.36":
-  version "3.5.36"
-  resolved "https://registry.yarnpkg.com/@types/d3/-/d3-3.5.36.tgz#0943ab98253421fb07b9adfc6dc7ddd36c5178b2"
-
 "@types/fs-extra@^3.0.0":
   version "3.0.3"
   resolved "https://registry.yarnpkg.com/@types/fs-extra/-/fs-extra-3.0.3.tgz#1d66eb670ebf657e57c0fda014df340c19d8aa0c"
@@ -23,10 +19,6 @@
 "@types/highlight.js@^9.1.8":
   version "9.1.8"
   resolved "https://registry.yarnpkg.com/@types/highlight.js/-/highlight.js-9.1.8.tgz#d227f18bcb8f3f187e16965f2444859a04689758"
-
-"@types/jquery@^2.0.33":
-  version "2.0.34"
-  resolved "https://registry.yarnpkg.com/@types/jquery/-/jquery-2.0.34.tgz#27615b369f30e572336126514e74672dda6e3d04"
 
 "@types/lodash@^4.14.37":
   version "4.14.43"
@@ -50,7 +42,7 @@
   dependencies:
     "@types/node" "*"
 
-"@types/node@*", "@types/node@^6.0.45":
+"@types/node@*":
   version "6.0.52"
   resolved "https://registry.yarnpkg.com/@types/node/-/node-6.0.52.tgz#1ac3a99b42320f9e463482f25af4c2359473aaa6"
 
@@ -1004,10 +996,6 @@ d3@3.5.12:
   version "3.5.12"
   resolved "https://registry.yarnpkg.com/d3/-/d3-3.5.12.tgz#3b821f5b72c5371eccea1aaf4da2f317eb473240"
 
-d3@3.5.5:
-  version "3.5.5"
-  resolved "https://registry.yarnpkg.com/d3/-/d3-3.5.5.tgz#be1aba6a84fb6653283b3ebebb7f570e3bda187e"
-
 d@1:
   version "1.0.0"
   resolved "https://registry.yarnpkg.com/d/-/d-1.0.0.tgz#754bb5bfe55451da69a58b94d45f4c5b0462d58f"
@@ -1100,7 +1088,7 @@ del@2.2.0:
     pinkie-promise "^2.0.0"
     rimraf "^2.2.8"
 
-del@^2.0.2, del@^2.2.2:
+del@^2.0.2:
   version "2.2.2"
   resolved "https://registry.yarnpkg.com/del/-/del-2.2.2.tgz#c12c981d067846c84bcaf862cff930d907ffd1a8"
   dependencies:
@@ -2087,10 +2075,6 @@ global-prefix@^0.1.4:
     is-windows "^0.2.0"
     which "^1.2.12"
 
-globalize@0.1.0-a2:
-  version "0.1.0-a2"
-  resolved "https://registry.yarnpkg.com/globalize/-/globalize-0.1.0a2.tgz#7f28b382ebefd9ba0cb3d803635fbba64a87f294"
-
 globals@^8.11.0:
   version "8.18.0"
   resolved "https://registry.yarnpkg.com/globals/-/globals-8.18.0.tgz#93d4a62bdcac38cfafafc47d6b034768cb0ffcb4"
@@ -2860,10 +2844,6 @@ jsdom@^9.6.0:
 jsen@^0.6.1:
   version "0.6.6"
   resolved "https://registry.yarnpkg.com/jsen/-/jsen-0.6.6.tgz#0240c18cf11350ac021456f48a7eb13bd67e0420"
-
-json-loader@^0.5.7:
-  version "0.5.7"
-  resolved "https://registry.yarnpkg.com/json-loader/-/json-loader-0.5.7.tgz#dca14a70235ff82f0ac9a3abeb60d337a365185d"
 
 json-schema@0.2.3:
   version "0.2.3"
@@ -4275,9 +4255,9 @@ powerbi-visuals-package-validator@^1.0.0:
     typescript "1.7.5"
     yargs "3.32.0"
 
-powerbi-visuals-tools@^1.7.0:
-  version "1.7.0"
-  resolved "https://registry.yarnpkg.com/powerbi-visuals-tools/-/powerbi-visuals-tools-1.7.0.tgz#b9d0fb8c50cf9c62cc5dfa3889f2f10a967ca8a7"
+powerbi-visuals-tools@^1.7.0, powerbi-visuals-tools@^1.7.2:
+  version "1.7.2"
+  resolved "https://registry.yarnpkg.com/powerbi-visuals-tools/-/powerbi-visuals-tools-1.7.2.tgz#d5108e084be7477266506ce9829a15debc7476a5"
   dependencies:
     chalk "^1.1.3"
     commander "^2.9.0"
@@ -4295,30 +4275,9 @@ powerbi-visuals-tools@^1.7.0:
     uglify-js "^2.6.2"
     uuid "^3.0.0"
 
-powerbi-visuals-utils-dataviewutils@1.2.0, powerbi-visuals-utils-dataviewutils@^1.2.0:
+powerbi-visuals-utils-dataviewutils@1.2.0:
   version "1.2.0"
   resolved "https://registry.yarnpkg.com/powerbi-visuals-utils-dataviewutils/-/powerbi-visuals-utils-dataviewutils-1.2.0.tgz#59a1c983355c958a23d9901894f65f1575193213"
-
-powerbi-visuals-utils-formattingutils@^2.1.0:
-  version "2.1.0"
-  resolved "https://registry.yarnpkg.com/powerbi-visuals-utils-formattingutils/-/powerbi-visuals-utils-formattingutils-2.1.0.tgz#9979af0d711a80f0f6a9ee8d2bc4c1735fe9e18b"
-  dependencies:
-    d3 "3.5.5"
-    globalize "0.1.0-a2"
-    powerbi-visuals-utils-dataviewutils "1.2.0"
-    powerbi-visuals-utils-svgutils "1.1.0"
-    powerbi-visuals-utils-typeutils "1.1.0"
-
-powerbi-visuals-utils-svgutils@1.1.0, powerbi-visuals-utils-svgutils@^1.1.0:
-  version "1.1.0"
-  resolved "https://registry.yarnpkg.com/powerbi-visuals-utils-svgutils/-/powerbi-visuals-utils-svgutils-1.1.0.tgz#8ba22c6ef5662a402709b477753a4519342257e7"
-  dependencies:
-    d3 "3.5.5"
-    powerbi-visuals-utils-typeutils "1.1.0"
-
-powerbi-visuals-utils-typeutils@1.1.0, powerbi-visuals-utils-typeutils@^1.1.0:
-  version "1.1.0"
-  resolved "https://registry.yarnpkg.com/powerbi-visuals-utils-typeutils/-/powerbi-visuals-utils-typeutils-1.1.0.tgz#347942e581873700da55efff5136a693a76df9b2"
 
 prelude-ls@~1.1.0, prelude-ls@~1.1.1, prelude-ls@~1.1.2:
   version "1.1.2"

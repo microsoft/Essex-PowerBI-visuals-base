@@ -34,7 +34,7 @@ var __extends = (this && this.__extends) || (function () {
 })();
 Object.defineProperty(exports, "__esModule", { value: true });
 var helpers_1 = require("./helpers");
-var assignIn = require("lodash/assignIn"); // tslint:disable-line
+var assignIn = require("lodash.assignin"); // tslint:disable-line
 /**
  * Defines a setting to be used with powerBI
  * @param config The configuration used to control how a setting operates

@@ -23,9 +23,9 @@
  * SOFTWARE.
  */
 Object.defineProperty(exports, "__esModule", { value: true });
-var typesafeGet_1 = require("../utils/typesafeGet");
+var visual_utils_1 = require("@essex/visual-utils");
 var helpers_1 = require("./helpers");
-var ldget = require("lodash/get"); // tslint:disable-line
+var ldget = require("lodash.get"); // tslint:disable-line
 /**
  * A parser which parses colors for each instance in a categorical dataset
  * @param defaultColor The color to use if an instance doesn't have a color
@@ -34,7 +34,7 @@ function colorCategoricalInstanceObjectParser(defaultColor) {
     "use strict";
     if (defaultColor === void 0) { defaultColor = "#ccc"; }
     return coloredInstanceObjectParser(defaultColor, function (dv) {
-        var values = typesafeGet_1.default(dv, function (v) { return v.categorical.values; }, []);
+        var values = visual_utils_1.get(dv, function (v) { return v.categorical.values; }, []);
         return (values && values.grouped && values.grouped()) || [];
     });
 }
@@ -58,7 +58,7 @@ function coloredInstanceObjectParser(defaultColor, instancesGetter) {
                 var defaultValColor = typeof defaultColor === "function" ? defaultColor(i) : defaultColor;
                 return {
                     name: n.name,
-                    color: typesafeGet_1.default(prop, function (o) { return o.solid.color; }, defaultValColor),
+                    color: visual_utils_1.get(prop, function (o) { return o.solid.color; }, defaultValColor),
                     identity: n.identity,
                 };
             });

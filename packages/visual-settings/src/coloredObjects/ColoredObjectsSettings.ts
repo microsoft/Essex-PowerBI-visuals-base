@@ -22,13 +22,19 @@
  * SOFTWARE.
  */
 
-import { IColorSettings, ColorMode, IColoredObject } from "../../utils/interfaces";
-import { dataSupportsValueSegments, dataSupportsColorizedInstances, dataSupportsGradients } from "../../utils/convertItemsWithSegments";
+import {
+    IColorSettings,
+    ColorMode,
+    IColoredObject,
+    dataSupportsValueSegments,
+    dataSupportsColorizedInstances,
+    dataSupportsGradients,
+    fullColors,
+} from "@essex/visual-utils";
 import { instanceColorSetting, enumSetting } from "../decorators";
 import { setting } from "../settingDecorator";
 import { HasSettings } from "../HasSettings";
 import { GradientSettings, gradientSetting } from "../gradient";
-import { fullColors } from "../../colors";
 
 /**
  * A set of color settings which control how objects are colored

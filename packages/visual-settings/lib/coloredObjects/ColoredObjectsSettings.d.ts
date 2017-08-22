@@ -1,4 +1,4 @@
-import { IColorSettings, ColorMode, IColoredObject } from "../../utils/interfaces";
+import { IColorSettings, ColorMode, IColoredObject } from "@essex/visual-utils";
 import { HasSettings } from "../HasSettings";
 import { GradientSettings } from "../gradient";
 /**

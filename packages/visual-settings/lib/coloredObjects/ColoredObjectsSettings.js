@@ -39,13 +39,11 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
     return c > 3 && r && Object.defineProperty(target, key, r), r;
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-var interfaces_1 = require("../../utils/interfaces");
-var convertItemsWithSegments_1 = require("../../utils/convertItemsWithSegments");
+var visual_utils_1 = require("@essex/visual-utils");
 var decorators_1 = require("../decorators");
 var settingDecorator_1 = require("../settingDecorator");
 var HasSettings_1 = require("../HasSettings");
 var gradient_1 = require("../gradient");
-var colors_1 = require("../../colors");
 /**
  * A set of color settings which control how objects are colored
  */
@@ -87,20 +85,20 @@ var ColoredObjectsSettings = (function (_super) {
 __decorate([
     decorators_1.instanceColorSetting({
         name: "fill",
-        defaultValue: function (idx) { return colors_1.fullColors[idx] || "#ccc"; },
-        enumerable: function (s, dv) { return convertItemsWithSegments_1.dataSupportsColorizedInstances(dv) && !(s.colorMode === interfaces_1.ColorMode.Gradient); },
+        defaultValue: function (idx) { return visual_utils_1.fullColors[idx] || "#ccc"; },
+        enumerable: function (s, dv) { return visual_utils_1.dataSupportsColorizedInstances(dv) && !(s.colorMode === visual_utils_1.ColorMode.Gradient); },
     })
 ], ColoredObjectsSettings.prototype, "instanceColors", void 0);
 __decorate([
-    decorators_1.enumSetting(interfaces_1.ColorMode, {
+    decorators_1.enumSetting(visual_utils_1.ColorMode, {
         displayName: "Color Mode",
-        defaultValue: interfaces_1.ColorMode.Instance,
+        defaultValue: visual_utils_1.ColorMode.Instance,
         description: "Determines how the individual bars within the time brush are colored",
     })
 ], ColoredObjectsSettings.prototype, "colorMode", void 0);
 __decorate([
     gradient_1.gradientSetting({
-        enumerable: function (s, dataView) { return convertItemsWithSegments_1.dataSupportsGradients(dataView) && (s.colorMode === interfaces_1.ColorMode.Gradient); },
+        enumerable: function (s, dataView) { return visual_utils_1.dataSupportsGradients(dataView) && (s.colorMode === visual_utils_1.ColorMode.Gradient); },
     })
 ], ColoredObjectsSettings.prototype, "gradient", void 0);
 __decorate([
@@ -108,7 +106,7 @@ __decorate([
         displayName: "Reverse Order",
         description: "If enabled, the order of the bars will be reversed",
         defaultValue: false,
-        hidden: function (settings, dataView) { return !convertItemsWithSegments_1.dataSupportsValueSegments(dataView); },
+        hidden: function (settings, dataView) { return !visual_utils_1.dataSupportsValueSegments(dataView); },
     })
 ], ColoredObjectsSettings.prototype, "reverseOrder", void 0);
 exports.ColoredObjectsSettings = ColoredObjectsSettings;

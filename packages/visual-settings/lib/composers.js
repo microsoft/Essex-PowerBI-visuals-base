@@ -24,7 +24,7 @@
  */
 Object.defineProperty(exports, "__esModule", { value: true });
 var helpers_1 = require("./helpers");
-var ldset = require("lodash/set"); // tslint:disable-line
+var ldset = require("lodash.set"); // tslint:disable-line
 /**
  * Creates a composer which composes IColoredObjects into PBI
  * @param defaultColor The default color to use if a color instance is not found

@@ -22,9 +22,9 @@
  * SOFTWARE.
  */
 
-import createPersistObjectBuilder from "../utils/persistObjectBuilder";
+
+import { createPersistObjectBuilder, IPersistObjectBuilder } from "@essex/visual-utils";
 import { ISetting, ISettingDescriptor, ISettingsClass, IComposeResult } from "./interfaces";
-import { IPersistObjectBuilder } from "../utils/interfaces";
 
 /* tslint:disable */
 const ldget = require("lodash.get");

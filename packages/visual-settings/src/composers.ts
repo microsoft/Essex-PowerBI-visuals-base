@@ -24,7 +24,7 @@
 
 
 import { ISettingsComposer, IDefaultInstanceColor, IDefaultValue, IDefaultColor, ISetting, ISettingDescriptor } from "./interfaces"; // tslint:disable-line
-import { IColoredObject, IPersistObjectBuilder } from "../utils/interfaces"; // tslint:disable-line
+import { IColoredObject, IPersistObjectBuilder } from "@essex/visual-utils"; // tslint:disable-line
 import { getPBIObjectNameAndPropertyName } from "./helpers";
 const ldset = require("lodash.set"); // tslint:disable-line
 
