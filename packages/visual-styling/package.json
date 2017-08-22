@@ -6,9 +6,6 @@
   "repository": "https://github.com/Microsoft/Essex-PowerBI-visuals-base",
   "author": "Microsoft",
   "license": "MIT",
-  "scripts": {
-    "test": "exit 0"
-  },
   "dependencies": {
     "font-awesome": "^4.6.1"
   }

@@ -3,7 +3,7 @@
   "private": true,
   "description": "Essex PowerBI visual base",
   "scripts": {
-    "test": "lerna bootstrap && lerna run test --stream",
+    "test": "lerna bootstrap && lerna run test --stream --ignore @essex/visual-styling",
     "bootstrap": "lerna bootstrap"
   },
   "main": "dist/index.js",
