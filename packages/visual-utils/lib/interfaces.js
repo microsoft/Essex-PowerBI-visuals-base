@@ -23,6 +23,7 @@
  * SOFTWARE.
  */
 Object.defineProperty(exports, "__esModule", { value: true });
+require("jquery");
 ;
 /**
  * A set of modes used to indicate how an object should be colored

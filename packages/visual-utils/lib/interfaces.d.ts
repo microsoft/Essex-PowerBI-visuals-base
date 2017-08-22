@@ -1,4 +1,5 @@
-import { JQuery } from "jquery";
+/// <reference types="jquery" />
+import "jquery";
 /**
  * Represents an object that can build persistence objects
  */

@@ -18,5 +18,6 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-const { fullColors } = require("./colors");
-exports.fullColors = fullColors;
+var colors = require("./colors");
+exports.fullColors = colors.fullColors;
+exports.default = colors.default;

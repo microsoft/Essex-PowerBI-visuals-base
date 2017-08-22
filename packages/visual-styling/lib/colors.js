@@ -22,7 +22,7 @@
  * SOFTWARE.
  */
 
-const colors = [
+var colors = [
     "#01B8AA",
    // "#374649",
     "#FD625E",
