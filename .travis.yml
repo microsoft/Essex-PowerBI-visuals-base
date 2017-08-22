@@ -1,3 +1,7 @@
+language: node_js
+node_js:
+  - "node"
+  - "6"
 cache: yarn
 before_install:
   - curl -o- -L https://yarnpkg.com/install.sh | bash -s -- --rc

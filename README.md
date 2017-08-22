@@ -1,4 +1,4 @@
-[![CircleCI](https://circleci.com/gh/Microsoft/Essex-PowerBI-visuals-base/tree/master.svg?style=svg)](https://circleci.com/gh/Microsoft/Essex-PowerBI-visuals-base/tree/master)
+[![Build Status](https://travis-ci.org/Microsoft/Essex-PowerBI-visuals-base.svg?branch=master)](https://travis-ci.org/Microsoft/Essex-PowerBI-visuals-base)
 
 # Essex PBI Base
 
