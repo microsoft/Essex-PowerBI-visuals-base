@@ -1,0 +1,34 @@
+{
+  "name": "@essex/visual-utils",
+  "version": "1.0.0",
+  "description": "A collection of utilities to help in the creation of powerbi visuals",
+  "scripts": {
+    "docs": "typedoc --out docs --ignoreCompilerErrors ./ --externalPattern **/node_modules/**/*.* --exclude **/src/**/*.spec.ts",
+    "compile": "tsc"
+  },
+  "main": "lib/index.js",
+  "typings": "lib/index.d.ts",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Microsoft/Essex-PowerBI-visuals-base"
+  },
+  "keywords": [
+    "PowerBI",
+    "Base"
+  ],
+  "author": "Microsoft",
+  "license": "MIT",
+  "dependencies": {
+    "@essex/visual-styling": "*",
+    "debug": "^2.2.0",
+    "font-awesome": "^4.6.1",
+    "lodash": "3.6.0",
+    "lodash.assignin": "^4.2.0",
+    "lodash.get": "^4.4.2",
+    "lodash.merge": "^4.6.0",
+    "powerbi-models": "^0.11.3",
+    "powerbi-visuals-tools": "^1.7.0"
+  },
+  "devDependencies": {
+  }
+}

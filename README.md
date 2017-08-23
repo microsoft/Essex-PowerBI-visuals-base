@@ -1,26 +1,10 @@
-[![CircleCI](https://circleci.com/gh/Microsoft/Essex-PowerBI-visuals-base/tree/master.svg?style=svg)](https://circleci.com/gh/Microsoft/Essex-PowerBI-visuals-base/tree/master)
+[![Build Status](https://travis-ci.org/Microsoft/Essex-PowerBI-visuals-base.svg?branch=master)](https://travis-ci.org/Microsoft/Essex-PowerBI-visuals-base)
 
 # Essex PBI Base
 
-A collection of utilities for creating custom visuals.
+A collection of libraries to assist in the creation of PowerBI custom visuals.
 
-# Notes
-## Bundling
-Implementers should mark powerbi as an externally loaded resource so that the PowerBI client codebase
-is not bundled into custom visuals.
-
-```
-externals: {
-  "powerbi-visuals/lib/powerbi-visuals": "powerbi"
-}
-```
-
-## Build Support
-To use the bundling tasks, add the following to your gulpfile.js
-
-```javascript
-// gulpfile.js
-const gulp = require('gulp');
-const configure = require("essex.powerbi.base/dist/build_scripts").default;
-configure(gulp, __dirname);
-```
+# Building
+* Install [Yarn](https://yarnpkg.com)
+* Run `yarn` to install the dependencies
+* Run `yarn test` to symlink, build, lint, and test all of the projects within the packages folder

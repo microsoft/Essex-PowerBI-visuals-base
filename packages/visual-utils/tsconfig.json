@@ -9,5 +9,9 @@
     "suppressImplicitAnyIndexErrors": true,
     "outDir": "lib"
   },
-  "compileOnSave": false
+  "compileOnSave": false,
+  "files": [
+    "./src/index.ts",
+    "./powerbi.d.ts"
+  ]
 }

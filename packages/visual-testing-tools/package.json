@@ -1,0 +1,29 @@
+{
+  "name": "@essex/visual-testing-tools",
+  "version": "1.0.0",
+  "description": "A set of testing tools for ease of testing within PowerBI",
+  "scripts": {
+    "docs": "typedoc --out docs --ignoreCompilerErrors ./ --externalPattern **/node_modules/**/*.* --exclude **/src/**/*.spec.ts",
+    "compile": "tsc"
+  },
+  "main": "lib/index.js",
+  "typings": "lib/index.d.ts",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Microsoft/Essex-PowerBI-visuals-base"
+  },
+  "keywords": [
+    "PowerBI",
+    "Base"
+  ],
+  "author": "Microsoft",
+  "license": "MIT",
+  "dependencies": {
+    "font-awesome": "^4.6.1",
+    "jquery": "^2.2.3",
+    "lodash": "3.6.0",
+    "powerbi-visuals-tools": "^1.7.2"
+  },
+  "devDependencies": {
+  }
+}
