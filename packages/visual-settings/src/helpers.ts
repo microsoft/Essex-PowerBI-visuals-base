@@ -224,7 +224,7 @@ function buildEnumerationObject(
     dataView: powerbi.DataView,
     includeHidden = false,
     instances: powerbi.VisualObjectInstance[]) {
-        "use strict";
+    "use strict";
     const adapted = convertValueToPBI(settingsObj, setting, dataView, includeHidden);
     if (adapted) {
         const { objName, propName } = getPBIObjectNameAndPropertyName(setting);

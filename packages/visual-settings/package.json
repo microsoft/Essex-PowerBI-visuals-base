@@ -3,11 +3,8 @@
   "version": "1.0.0",
   "description": "A library to parse and enumerate powerbi visual settings.",
   "scripts": {
-    "clean": "rimraf lib",
-    "lint": "tslint {src,spec}/**/*.ts",
     "docs": "typedoc --out docs --ignoreCompilerErrors ./ --externalPattern **/node_modules/**/*.* --exclude **/src/**/*.spec.ts",
-    "mocha": "mocha --require ts-node/register \"src/**/*.spec.ts\"",
-    "test": "npm run clean && tsc && npm-run-all docs lint mocha"
+    "compile": "tsc"
   },
   "main": "lib/index.js",
   "typings": "lib/index.d.ts",

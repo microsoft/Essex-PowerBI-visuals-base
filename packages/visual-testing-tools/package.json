@@ -3,10 +3,8 @@
   "version": "1.0.0",
   "description": "A set of testing tools for ease of testing within PowerBI",
   "scripts": {
-    "clean": "rimraf lib",
-    "lint": "tslint {src,spec}/**/*.ts",
     "docs": "typedoc --out docs --ignoreCompilerErrors ./ --externalPattern **/node_modules/**/*.* --exclude **/src/**/*.spec.ts",
-    "test": "npm run clean && tsc && npm-run-all docs lint"
+    "compile": "tsc"
   },
   "main": "lib/index.js",
   "typings": "lib/index.d.ts",

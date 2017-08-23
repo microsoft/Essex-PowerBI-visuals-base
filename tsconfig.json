@@ -7,12 +7,7 @@
     "noImplicitAny": false,
     "sourceMap": true,
     "suppressImplicitAnyIndexErrors": true,
-    "outDir": "dist"
+    "outDir": "lib"
   },
-  "compileOnSave": false,
-  "files": [
-    "./src/index.ts",
-    "./src/spec/index.ts",
-    "./powerbi.d.ts"
-  ]
+  "compileOnSave": false
 }
