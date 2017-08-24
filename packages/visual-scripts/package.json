@@ -1,0 +1,31 @@
+{
+    "name": "@essex/powerbi-visual-scripts",
+    "version": "0.0.1",
+    "bin": {
+        "essex-pbi-scripts": "src/essex-pbi-scripts.js"
+    },
+    "license": "MIT",
+    "dependencies": {
+        "chokidar": "^1.7.0",
+        "clean-css": "^4.1.7",
+        "commander": "^2.11.0",
+        "connect": "^3.6.3",
+        "css-loader": "^0.28.5",
+        "d3": "^4.10.0",
+        "exports-loader": "^0.6.4",
+        "ignore-loader": "^0.1.2",
+        "jQuery": "^1.7.4",
+        "json-loader": "^0.5.7",
+        "lodash": "^4.17.4",
+        "memory-fs": "^0.4.1",
+        "mkdirp": "^0.5.1",
+        "node-sass": "^4.5.3",
+        "node-zip": "^1.1.1",
+        "raw-loader": "^0.5.1",
+        "sass-loader": "^6.0.6",
+        "serve-static": "^1.12.4",
+        "style-loader": "^0.18.2",
+        "ts-loader": "^2.3.3",
+        "webpack": "^3.5.5"
+    }
+}
