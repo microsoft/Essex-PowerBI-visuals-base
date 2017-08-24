@@ -26,7 +26,5 @@
     "jquery": "^2.2.3",
     "lodash": "3.6.0",
     "powerbi-visuals-tools": "^1.7.2"
-  },
-  "devDependencies": {
   }
 }

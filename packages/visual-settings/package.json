@@ -22,8 +22,8 @@
   "author": "Microsoft",
   "license": "MIT",
   "dependencies": {
-    "@essex/visual-utils": "*",
-    "@essex/visual-styling": "*",
+    "@essex/visual-styling": "^1.0.0",
+    "@essex/visual-utils": "^1.0.0",
     "font-awesome": "^4.6.1",
     "json-stringify-safe": "^5.0.1",
     "lodash": "3.6.0",
@@ -32,7 +32,5 @@
     "lodash.merge": "^4.6.0",
     "lodash.set": "^4.3.2",
     "powerbi-visuals-tools": "^1.7.0"
-  },
-  "devDependencies": {
   }
 }
