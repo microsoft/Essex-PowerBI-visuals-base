@@ -20,7 +20,7 @@ program
 
 
 program.command('package')
-    .description('Constructe a .pbiviz custom visual file')
+    .description('Construct a .pbiviz custom visual file')
     .action(() => commands.package());
 
 program

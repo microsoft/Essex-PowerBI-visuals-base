@@ -26,11 +26,29 @@ const webpack = require('webpack');
 const fs = require("fs");
 const ENTRY = './src/Visual.ts';
 const regex = path.normalize(ENTRY).replace(/\\/g, '\\\\').replace(/\./g, '\\.');
+const pbivizJson = require(path.join(process.env.INIT_CWD, 'pbiviz.json'));
+const packageJson = require(path.join(process.env.INIT_CWD, 'package.json'));
+const outputFile = path.join(process.env.INIT_CWD, pbivizJson.output || 'dist/Visual.pbiviz');
+const outputDir = path.parse(outputFile).dir;
 
+const modulesPaths = [
+    'node_modules',
+    path.join(__dirname, '../node_modules'),
+    path.join(process.env.INIT_CWD, 'node_modules'),
+    path.join(process.env.INIT_CWD, '../../node_modules'), // Lerna Monorepos
+];
 const config = module.exports = {
     entry: ENTRY,
     resolve: {
         extensions: ['.ts', '.tsx', '.js', '.jsx', '.json'],
+        modules: modulesPaths,
+    },
+    output: {
+        filename: 'visual.js', 
+        path: outputDir,
+    },
+    resolveLoader: {
+        modules: modulesPaths,
     },
     module: {
         loaders: [
@@ -47,7 +65,7 @@ const config = module.exports = {
                 loader: 'json-loader',
             },
             {
-                test: /\.ts$/,
+                test: /\.ts(x|)$/,
                 loader: 'ts-loader',
             },
         ],

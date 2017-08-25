@@ -31,19 +31,13 @@ const CleanCSS = require('clean-css');
 const mkdirp = require('mkdirp');
 const webpack = require("webpack");
 const MemoryFS = require("memory-fs");
+const webpackConfig = require(path.join(__dirname, '../../conf/webpack.config'));
+const buildOSSReport = require('./buildOSSReport.js');
 const pbivizJson = require(path.join(process.env.INIT_CWD, 'pbiviz.json'));
 const packageJson = require(path.join(process.env.INIT_CWD, 'package.json'));
 const capabilities = require(path.join(process.env.INIT_CWD, pbivizJson.capabilities));
-const webpackConfig = require(path.join(__dirname, '../../conf/webpack.config'));
-const buildOSSReport = require('./buildOSSReport.js');
-const outputFile = path.join(process.env.INIT_CWD, pbivizJson.output);
+const outputFile = path.join(process.env.INIT_CWD, pbivizJson.output || 'dist/Visual.pbiviz');
 const outputDir = path.parse(outputFile).dir;
-
-const packagingWebpackConfig = {
-    output: {
-        filename: 'visual.js', path: '/'
-    }
-};
 
 const _buildLegacyPackageJson = () => {
     const pack = {
@@ -162,21 +156,23 @@ const compileSass = () => {
 const compileScripts = (callback) => {
     const regex = /\bnode_modules\b/;
     const fs = new MemoryFS();
-    const compiler = webpack(Object.assign(webpackConfig, packagingWebpackConfig));
+    const compiler = webpack(webpackConfig);
     compiler.outputFileSystem = fs;
     compiler.run((err, stats) => {
         if (err) throw err;
         const jsonStats = stats.toJson(true);
-        const errors = jsonStats.errors.filter(error => !regex.test(error));
         console.info('Time:', jsonStats.time);
         console.info('Hash:', jsonStats.hash);
+        console.info('%s Warnings, %s Errors', jsonStats.warnings.length, jsonStats.errors.length);
         jsonStats.warnings.forEach(warning => console.warn('WARNING:', warning));
-        errors.forEach(error => !regex.test(error) && console.error('ERROR:', error));
+        jsonStats.errors.forEach(error => console.error('ERROR:', error));
         if (errors.length > 0) {
             return process.exit(1);
         }
         buildOSSReport(jsonStats.modules, ossReport => {
-            const fileContent = fs.readFileSync("/visual.js").toString();
+            const location = path.join(outputDir, "visual.js");
+            console.log("Reading from Location:", location);
+            const fileContent = fs.readFileSync(location).toString();
             callback(err, fileContent, ossReport);
         });
     });
