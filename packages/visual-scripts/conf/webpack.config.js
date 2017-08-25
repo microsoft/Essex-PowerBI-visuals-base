@@ -70,21 +70,11 @@ const config = module.exports = {
             },
         ],
     },
-    externals: {
-        jquery: "jQuery",
-        d3: "d3",
-        underscore: "_",
-        "lodash": "_",
-        "powerbi-visuals/lib/powerbi-visuals": "powerbi",
-    },
     plugins: [
         new webpack.optimize.OccurrenceOrderPlugin(),
-        new webpack.ProvidePlugin({
-            'Promise': 'exports-loader?global.Promise!es6-promise'
-        }),
         new webpack.DefinePlugin({
             'process.env.DEBUG': "\"" + (process.env.DEBUG || "") + "\""
-        })
+        }),
     ],
 };
 

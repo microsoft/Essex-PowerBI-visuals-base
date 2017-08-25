@@ -32,7 +32,7 @@ const mkdirp = require('mkdirp');
 const webpack = require("webpack");
 const MemoryFS = require("memory-fs");
 const webpackConfig = require(path.join(__dirname, '../../conf/webpack.config'));
-const buildOSSReport = require('./buildOSSReport.js');
+const buildOSSReport = require('../../util/buildOSSReport.js');
 const pbivizJson = require(path.join(process.env.INIT_CWD, 'pbiviz.json'));
 const packageJson = require(path.join(process.env.INIT_CWD, 'package.json'));
 const capabilities = require(path.join(process.env.INIT_CWD, pbivizJson.capabilities));
@@ -154,7 +154,6 @@ const compileSass = () => {
 };
 
 const compileScripts = (callback) => {
-    const regex = /\bnode_modules\b/;
     const fs = new MemoryFS();
     const compiler = webpack(webpackConfig);
     compiler.outputFileSystem = fs;
@@ -166,13 +165,15 @@ const compileScripts = (callback) => {
         console.info('%s Warnings, %s Errors', jsonStats.warnings.length, jsonStats.errors.length);
         jsonStats.warnings.forEach(warning => console.warn('WARNING:', warning));
         jsonStats.errors.forEach(error => console.error('ERROR:', error));
-        if (errors.length > 0) {
+        if (jsonStats.errors.length > 0) {
             return process.exit(1);
         }
         buildOSSReport(jsonStats.modules, ossReport => {
+            console.log("BUILDING OSS REPORT");
             const location = path.join(outputDir, "visual.js");
             console.log("Reading from Location:", location);
             const fileContent = fs.readFileSync(location).toString();
+            console.log("DERP", fileContent);
             callback(err, fileContent, ossReport);
         });
     });

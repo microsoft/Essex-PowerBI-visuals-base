@@ -23,33 +23,6 @@ program.command('package')
     .description('Construct a .pbiviz custom visual file')
     .action(() => commands.package());
 
-program
-    .command('report')
-    .description('Build Reports')
-    .action((env, options) => {
-        console.log("Build Reports");
-    });
-
-program
-    .command('compile')
-    .description('Compile project assets')
-    .action((env, options) => {
-        console.log("Compile Assets");
-    });
-
-program
-    .command('verify')
-    .description('Compile project assets')
-    .action((env, options) => {
-        console.log("Compile Assets");
-    });
-
-program.command('test')
-    .description('Performs compilation, verification, packaging, and reporting steps')
-    .action((env, options) => {
-        console.log("Package visual");
-    });
-
 program.command('start')
     .description('Starts the PowerBI Visual Development Server')
     .action((env, options) => commands.start());

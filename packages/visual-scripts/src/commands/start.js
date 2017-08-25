@@ -30,18 +30,18 @@ const webpack = require('webpack');
 const chokidar = require('chokidar');
 const serveStatic = require('serve-static');
 const webpackConfig = require('../../conf/webpack.config');
-const pbivizJson = require(`${process.env.INIT_CWD}/pbiviz.json`);
+const pbivizJson = require(path.join(process.env.INIT_CWD, 'pbiviz.json'));
 
 const config = {
-    pbivizJsonPath: 'pbiviz.json',
-    capabilitiesJsonPath: pbivizJson.capabilities,
-    tmpDropDir: '.tmp/drop',
-    sassEntry: pbivizJson.style,
+    pbivizJsonPath: path.join(process.env.INIT_CWD, 'pbiviz.json'),
+    capabilitiesJsonPath: path.join(process.env.INIT_CWD, pbivizJson.capabilities),
+    tmpDropDir: path.join(process.env.INIT_CWD, '.tmp/drop'),
+    sassEntry: path.join(process.env.INIT_CWD, pbivizJson.style),
     server: {
-        cert: 'certs/PowerBICustomVisualTest_public.crt', 
-        key: 'certs/PowerBICustomVisualTest_private.key',
-        port: 8080
-    }
+        cert: path.join(__dirname, '../../certs/PowerBICustomVisualTest_public.crt'), 
+        key: path.join(__dirname, '../../certs/PowerBICustomVisualTest_private.key'),
+        port: 8080,
+    },
 };
 const pbiResource = {
     jsFile: `${ config.tmpDropDir }/visual.js`,
@@ -51,13 +51,13 @@ const pbiResource = {
 };
 
 const compileSass = () => {
-    console.info('Building css...');
+    console.info('Building Sass...');
     const cssContent = sass.renderSync({ file: config.sassEntry }).css;
     fs.writeFileSync(pbiResource.cssFile, cssContent);
 };
 
 const emitPbivizJson = () => {
-    console.info('Updating pbiviz.json...');
+    console.info('Composing pbiviz.json...');
     const pbiviz = JSON.parse(fs.readFileSync(config.pbivizJsonPath));
     const capabilities = JSON.parse(fs.readFileSync(config.capabilitiesJsonPath))
     pbiviz.capabilities = capabilities;
@@ -66,7 +66,7 @@ const emitPbivizJson = () => {
 
 const updateStatus = () => {
     fs.writeFileSync(pbiResource.statusFile, Date.now().toString());
-    console.info('Visual updated.');
+    console.info('Visual updated');
 };
 
 const runWatchTask = (task, isSass) => {
@@ -81,7 +81,12 @@ const runWatchTask = (task, isSass) => {
 
 const startWatchers = () => {
     // watch script change and re-compile
-    const compiler = webpack(Object.assign({ output: { filename: pbiResource.jsFile }}, webpackConfig));
+    const compiler = webpack(Object.assign(webpackConfig, { 
+        output: { 
+            path: config.tmpDropDir, 
+            filename: 'visual.js',
+        },
+    }));
     compiler.watch({}, (err, stats) => {
         let log = stats.toString({
             chunks: false,
@@ -117,9 +122,14 @@ const startServer = () => {
         res.setHeader('Access-Control-Allow-Origin', '*');
         next();
     });
+    console.log("Serving assets from ", config.tmpDropDir);
     app.use('/assets', serveStatic(config.tmpDropDir));
 
     https.createServer(options, app).listen(config.server.port, (err) => {
+        if (err) {
+            console.log("Error starting server", err);
+            process.exit(1);
+        }
         console.info('Server listening on port ', config.server.port + '.');
     });
 };
