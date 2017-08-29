@@ -1,5 +1,5 @@
+/// <reference path="../node_modules/powerbi-visuals-utils-formattingutils/lib/index.d.ts" />
 
-// This order is important
 import "./type";
 import "./svg";
 import "./dataview";
@@ -9,7 +9,6 @@ const Globalize = require("expose-loader?Globalize!globalize");
 require("globalize/lib/cultures/globalize.culture.en-US.js");
 // tslint:enable no-unused-variable no-var-requires
 
-import "powerbi-visuals-utils-formattingutils/lib/index.d";
-import "script-loader!powerbi-visuals-utils-formattingutils";
+import "script-loader!powerbi-visuals-utils-formattingutils/lib/index";
 
 export = powerbi.extensibility.utils.formatting;

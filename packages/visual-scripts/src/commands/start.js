@@ -92,7 +92,7 @@ const startWatchers = () => {
             chunks: false,
             color: true
         });
-        log = log.split('\n\n').filter(msg => msg.indexOf('node_module') === -1 ).join('\n\n');
+        // log = log.split('\n\n').filter(msg => msg.indexOf('node_module') === -1 ).join('\n\n');
         console.info(log);
     });
 

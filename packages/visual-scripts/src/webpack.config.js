@@ -37,7 +37,7 @@ const modulesPaths = [
 const webpackConf = module.exports = {
     entry: config.build.entry.js,
     resolve: {
-        extensions: ['.ts', '.tsx', '.js', '.jsx', '.json'],
+        extensions: ['.js', '.jsx', '.json', '.ts', '.tsx'],
         modules: modulesPaths,
     },
     output: {
@@ -46,6 +46,11 @@ const webpackConf = module.exports = {
     },
     resolveLoader: {
         modules: modulesPaths,
+    },
+    resolve: {
+        alias: {
+            
+        }
     },
     module: {
         loaders: [

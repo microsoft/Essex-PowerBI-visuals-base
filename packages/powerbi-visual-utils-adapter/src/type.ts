@@ -1,4 +1,3 @@
-// Wen't this route vs doing exports-loader in webpack config, to preserve typings
-import "powerbi-visuals-utils-typeutils/lib/index.d";
-import "script-loader!powerbi-visuals-utils-typeutils";
+/// <reference path="../node_modules/powerbi-visuals-utils-typeutils/lib/index.d.ts" />
+import "script-loader!powerbi-visuals-utils-typeutils/lib/index";
 export = powerbi.extensibility.utils.type;
