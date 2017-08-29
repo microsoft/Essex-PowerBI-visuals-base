@@ -4,7 +4,7 @@
   "description": "A set of testing tools for ease of testing within PowerBI",
   "scripts": {
     "docs": "typedoc --out docs --ignoreCompilerErrors ./ --externalPattern **/node_modules/**/*.* --exclude **/src/**/*.spec.ts",
-    "compile": "tsc"
+    "compile": "npx tsc"
   },
   "main": "lib/index.js",
   "typings": "lib/index.d.ts",
@@ -24,7 +24,6 @@
   "dependencies": {
     "font-awesome": "^4.6.1",
     "jquery": "^2.2.3",
-    "lodash": "3.6.0",
-    "powerbi-visuals-tools": "^1.7.2"
+    "lodash": "3.6.0"
   }
 }

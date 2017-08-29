@@ -4,7 +4,7 @@
   "description": "A library to parse and enumerate powerbi visual settings.",
   "scripts": {
     "docs": "typedoc --out docs --ignoreCompilerErrors ./ --externalPattern **/node_modules/**/*.* --exclude **/src/**/*.spec.ts",
-    "compile": "tsc"
+    "compile": "npx tsc"
   },
   "main": "lib/index.js",
   "typings": "lib/index.d.ts",
@@ -30,7 +30,6 @@
     "lodash.assignin": "^4.2.0",
     "lodash.get": "^4.4.2",
     "lodash.merge": "^4.6.0",
-    "lodash.set": "^4.3.2",
-    "powerbi-visuals-tools": "^1.7.0"
+    "lodash.set": "^4.3.2"
   }
 }

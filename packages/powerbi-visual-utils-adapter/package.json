@@ -2,8 +2,8 @@
     "name": "@essex/powerbi-visuals-utils-adapter",
     "version": "0.0.1",
     "scripts": {
-        "tsc": "../../node_modules/.bin/tsc",
-        "test": "../../node_modules/.bin/tsc"
+        "tsc": "npx tsc",
+        "test": "npx tsc"
     },
     "dependencies": {
         "expose-loader": "^0.7.3",
