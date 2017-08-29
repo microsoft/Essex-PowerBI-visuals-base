@@ -12,6 +12,9 @@
     "type": "git",
     "url": "https://github.com/Microsoft/Essex-PowerBI-visuals-base"
   },
+  "publishConfig": {
+    "access": "public"
+  },
   "keywords": [
     "PowerBI",
     "Base"
@@ -19,7 +22,7 @@
   "author": "Microsoft",
   "license": "MIT",
   "dependencies": {
-    "@essex/visual-styling": "*",
+    "@essex/visual-styling": "^1.0.0",
     "debug": "^2.2.0",
     "font-awesome": "^4.6.1",
     "lodash": "3.6.0",
@@ -28,7 +31,5 @@
     "lodash.merge": "^4.6.0",
     "powerbi-models": "^0.11.3",
     "powerbi-visuals-tools": "^1.7.0"
-  },
-  "devDependencies": {
   }
 }
