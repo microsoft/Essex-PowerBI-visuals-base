@@ -23,12 +23,15 @@
   ],
   "author": "Microsoft",
   "license": "MIT",
-  "dependencies": {},
+  "dependencies": {
+    "powerbi-visuals-tools": "^1.7.2"
+  },
   "workspaces": [
     "packages/*"
   ],
   "devDependencies": {
     "@types/chai": "^3.4.34",
+    "@types/d3": "^3.x",
     "@types/jquery": "^2.0.33",
     "@types/mocha": "^2.2.32",
     "@types/mock-require": "^1.3.3",

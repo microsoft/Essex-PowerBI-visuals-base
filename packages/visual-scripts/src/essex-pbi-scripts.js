@@ -8,7 +8,6 @@ const program = require('commander');
 process.env.INIT_CWD = process.cwd();
 const commands = require('./commands');
 
-
 program
     .version(metadata.version)
     .on('--version', () => console.log(metadata.version));
