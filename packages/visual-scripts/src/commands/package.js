@@ -31,53 +31,50 @@ const CleanCSS = require('clean-css');
 const mkdirp = require('mkdirp');
 const webpack = require("webpack");
 const MemoryFS = require("memory-fs");
-const webpackConfig = require(path.join(__dirname, '../../conf/webpack.config'));
-const buildOSSReport = require('../../util/buildOSSReport.js');
-const pbivizJson = require(path.join(process.env.INIT_CWD, 'pbiviz.json'));
-const packageJson = require(path.join(process.env.INIT_CWD, 'package.json'));
-const capabilities = require(path.join(process.env.INIT_CWD, pbivizJson.capabilities));
-const outputFile = path.join(process.env.INIT_CWD, pbivizJson.output || 'dist/Visual.pbiviz');
-const outputDir = path.parse(outputFile).dir;
+const buildOSSReport = require('../util/buildOSSReport.js');
+const config = require('../config');
+const webpackConfig = require('../webpack.config');
+const { pbivizJson } = config;;
 
 const _buildLegacyPackageJson = () => {
     const pack = {
-        version: packageJson.version,
-        author: pbivizJson.author,
-        licenseTerms: packageJson.license,
-        privacyTerms: packageJson.privacyTerms,
+        version: config.metadata.version,
+        author: config.metadata.author,
+        licenseTerms: config.metadata.license,
+        privacyTerms: config.metadata.privacyTerms,
         resources: [
             {
                 "resourceId": "rId0",
                 "sourceType": 5,
-                "file": `resources/${ pbivizJson.visual.guid }.ts`
+                "file": `resources/${ config.metadata.guid }.ts`
             },
             {
                 "resourceId": "rId1",
                 "sourceType": 0,
-                "file": `resources/${ pbivizJson.visual.guid }.js`
+                "file": `resources/${ config.metadata.guid }.js`
             },
             {
                 "resourceId": "rId2",
                 "sourceType": 1,
-                "file": `resources/${ pbivizJson.visual.guid }.css`
+                "file": `resources/${ config.metadata.guid }.css`
             },
             {
                 "resourceId": "rId3",
                 "sourceType": 3,
-                "file": `resources/${path.basename(pbivizJson.assets.icon)}`
+                "file": `resources/${path.basename(config.assets.icon)}`
             },
             {
                 "resourceId": "rId4",
                 "sourceType": 6,
-                "file": `resources/${path.basename(pbivizJson.assets.thumbnail)}`
+                "file": `resources/${path.basename(config.assets.thumbnail)}`
             },
             {
                 "resourceId": "rId5",
                 "sourceType": 2,
-                "file": `resources/${path.basename(pbivizJson.assets.screenshot)}`
+                "file": `resources/${path.basename(config.assets.screenshot)}`
             }
         ],
-        visual: Object.assign({ version: packageJson.version }, pbivizJson.visual),
+        visual: Object.assign({ version: config.metadata.version }, pbivizJson.visual),
         "code": {
             "typeScript": {
                 "resourceId": "rId0"
@@ -114,23 +111,23 @@ const _buildLegacyPackageJson = () => {
 
 const _buildPackageJson = () => {
     return {
-        version: packageJson.version,
-        author: pbivizJson.author,
-        licenseTerms: packageJson.license,
-        privacyTerms: packageJson.privacyTerms,
+        version: config.metadata.version,
+        author: config.metadata.author,
+        licenseTerms: config.metadata.license,
+        privacyTerms: config.metadata.privacyTerms,
         resources: [
             {
                 resourceId: 'rId0',
                 sourceType: 5,
-                file: `resources/${ pbivizJson.visual.guid }.pbiviz.json`,
+                file: `resources/${ config.metadata.guid }.pbiviz.json`,
             }
         ],
-        visual: Object.assign({ version: packageJson.version }, pbivizJson.visual),
+        visual: Object.assign({ version: config.metadata.version }, pbivizJson.visual),
         metadata: {
             pbivizjson: {
                 resourceId: 'rId0'
-            }
-        }
+            },
+        },
     };
 };
 
@@ -138,7 +135,7 @@ const buildPackageJson = pbivizJson.apiVersion ? _buildPackageJson() : _buildLeg
 
 const compileSass = () => {
     if (pbivizJson.style) {
-        const sassOutput = sass.renderSync({ file: path.join(process.env.INIT_CWD, pbivizJson.style) }).css.toString();
+        const sassOutput = sass.renderSync({ file: config.build.entry.sass }).css.toString();
         const options = { 
             level: { 
                 2: {
@@ -169,53 +166,53 @@ const compileScripts = (callback) => {
             return process.exit(1);
         }
         buildOSSReport(jsonStats.modules, ossReport => {
-            console.log("BUILDING OSS REPORT");
-            const location = path.join(outputDir, "visual.js");
-            console.log("Reading from Location:", location);
-            const fileContent = fs.readFileSync(location).toString();
-            console.log("DERP", fileContent);
+            console.log("Reading File Content from ", config.build.js, JSON.stringify(webpackConfig.output));
+            const fileContent = fs.readFileSync(config.build.js).toString();
             callback(err, fileContent, ossReport);
         });
     });
 };
 
 const _buildLegacyPackage = (fileContent) => {
-    const icon = fs.readFileSync(pbivizJson.assets.icon);
-    const thumbnail = fs.readFileSync(pbivizJson.assets.thumbnail);
-    const screenshot = fs.readFileSync(pbivizJson.assets.screenshot);
-    const iconType = pbivizJson.assets.icon.indexOf('.svg') >= 0 ? 'svg+xml' : 'png';
+    const icon = fs.readFileSync(config.assets.icon);
+    const thumbnail = fs.readFileSync(config.assets.thumbnail);
+    const screenshot = fs.readFileSync(config.assets.screenshot);
+    const iconType = config.assets.icon.indexOf('.svg') >= 0 ? 'svg+xml' : 'png';
     const iconBase64 = `data:image/${iconType};base64,` + icon.toString('base64');
-    const cssContent = compileSass() + `\n.visual-icon.${pbivizJson.visual.guid} {background-image: url(${iconBase64});}`;
+    const cssContent = compileSass() + `\n.visual-icon.${config.metadata.guid} {background-image: url(${iconBase64});}`;
     zip.file('package.json', JSON.stringify(buildPackageJson, null, 2));
-    zip.file(`resources/${pbivizJson.visual.guid}.js`, fileContent);
-    zip.file(`resources/${pbivizJson.visual.guid}.ts`, `/** See ${pbivizJson.visual.guid}.js **/`);
-    zip.file(`resources/${pbivizJson.visual.guid}.css`, cssContent + `\n`);
-    zip.file(`resources/${path.basename(pbivizJson.assets.icon)}`, icon);
-    zip.file(`resources/${path.basename(pbivizJson.assets.thumbnail)}`, thumbnail);
-    zip.file(`resources/${path.basename(pbivizJson.assets.screenshot)}`, screenshot);
-    fs.writeFileSync(outputFile, zip.generate({ base64:false,compression:'DEFLATE' }), 'binary');
+    zip.file(`resources/${config.metadata.guid}.js`, fileContent);
+    zip.file(`resources/${config.metadata.guid}.ts`, `/** See ${config.metadata.guid}.js **/`);
+    zip.file(`resources/${config.metadata.guid}.css`, cssContent + `\n`);
+    zip.file(`resources/${path.basename(config.assets.icon)}`, icon);
+    zip.file(`resources/${path.basename(config.assets.thumbnail)}`, thumbnail);
+    zip.file(`resources/${path.basename(config.assets.screenshot)}`, screenshot);
+    fs.writeFileSync(config.dist.outputFile, zip.generate({ base64:false,compression:'DEFLATE' }), 'binary');
 };
 
 const _buildPackage = (fileContent) => {
-    const jsContent = fileContent;
-    const cssContent = compileSass();
-    const icon = fs.readFileSync(pbivizJson.assets.icon);
-    const iconType = pbivizJson.assets.icon.indexOf('.svg') >= 0 ? 'svg+xml' : 'png';
+    const js = fileContent;
+    const { capabilities } = config;
+    const css = compileSass();
+    const icon = fs.readFileSync(config.assets.icon);
+    const iconType = config.assets.icon.indexOf('.svg') >= 0 ? 'svg+xml' : 'png';
     const iconBase64 = `data:image/${iconType};base64,` + icon.toString('base64');
 
-    pbivizJson.capabilities = capabilities;
-    pbivizJson.content = {
-        js: jsContent,
-        css: cssContent,
-        iconBase64: iconBase64
-    };
+    const constructedPbiViz = Object.assign({}, pbivizJson, {
+        capabilities,
+        content: {
+            js,
+            css,
+            iconBase64,
+        },
+    });
     zip.file('package.json', JSON.stringify(buildPackageJson, null, 2));
-    zip.file(`resources/${pbivizJson.visual.guid}.pbiviz.json`, JSON.stringify(pbivizJson, null, 2));
-    fs.writeFileSync(outputFile, zip.generate({ base64:false,compression:'DEFLATE' }), 'binary');
+    zip.file(`resources/${config.metadata.guid}.pbiviz.json`, JSON.stringify(constructedPbiViz, null, 2));
+    fs.writeFileSync(config.dist.outputFile, zip.generate({ base64:false, compression:'DEFLATE' }), 'binary');
 };
 
 module.exports = function buildPackage() {
-    mkdirp.sync(outputDir);
+    mkdirp.sync(config.build.output.dir);
     compileScripts((err, result, ossReport) => {
         if (err) throw err;
 
@@ -225,7 +222,11 @@ module.exports = function buildPackage() {
             _buildPackage(result);
         }
 
-        const ossReportFile = path.join(path.dirname(outputFile), pbivizJson.visual.name + '_' + packageJson.version + '_OSS_Report.csv');
+        const ossReportFile = path.join(
+            path.dirname(config.build.output.dir), 
+            config.metadata.name + '_' + config.metadata.version + '_OSS_Report.csv',
+        );
+        console.log("Writing OSS License Report to ", ossReportFile);
         fs.writeFileSync(ossReportFile, ossReport);
     });
 };

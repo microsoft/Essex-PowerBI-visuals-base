@@ -39,9 +39,9 @@ module.exports = function openCertFile() {
         try {
             exec(`${startCmd} "${certPath}"`);
         } catch (e) {
-            console.info('Certificate path:', certPath);
+            console.error('Error installing certificate:', e);
         }
     } else {
-        console.info('Certificate path:', certPath);
+        console.error('Unable to install certificate at ', certPath);
     }
 }

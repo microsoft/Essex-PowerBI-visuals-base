@@ -29,7 +29,7 @@ const connect = require('connect');
 const webpack = require('webpack');
 const chokidar = require('chokidar');
 const serveStatic = require('serve-static');
-const webpackConfig = require('../../conf/webpack.config');
+const webpackConfig = require('../webpack.config');
 const pbivizJson = require(path.join(process.env.INIT_CWD, 'pbiviz.json'));
 
 const config = {
@@ -114,17 +114,17 @@ const startWatchers = () => {
 
 const startServer = () => {
     const options = {
-        key: fs.readFileSync(config.server.key),
-        cert: fs.readFileSync(config.server.cert)
+        key: fs.readFileSync(config.server.key), 
+        cert: fs.readFileSync(config.server.cert),
     };
+
     const app = connect();
     app.use((req, res, next) => {
         res.setHeader('Access-Control-Allow-Origin', '*');
         next();
     });
-    console.log("Serving assets from ", config.tmpDropDir);
     app.use('/assets', serveStatic(config.tmpDropDir));
-
+    
     https.createServer(options, app).listen(config.server.port, (err) => {
         if (err) {
             console.log("Error starting server", err);

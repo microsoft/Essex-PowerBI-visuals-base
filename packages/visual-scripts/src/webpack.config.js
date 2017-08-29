@@ -25,11 +25,8 @@ const path = require('path');
 const webpack = require('webpack');
 const fs = require("fs");
 const ENTRY = './src/Visual.ts';
+const config = require('./config');
 const regex = path.normalize(ENTRY).replace(/\\/g, '\\\\').replace(/\./g, '\\.');
-const pbivizJson = require(path.join(process.env.INIT_CWD, 'pbiviz.json'));
-const packageJson = require(path.join(process.env.INIT_CWD, 'package.json'));
-const outputFile = path.join(process.env.INIT_CWD, pbivizJson.output || 'dist/Visual.pbiviz');
-const outputDir = path.parse(outputFile).dir;
 
 const modulesPaths = [
     'node_modules',
@@ -37,15 +34,15 @@ const modulesPaths = [
     path.join(process.env.INIT_CWD, 'node_modules'),
     path.join(process.env.INIT_CWD, '../../node_modules'), // Lerna Monorepos
 ];
-const config = module.exports = {
-    entry: ENTRY,
+const webpackConf = module.exports = {
+    entry: config.build.entry.js,
     resolve: {
         extensions: ['.ts', '.tsx', '.js', '.jsx', '.json'],
         modules: modulesPaths,
     },
     output: {
         filename: 'visual.js', 
-        path: outputDir,
+        path: config.build.dropFolder,
     },
     resolveLoader: {
         modules: modulesPaths,
@@ -54,7 +51,7 @@ const config = module.exports = {
         loaders: [
             {
                 test: new RegExp(regex),
-                loader: path.join(__dirname, '..', 'util', 'pbiPluginLoader'),
+                loader: path.join(__dirname, 'util/pbiPluginLoader'),
             },
             {
                 test: /\.scss$/,
@@ -79,7 +76,7 @@ const config = module.exports = {
 };
 
 if (process.env.NODE_ENV !== "production") {
-    config.devtool = "eval";    
+    webpackConf.devtool = "eval";    
 } else {
     var banner = new webpack.BannerPlugin(fs.readFileSync("LICENSE").toString());
     var uglify = new webpack.optimize.UglifyJsPlugin({
@@ -92,6 +89,6 @@ if (process.env.NODE_ENV !== "production") {
             comments: false,
         }
     });
-    config.plugins.push(uglify);
-    config.plugins.push(banner);
+    webpackConf.plugins.push(uglify);
+    webpackConf.plugins.push(banner);
 }
