@@ -18,7 +18,7 @@
         "exports-loader": "^0.6.4",
         "expose-loader": "^0.7.3",
         "ignore-loader": "^0.1.2",
-        "jQuery": "^1.7.4",
+        "jquery": "^1.7.4",
         "json-loader": "^0.5.7",
         "lodash": "^4.17.4",
         "memory-fs": "^0.4.1",
