@@ -4,9 +4,5 @@
     "packages/*"
   ],
   "version": "1.0.0",
-  "npmClient": "yarn",
-  "useWorkspaces": true,
-  "npmClientArgs": [
-    "--concurrency 1"
-  ]
+  "npmClient": "yarn"
 }
