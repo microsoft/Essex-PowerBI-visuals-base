@@ -85,7 +85,7 @@ describe("Helpers", () => {
 
                 // Make sure that any prop passed that isn't a setting is also in the result
                 Object.keys(props).forEach(p => {
-                    expect(result[p]).to.be.equal(coerceNull && props[p] === null ? undefined : props[p]);//tslint:disable-line
+                    expect(result[p]).to.be.equal(coerceNull && props[p] === null ? undefined : props[p]); // tslint:disable-line
                 });
             }
             it("should return all the default values of a settings class if there is no dataView", () => {
