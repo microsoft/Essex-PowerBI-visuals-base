@@ -26,12 +26,13 @@ const webpack = require('webpack');
 const fs = require("fs");
 const ENTRY = './src/Visual.ts';
 const config = require('./config');
+const INIT_CWD = process.env.INIT_CWD;
 const regex = path.normalize(ENTRY).replace(/\\/g, '\\\\').replace(/\./g, '\\.');
 
 const modulesPaths = [
     'node_modules',
-    path.join(__dirname, '../node_modules'),
     path.join(process.env.INIT_CWD, 'node_modules'),
+    path.join(__dirname, '../node_modules'),
     path.join(process.env.INIT_CWD, '../../node_modules'), // Lerna Monorepos
 ];
 const webpackConf = module.exports = {
@@ -46,11 +47,6 @@ const webpackConf = module.exports = {
     },
     resolveLoader: {
         modules: modulesPaths,
-    },
-    resolve: {
-        alias: {
-            
-        }
     },
     module: {
         loaders: [
@@ -69,6 +65,9 @@ const webpackConf = module.exports = {
             {
                 test: /\.ts(x|)$/,
                 loader: 'ts-loader',
+                options: {
+                    configFile: path.join(INIT_CWD, 'tsconfig.json'),
+                },
             },
         ],
     },

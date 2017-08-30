@@ -162,7 +162,8 @@ const compileScripts = (callback) => {
         console.info('%s Warnings, %s Errors', jsonStats.warnings.length, jsonStats.errors.length);
         jsonStats.warnings.forEach(warning => console.warn('WARNING:', warning));
         jsonStats.errors.forEach(error => console.error('ERROR:', error));
-        if (jsonStats.errors.length > 0) {
+        const hasRealErrors = jsonStats.errors.some(e => e.indexOf("node_modules") === -1);
+        if (hasRealErrors) {
             return process.exit(1);
         }
         buildOSSReport(jsonStats.modules, ossReport => {

@@ -6,7 +6,7 @@
     "postinstall": "npm run bootstrap",
     "clean": "del-cli \"./packages/*/lib\" \"!./packages/visual-styling/lib\"",
     "lint": "tslint -t verbose \"./packages/*/{src,spec}/**/*.ts\"",
-    "compile": "lerna run compile --stream",
+    "compile": "lerna run compile --concurrency=1 --stream",
     "docs": "lerna run docs --stream",
     "mocha": "mocha --require ts-node/register \"./packages/*/{src,spec,lib}/**/*.spec.ts\"",
     "test": "npm-run-all clean lint compile mocha docs",

@@ -15,7 +15,6 @@
     },
     "compileOnSave": false,
     "files": [
-        "../../powerbi.d.ts",
         "src/dataview.ts",
         "src/formatting.ts",
         "src/svg.ts",
