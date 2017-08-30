@@ -7,7 +7,11 @@
       "noImplicitAny": false,
       "sourceMap": true,
       "suppressImplicitAnyIndexErrors": true,
-      "outDir": "lib"
+      "outDir": "lib",
+      "lib": [
+        "es2017",
+        "dom"
+      ]
     },
     "compileOnSave": false,
     "files": [

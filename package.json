@@ -3,6 +3,7 @@
   "private": true,
   "description": "Essex PowerBI visual base",
   "scripts": {
+    "postinstall": "npm run publish",
     "clean": "del-cli \"./packages/*/lib\" \"!./packages/visual-styling/lib\"",
     "lint": "tslint -t verbose \"./packages/*/{src,spec}/**/*.ts\"",
     "compile": "lerna run compile --stream",
