@@ -1,8 +1,9 @@
 {
     "name": "@essex/powerbi-visuals-utils-adapter",
     "version": "0.0.1",
+    "license": "MIT",
     "scripts": {
-        "compile": "npx tsc"
+        "compile": "../../node_modules/.bin/tsc"
     },
     "dependencies": {
         "expose-loader": "^0.7.3",
