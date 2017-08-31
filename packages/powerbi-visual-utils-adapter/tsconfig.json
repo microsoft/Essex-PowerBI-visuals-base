@@ -3,6 +3,7 @@
       "target": "es5",
       "module": "commonjs",
       "experimentalDecorators": true,
+      "skipLibCheck": true,
       "declaration": true,
       "noImplicitAny": false,
       "sourceMap": true,
@@ -19,6 +20,9 @@
         "src/formatting.ts",
         "src/svg.ts",
         "src/type.ts"
+    ],
+    "exclude": [
+      "node_modules"
     ]
   }
   

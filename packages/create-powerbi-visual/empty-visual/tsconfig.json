@@ -8,6 +8,7 @@
     "noImplicitAny": false,
     "noUnusedLocals": true,
     "sourceMap": true,
+    "skipLibCheck": true,
     "suppressImplicitAnyIndexErrors": true,
     "lib": [
       "es2017",

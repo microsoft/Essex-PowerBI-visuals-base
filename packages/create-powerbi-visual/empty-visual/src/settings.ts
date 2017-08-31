@@ -26,10 +26,10 @@
 import "@essex/powerbi-visuals-utils-adapter/lib/dataview";
 
 export class VisualSettings extends powerbi.extensibility.utils.dataview.DataViewObjectsParser {
-  public dataPoint: dataPointSettings = new dataPointSettings();
+  public dataPoint: DataPointSettings = new DataPointSettings();
 }
 
-export class dataPointSettings {
+export class DataPointSettings {
   // Default color
   public defaultColor: string = "";
   // Show all

@@ -11,6 +11,7 @@
     "@essex/powerbi-visual-scripts": "^0.0.1",
     "@essex/powerbi-visuals-utils-adapter": "^0.0.1",
     "@types/d3": "^4.10.0",
+    "@types/node": "^8.0.26",
     "d3": "^4.10.0"
   }
 }
