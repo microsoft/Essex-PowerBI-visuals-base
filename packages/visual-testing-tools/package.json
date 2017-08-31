@@ -3,6 +3,7 @@
   "version": "1.0.0",
   "description": "A set of testing tools for ease of testing within PowerBI",
   "scripts": {
+    "clean": "../../node_modules/.bin/del lib",
     "docs": "typedoc --out docs --ignoreCompilerErrors ./ --externalPattern **/node_modules/**/*.* --exclude **/src/**/*.spec.ts",
     "compile": "../../node_modules/.bin/tsc"
   },
