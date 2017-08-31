@@ -12,6 +12,6 @@
   "compileOnSave": false,
   "files": [
     "./src/index.ts",
-    "./powerbi.d.ts"
+    "../../powerbi.d.ts"
   ]
 }

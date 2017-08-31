@@ -1,0 +1,17 @@
+{
+  "name": "powerbi-visual-<%= name %>",
+  "version": "0.0.1",
+  "license": "UNLICENSED",
+  "scripts": {
+    "install-certificate": "essex-powerbi-visual-scripts install-certificate",
+    "start": "essex-powerbi-visual-scripts start",
+    "package": "essex-powerbi-visual-scripts package"
+  },
+  "dependencies": {
+    "@essex/powerbi-visual-scripts": "^0.0.1",
+    "@essex/powerbi-visuals-utils-adapter": "^0.0.1",
+    "@types/d3": "^4.10.0",
+    "@types/node": "^8.0.26",
+    "d3": "^4.10.0"
+  }
+}

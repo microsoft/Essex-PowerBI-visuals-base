@@ -1,0 +1,19 @@
+{
+  "name": "@essex/powerbi-visuals-utils-adapter",
+  "version": "0.0.1",
+  "license": "MIT",
+  "scripts": {
+    "clean": "../../node_modules/.bin/del lib",
+    "compile": "../../node_modules/.bin/tsc"
+  },
+  "dependencies": {
+    "expose-loader": "^0.7.3",
+    "globalize": "^1.3.0",
+    "powerbi-visuals-tools": "^1.7.2",
+    "powerbi-visuals-utils-dataviewutils": "^1.2.0",
+    "powerbi-visuals-utils-formattingutils": "^3.0.0",
+    "powerbi-visuals-utils-svgutils": "^1.1.0",
+    "powerbi-visuals-utils-typeutils": "^1.1.0",
+    "script-loader": "^0.7.0"
+  }
+}

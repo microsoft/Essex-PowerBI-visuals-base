@@ -9,12 +9,6 @@
         },
         "**/**/*.js": {
             "when": "$(basename).tsx"
-        },
-        "**/*.d.ts": {
-            "when": "$(basename).ts"
-        },
-        "**/**/*.d.ts": {
-            "when": "$(basename).tsx"
         }
     },
     "typescript.tsdk": "./node_modules/typescript/lib"

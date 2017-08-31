@@ -1,0 +1,28 @@
+{
+    "compilerOptions": {
+      "target": "es5",
+      "module": "commonjs",
+      "experimentalDecorators": true,
+      "skipLibCheck": true,
+      "declaration": true,
+      "noImplicitAny": false,
+      "sourceMap": true,
+      "suppressImplicitAnyIndexErrors": true,
+      "outDir": "lib",
+      "lib": [
+        "es2017",
+        "dom"
+      ]
+    },
+    "compileOnSave": false,
+    "files": [
+        "src/dataview.ts",
+        "src/formatting.ts",
+        "src/svg.ts",
+        "src/type.ts"
+    ],
+    "exclude": [
+      "node_modules"
+    ]
+  }
+  

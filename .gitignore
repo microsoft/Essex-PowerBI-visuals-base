@@ -12,3 +12,6 @@ spec/**/*.map
 .idea/
 lib
 !visual-styling/lib
+
+*-debug.log
+*-error.log

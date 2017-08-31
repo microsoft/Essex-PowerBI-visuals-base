@@ -3,8 +3,9 @@
   "version": "1.0.0",
   "description": "A collection of utilities to help in the creation of powerbi visuals",
   "scripts": {
+    "clean": "../../node_modules/.bin/del lib",
     "docs": "typedoc --out docs --ignoreCompilerErrors ./ --externalPattern **/node_modules/**/*.* --exclude **/src/**/*.spec.ts",
-    "compile": "tsc"
+    "compile": "../../node_modules/.bin/tsc"
   },
   "main": "lib/index.js",
   "typings": "lib/index.d.ts",

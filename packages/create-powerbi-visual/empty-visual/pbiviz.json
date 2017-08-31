@@ -1,0 +1,24 @@
+{
+  "visual": {
+    "name": "<%= name %>",
+    "displayName": "<%= name %>",
+    "guid": "<%= name %>1467B3973C5244B4B42E842CD25E5C0D",
+    "visualClassName": "Visual",
+    "description": "",
+    "supportUrl": "",
+    "gitHubUrl": "",
+    "entry": "src/visual.ts"
+  },
+  "apiVersion": "1.7.0",
+  "author": {
+    "name": "",
+    "email": ""
+  },
+  "assets": {
+    "icon": "assets/icon.png"
+  },
+  "style": "style/visual.less",
+  "capabilities": "capabilities.json",
+  "dependencies": "dependencies.json",
+  "stringResources": []
+}
