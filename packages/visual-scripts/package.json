@@ -2,7 +2,7 @@
     "name": "@essex/powerbi-visual-scripts",
     "version": "0.0.1",
     "bin": {
-        "essex-pbi-scripts": "src/essex-pbi-scripts.js"
+        "essex-powerbi-visual-scripts": "src/essex-pbi-scripts.js"
     },
     "license": "MIT",
     "dependencies": {

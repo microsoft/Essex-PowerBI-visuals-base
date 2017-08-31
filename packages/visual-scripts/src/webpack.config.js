@@ -24,10 +24,10 @@
 const path = require('path');
 const webpack = require('webpack');
 const fs = require("fs");
-const ENTRY = './src/Visual.ts';
 const config = require('./config');
 const INIT_CWD = process.env.INIT_CWD;
-const regex = path.normalize(ENTRY).replace(/\\/g, '\\\\').replace(/\./g, '\\.');
+
+const regex = path.normalize(config.build.entry.js).replace(/\\/g, '\\\\').replace(/\./g, '\\.');
 
 const modulesPaths = [
     'node_modules',

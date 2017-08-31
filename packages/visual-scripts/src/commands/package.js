@@ -125,7 +125,7 @@ const _buildPackageJson = () => {
         visual: Object.assign({ version: config.metadata.version }, pbivizJson.visual),
         metadata: {
             pbivizjson: {
-                resourceId: 'rId0'
+                resourceId: 'rId0',
             },
         },
     };
@@ -224,8 +224,8 @@ module.exports = function buildPackage() {
         }
 
         const ossReportFile = path.join(
-            path.dirname(config.build.output.dir), 
-            config.metadata.name + '_' + config.metadata.version + '_OSS_Report.csv',
+            config.build.output.dir, 
+            `${config.metadata.name}_${config.metadata.version}_OSS_Report.csv`
         );
         console.log("Writing OSS License Report to ", ossReportFile);
         fs.writeFileSync(ossReportFile, ossReport);

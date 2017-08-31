@@ -29,6 +29,9 @@ import {
     buildEnumerationObjects,
     parseSettingsFromPBI,
 } from "./helpers";
+import {
+    ISettingsClass,
+} from "./interfaces";
 const assignIn = require("lodash.assignin"); // tslint:disable-line
 
 /**
@@ -41,7 +44,7 @@ export class HasSettings {
      * @param props A set of additional properties to mixin to this settings class
      */
     public static create<T extends HasSettings>(props?: any): T {
-        return parseSettingsFromPBI(this, undefined, props, true) as T;
+        return parseSettingsFromPBI(this as any as ISettingsClass<T>, undefined, props, true) as T;
     }
 
     /**
@@ -50,7 +53,7 @@ export class HasSettings {
      * @param additionalProps The additional set of properties to mixin to this settings class
      */
     public static createFromPBI<T extends HasSettings>(dv?: powerbi.DataView, additionalProps?: any): T {
-        return parseSettingsFromPBI(this, dv, additionalProps, false) as T;
+        return parseSettingsFromPBI(this as any as ISettingsClass<T>, dv, additionalProps, false) as T;
     }
 
     /**
