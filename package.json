@@ -8,8 +8,7 @@
     "compile": "lerna run compile --concurrency=1 --stream",
     "docs": "lerna run docs --stream",
     "mocha": "mocha --require ts-node/register \"./packages/*/{src,spec,lib}/**/*.spec.ts\"",
-    "test": "npm-run-all bootstrap clean lint compile mocha docs",
-    "bootstrap": "lerna bootstrap"
+    "test": "npm-run-all clean lint compile mocha docs"
   },
   "main": "dist/index.js",
   "typings": "dist/index.d.ts",

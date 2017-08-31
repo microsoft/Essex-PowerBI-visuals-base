@@ -1,4 +1,4 @@
-/// <reference path="../node_modules/powerbi-visuals-utils-formattingutils/lib/index.d.ts" />
+/// <reference path="../../../node_modules/powerbi-visuals-utils-formattingutils/lib/index.d.ts" />
 
 import "./type";
 import "./svg";
