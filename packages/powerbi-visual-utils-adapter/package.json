@@ -1,7 +1,11 @@
 {
   "name": "@essex/powerbi-visuals-utils-adapter",
-  "version": "0.0.1",
+  "version": "1.1.0",
   "license": "MIT",
+  "author": "Microsoft",
+  "publishConfig": {
+    "access": "public"
+  },
   "scripts": {
     "clean": "../../node_modules/.bin/del lib",
     "compile": "../../node_modules/.bin/tsc"

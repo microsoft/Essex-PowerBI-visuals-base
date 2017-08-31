@@ -1,10 +1,14 @@
 {
     "name": "@essex/powerbi-visual-scripts",
-    "version": "0.0.1",
+    "version": "1.1.0",  
+    "publishConfig": {
+        "access": "public"
+    },
     "bin": {
         "essex-powerbi-visual-scripts": "src/essex-pbi-scripts.js"
     },
     "license": "MIT",
+    "author": "Microsoft",
     "dependencies": {
         "@types/chai": "^4.0.4",
         "@types/d3": "^4.10.0",
