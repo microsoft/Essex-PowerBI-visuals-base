@@ -1,6 +1,6 @@
 {
   "name": "@essex/visual-settings",
-  "version": "1.1.0",
+  "version": "1.1.1",
   "description": "A library to parse and enumerate powerbi visual settings.",
   "scripts": {
     "clean": "../../node_modules/.bin/del lib",
@@ -24,7 +24,7 @@
   "license": "MIT",
   "dependencies": {
     "@essex/visual-styling": "^1.0.0",
-    "@essex/visual-utils": "^1.1.0",
+    "@essex/visual-utils": "^1.1.1",
     "font-awesome": "^4.6.1",
     "json-stringify-safe": "^5.0.1",
     "lodash": "3.6.0",
