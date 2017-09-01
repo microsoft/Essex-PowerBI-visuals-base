@@ -11,8 +11,8 @@ const visualName = process.argv[2];
 const BUNDLE_URL = 'https://essexpbipublic.blob.core.windows.net/create-powerbi-visual-bundles/newvizbundle.tar.gz';
 const imageFileName = path.join(process.cwd(), "essex-pbi-visual.tar.gz");
 const visualPath = path.join(process.cwd(), visualName);
-const visualGuid = Guid.raw().replace("-", "");
-console.log("Creating Essex PowerBI Visual: %s", visualName);
+const visualGuid = Guid.raw().replace(/-/g, '');
+console.log("Creating Essex PowerBI Visual: %s", visualName, visualGuid);
 
 function downloadNewVisualImage() {
     return new Promise((resolve, reject) => {
