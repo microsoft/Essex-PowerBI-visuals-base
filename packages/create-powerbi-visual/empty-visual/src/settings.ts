@@ -23,7 +23,16 @@
  *  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  *  THE SOFTWARE.
  */
-import "@essex/powerbi-visuals-utils-adapter/lib/dataview";
+
+//
+// This is pretty hacky. The PowerBI utils use Typescript namespaces, which are awkward to use here.
+//
+/// <reference path="../node_modules/powerbi-visuals-utils-typeutils/lib/index.d.ts" />
+/// <reference path="../node_modules/powerbi-visuals-utils-svgutils/lib/index.d.ts" />
+/// <reference path="../node_modules/powerbi-visuals-utils-dataviewutils/lib/index.d.ts" />
+import "script-loader!powerbi-visuals-utils-typeutils/lib/index";
+import "script-loader!powerbi-visuals-utils-svgutils/lib/index";
+import "script-loader!powerbi-visuals-utils-dataviewutils/lib/index";
 
 export class VisualSettings extends powerbi.extensibility.utils.dataview.DataViewObjectsParser {
   public dataPoint: DataPointSettings = new DataPointSettings();

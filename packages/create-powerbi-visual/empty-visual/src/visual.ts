@@ -24,6 +24,7 @@
  *  THE SOFTWARE.
  */
 /// <reference path="../powerbi.d.ts" />
+
 import { VisualSettings } from "./settings";
 
 export default class Visual implements powerbi.extensibility.IVisual {

@@ -16,6 +16,7 @@
     "targz": "^1.0.1"
   },
   "dependencies": {
+    "guid": "^0.0.12",
     "lodash": "^4.17.4"
   }
 }

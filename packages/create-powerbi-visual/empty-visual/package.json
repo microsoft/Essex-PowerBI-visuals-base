@@ -9,7 +9,10 @@
   },
   "dependencies": {
     "@essex/powerbi-visual-scripts": "*",
-    "@essex/powerbi-visuals-utils-adapter": "*",
+    "powerbi-visuals-utils-typeutils": "^1.1.0",
+    "powerbi-visuals-utils-svgutils": "^1.1.0",
+    "powerbi-visuals-utils-dataviewutils": "^1.2.0",
+    "powerbi-visuals-tools": "^1.7.2",
     "@types/d3": "^4.10.0",
     "@types/node": "^8.0.26",
     "d3": "^4.10.0"
