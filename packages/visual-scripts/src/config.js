@@ -23,7 +23,7 @@ module.exports = {
         author: packageJson.author,
         license: packageJson.license,
         privacy: packageJson.privacy,
-        guid: pbivizJson.guid,
+        guid: pbivizJson.visual.guid,
         name: pbivizJson.visual.name,
     },
     assets: pbivizJson.assets,
