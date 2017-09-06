@@ -1,0 +1,23 @@
+{
+    "name": "@essex/d3-coloring-scales",
+    "version": "0.1.0",
+    "publishConfig": {
+        "access": "public"
+    },
+    "license": "MIT",
+    "author": "Microsoft",
+    "scripts": {
+        "clean": "../../node_modules/.bin/del lib",
+        "docs": "typedoc --out docs --ignoreCompilerErrors ./ --externalPattern **/node_modules/**/*.* --exclude **/src/**/*.spec.ts",
+        "compile": "../../node_modules/.bin/tsc"
+    },
+    "dependencies": {
+        "@types/d3": "^4.10.0",
+        "@types/d3-scale-chromatic": "^1.0.2",
+        "d3": "^4.10.2",
+        "d3-scale-chromatic": "^1.1.1"
+    },
+    "devDependencies": {
+        "typescript": "^2.5.2"
+    }
+}
