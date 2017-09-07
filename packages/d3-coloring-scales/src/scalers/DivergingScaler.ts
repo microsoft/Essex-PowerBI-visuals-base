@@ -20,7 +20,7 @@ export default class DivergingScaler implements Scaler {
         /**
          * The minimum value in the input range. These values are colored as "negative"
          */
-        valueMin,
+        valueMin: number,
 
         /**
          * The midpoint value in the input range, at which point to switch color schemes.
@@ -30,13 +30,13 @@ export default class DivergingScaler implements Scaler {
         /**
          * The maximum value in the input range. These values are colored as "positive"
          */
-        valueMax,
+        valueMax: number,
 
         /**
          * Whether to log-scale the coloration. If true, colors will be more vibrant, exposing subtle variances
          * in homogenous data.
          */
-        private isLogScaled: boolean = false,
+        private isLogScaled = false,
     ) {
         // Sanitizes incoming positive values onto a range of 0-1
         this.valueSanitizerPos = d3.scaleLinear().domain([valueMid, valueMax]).range([MIN, MAX]).clamp(true);

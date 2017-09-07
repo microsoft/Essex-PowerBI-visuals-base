@@ -12,16 +12,16 @@ export default class LinearScaler implements Scaler {
     private logScaler: d3.ScaleLogarithmic<number, number>;
 
     constructor(
-        valueMin,
-        valueMax,
-        private isLogScaled: boolean,
+        valueMin: number,
+        valueMax: number,
+        private isLogScaled: boolean = false,
     ) {
         this.valueSanitizer = d3.scaleLinear().domain([valueMin, valueMax]).range([MIN, MAX]).clamp(true);
         this.logScaler = d3.scaleLog().domain([MIN, MAX]).range([MIN, MAX]);
     }
 
     public scale(value: number) {
-        if (value === null) {
+        if (value === null || value === undefined) {
             return value;
         }
         const sanitized = this.valueSanitizer(value);
