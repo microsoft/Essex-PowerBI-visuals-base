@@ -22,7 +22,6 @@
         "exports-loader": "^0.6.4",
         "expose-loader": "^0.7.3",
         "ignore-loader": "^0.1.2",
-        "jquery": "^1.7.4",
         "json-loader": "^0.5.7",
         "lodash": "^4.17.4",
         "memory-fs": "^0.4.1",
@@ -33,7 +32,7 @@
         "sass-loader": "^6.0.6",
         "script-loader": "^0.7.0",
         "serve-static": "^1.12.4",
-        "style-loader": "^0.18.2",
+        "style-loader": "^0.19.0",
         "ts-loader": "^2.3.3",
         "webpack": "^3.5.5"
     }
