@@ -48,6 +48,6 @@
     "ts-node": "^3.1.0",
     "tslint": "^3.7.4",
     "typedoc": "^0.7.1",
-    "typescript": "^2.3.4"
+    "typescript": "^2.5.3"
   }
 }
