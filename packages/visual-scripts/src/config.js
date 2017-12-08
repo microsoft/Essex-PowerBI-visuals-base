@@ -4,7 +4,7 @@ const CWD = process.env.INIT_CWD;
 
 const pbivizJson = require(path.join(CWD, 'pbiviz.json'));
 const packageJson = require(path.join(CWD, 'package.json'));
-const webpackExtend = fs.existsSync(path.join(CWD, 'webpack.extend.js')) ? require(path.join(CWD, 'package.json')) : t => t;
+const webpackExtend = fs.existsSync(path.join(CWD, 'webpack.extend.js')) ? require(path.join(CWD, 'webpack.extend.js')) : t => t;
 const outputFile = path.join(CWD, pbivizJson.output || 'dist/Visual.pbiviz');
 const outputDir = path.parse(outputFile).dir;
 const dropFolder = path.join(CWD, ".tmp/drop");
