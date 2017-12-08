@@ -12,10 +12,8 @@
   "scripts": {
     "tarball-empty-viz": "node scripts/package-empty-viz-tarball"
   },
-  "devDependencies": {
-    "targz": "^1.0.1"
-  },
   "dependencies": {
+    "targz": "^1.0.1",
     "guid": "^0.0.12",
     "lodash": "^4.17.4"
   }

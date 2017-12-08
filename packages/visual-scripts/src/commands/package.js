@@ -33,8 +33,7 @@ const webpack = require("webpack");
 const MemoryFS = require("memory-fs");
 const buildOSSReport = require('../util/buildOSSReport.js');
 const config = require('../config');
-const webpackConfig = require('../webpack.config');
-const { pbivizJson } = config;;
+const { pbivizJson } = config;
 
 const _buildLegacyPackageJson = () => {
     const pack = {
@@ -105,7 +104,6 @@ const _buildLegacyPackageJson = () => {
 
     const date = new Date();
     pack.build = date.getUTCFullYear().toString().substring(2) + '.' + (date.getUTCMonth() + 1) + '.' + date.getUTCDate() + '.' + ((date.getUTCHours() * 3600) + (date.getUTCMinutes() * 60) + date.getUTCSeconds());
-
     return pack;
 };
 
@@ -152,7 +150,7 @@ const compileSass = () => {
 
 const compileScripts = (callback) => {
     const fs = new MemoryFS();
-    const compiler = webpack(webpackConfig);
+    const compiler = webpack(config.webpackConfig);
     compiler.outputFileSystem = fs;
     compiler.run((err, stats) => {
         if (err) throw err;
@@ -167,7 +165,7 @@ const compileScripts = (callback) => {
             return process.exit(1);
         }
         buildOSSReport(jsonStats.modules, ossReport => {
-            console.log("Reading File Content from ", config.build.js, JSON.stringify(webpackConfig.output));
+            console.log("Reading File Content from ", config.build.js, JSON.stringify(config.webpackConfig.output));
             const fileContent = fs.readFileSync(config.build.js).toString();
             callback(err, fileContent, ossReport);
         });
