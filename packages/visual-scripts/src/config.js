@@ -27,6 +27,7 @@ const buildConfig = {
     },
 };
 
+// Wire in the version from package.json
 if (!pbivizJson.visual.version) {
     pbivizJson.visual.version = packageJson.version
 }

@@ -8,7 +8,11 @@ const _ = require('lodash');
 const Guid = require('guid');
 const visualName = process.argv[2];
 
+/**
+ * The latest viz bundle
+ */
 const BUNDLE_URL = 'https://essexpbipublic.blob.core.windows.net/create-powerbi-visual-bundles/newvizbundle.tar.gz';
+
 const imageFileName = path.join(process.cwd(), "essex-pbi-visual.tar.gz");
 const visualPath = path.join(process.cwd(), visualName);
 const visualGuid = Guid.raw().replace(/-/g, '');
