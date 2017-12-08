@@ -50,7 +50,7 @@ module.exports = buildConfig => {
     module: {
       loaders: [
         {
-          test: new RegExp(regex),
+          test: new RegExp(path.normalize(buildConfig.entry.js).replace(/\\/g, '\\\\').replace(/\./g, '\\.')),
           loader: path.join(__dirname, "util/pbiPluginLoader")
         },
         {
