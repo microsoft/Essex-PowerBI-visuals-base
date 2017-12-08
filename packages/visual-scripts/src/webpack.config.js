@@ -71,15 +71,15 @@ module.exports = buildConfig => {
       ]
     },
     plugins: [
-      new webpack.optimize.OccurrenceOrderPlugin(),
-      new webpack.DefinePlugin({
-        "process.env": {
-          DEBUG: '"' + (process.env.DEBUG || "") + '"',
-          NODE_ENV: JSON.stringify(process.env.NODE_ENV || "development")
-        }
-      })
-    ]
-  };
+        new webpack.optimize.OccurrenceOrderPlugin(),
+        new webpack.DefinePlugin({
+            'process.env': {
+                DEBUG: "\"" + (process.env.DEBUG || "") + "\"",
+                NODE_ENV: JSON.stringify(process.env.NODE_ENV || "development"),
+            },
+        }),
+    ],
+};
 
   if (process.env.NODE_ENV !== "production") {
     webpackConf.devtool = "eval";
