@@ -26,9 +26,9 @@
 		"jsx-wrap-multiline": false,
 		"jsx-curly-spacing": false,
 		/*
-		 TODO: Enable these disabled rules. They showed up when we upgrade tslint, but we
-		 punted on resolving issues associated with them
-		*/
+		 * TODO: Enable these disabled rules. They showed up when we upgrade tslint, but we
+		 * punted on resolving issues associated with them
+		 */
 		"no-unused-expression": false,
 		"max-classes-per-file": false,
 		"object-literal-shorthand": false,
@@ -39,7 +39,13 @@
 		"prefer-for-of": false,
 		"callable-types": false,
 		"ban-types": false,
-		// Enabled Rule Configrogue
+		/*
+         * Broken rules - re-enable when tslint updates
+         */
+		"class-name": false,
+		/*
+         * Enabled Rule Config
+         */
 		"member-ordering": [
 			true,
 			"public-before-private",
