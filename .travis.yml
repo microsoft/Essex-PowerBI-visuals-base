@@ -1,6 +1,9 @@
 language: node_js
 node_js:
-  - "8"
+  # 
+  #  12/11/2107 - PBI CLI tools do not support newer versions yet. This error is emitted when using Node 8 and 9
+  #  error powerbi-visuals-tools@1.8.0: The engine "node" is incompatible with this module. Expected version "^6.0.0".
+  #
   - "6"
 cache: yarn
 before_install:
