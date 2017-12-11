@@ -4,7 +4,7 @@
 	"description": "Essex PowerBI visual base",
 	"scripts": {
 		"clean": "lerna run clean --stream",
-		"lint": "tslint -t verbose \"./packages/*/{src,spec}/**/*.ts\"",
+		"lint": "yarn tslint -t verbose \"./packages/*/{src,spec}/**/*.ts\"",
 		"compile": "lerna run compile --concurrency=1 --stream",
 		"docs": "lerna run docs --stream",
 		"mocha":
@@ -50,7 +50,7 @@
 		"ts-node": "^3.1.0",
 		"tslint": "^5.8.0",
 		"typedoc": "^0.7.1",
-		"typescript": "^2.5.3"
+		"typescript": "^2.6.1"
 	},
 	"lint-staged": {
 		"packages/**/*.{js,tsx}": [
