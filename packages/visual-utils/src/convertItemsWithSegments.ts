@@ -22,13 +22,19 @@
  * SOFTWARE.
  */
 
-import get from "./typesafeGet";
-import { fullColors as full } from "@essex/visual-styling";
-import { default as calculateSegmentData } from "./calculateSegments";
-import { IColorSettings, ItemWithValueSegments, ColorMode, IValueSegment, IColoredObject } from "./interfaces";
-import ISelectionIdBuilder = powerbi.visuals.ISelectionIdBuilder;
+import get from './typesafeGet'
+import { fullColors as full } from '@essex/visual-styling'
+import { default as calculateSegmentData } from './calculateSegments'
+import {
+	IColorSettings,
+	ItemWithValueSegments,
+	ColorMode,
+	IValueSegment,
+	IColoredObject
+} from './interfaces'
+import ISelectionIdBuilder = powerbi.visuals.ISelectionIdBuilder
 
-const ldget = require("lodash.get"); //tslint:disable-line
+const ldget = require('lodash.get') //tslint:disable-line
 
 /**
  * Converts the dataView into a set of items that have a name, and a set of value segments.
@@ -39,69 +45,75 @@ const ldget = require("lodash.get"); //tslint:disable-line
  * @param settings The color settings to use when converting
  */
 export function convertItemsWithSegments(
-    dataView: powerbi.DataView,
-    onCreateItem: any,
-    settings?: IColorSettings,
-    createIdBuilder?: () => ISelectionIdBuilder) {
-    "use strict";
-    let items: ItemWithValueSegments[];
-    const dvCats = get(dataView, x => x.categorical.categories);
-    const categories = get(dataView, x => x.categorical.categories[0].values);
-    const values = get(dataView, x => x.categorical.values);
-    if (categories) {
-        settings = <any>settings || {};
+	dataView: powerbi.DataView,
+	onCreateItem: any,
+	settings?: IColorSettings,
+	createIdBuilder?: () => ISelectionIdBuilder
+) {
+	'use strict'
+	let items: ItemWithValueSegments[]
+	const dvCats = get(dataView, x => x.categorical.categories)
+	const categories = get(dataView, x => x.categorical.categories[0].values)
+	const values = get(dataView, x => x.categorical.values)
+	if (categories) {
+		settings = <any>settings || {}
 
-        // Whether or not the gradient coloring mode should be used
-        const shouldUseGradient = settings.colorMode === ColorMode.Gradient;
+		// Whether or not the gradient coloring mode should be used
+		const shouldUseGradient = settings.colorMode === ColorMode.Gradient
 
-        // We should only add gradients if the data supports gradients, and the user has gradients enabled
-        const shouldAddGradients = dataSupportsGradients(dataView) && shouldUseGradient;
+		// We should only add gradients if the data supports gradients, and the user has gradients enabled
+		const shouldAddGradients =
+			dataSupportsGradients(dataView) && shouldUseGradient
 
-        // If the data supports default color, then use id.
-        const defaultColor = dataSupportsDefaultColor(dataView) ? full[0] : undefined;
+		// If the data supports default color, then use id.
+		const defaultColor = dataSupportsDefaultColor(dataView)
+			? full[0]
+			: undefined
 
-        // We should only colorize instances if the data supports colorized instances and the user isn't
-        // trying to use gradients
-        const shouldAddInstanceColors = dataSupportsColorizedInstances(dataView) && !shouldUseGradient;
+		// We should only colorize instances if the data supports colorized instances and the user isn't
+		// trying to use gradients
+		const shouldAddInstanceColors =
+			dataSupportsColorizedInstances(dataView) && !shouldUseGradient
 
-        // Calculate the segments
-        // Segment info is the list of segments that each row should contain, with the colors of the segements.
-        // i.e. [<Sum of Id: Color Blue>, <Average Grade: Color Red>]
-        const segmentInfo = calculateSegmentData(
-            values,
-            defaultColor,
-            shouldAddGradients ? settings.gradient : undefined,
-            shouldAddInstanceColors ? settings.instanceColors : undefined);
+		// Calculate the segments
+		// Segment info is the list of segments that each row should contain, with the colors of the segements.
+		// i.e. [<Sum of Id: Color Blue>, <Average Grade: Color Red>]
+		const segmentInfo = calculateSegmentData(
+			values,
+			defaultColor,
+			shouldAddGradients ? settings.gradient : undefined,
+			shouldAddInstanceColors ? settings.instanceColors : undefined
+		)
 
-        // Iterate through each of the rows (or categories)
-        items = categories.map((category, rowIdx) => {
-            let id = createIdBuilder ?
-                createIdBuilder()
-                    .withCategory(dvCats[0], rowIdx)
-                    .createSelectionId()
-                : rowIdx;
-            let rowTotal = 0;
-            let segments: any;
+		// Iterate through each of the rows (or categories)
+		items = categories.map((category, rowIdx) => {
+			const id = createIdBuilder
+				? createIdBuilder()
+						.withCategory(dvCats[0], rowIdx)
+						.createSelectionId()
+				: rowIdx
+			let rowTotal = 0
+			let segments: any
 
-            // If we have bars
-            if (values) {
-                const segmentData = createSegments(values, segmentInfo, rowIdx);
-                segments = segmentData.segments;
-                rowTotal = segmentData.total;
-                if (settings && settings.reverseOrder) {
-                    segments.reverse();
-                }
-            }
-            const item = onCreateItem(dvCats, rowIdx, rowTotal, id, segments);
-            item.valueSegments = segments;
-            return item;
-        });
+			// If we have bars
+			if (values) {
+				const segmentData = createSegments(values, segmentInfo, rowIdx)
+				segments = segmentData.segments
+				rowTotal = segmentData.total
+				if (settings && settings.reverseOrder) {
+					segments.reverse()
+				}
+			}
+			const item = onCreateItem(dvCats, rowIdx, rowTotal, id, segments)
+			item.valueSegments = segments
+			return item
+		})
 
-        // Computes the rendered values for each of the items
-        computeRenderedValues(items);
+		// Computes the rendered values for each of the items
+		computeRenderedValues(items)
 
-        return { items, segmentInfo };
-    }
+		return { items, segmentInfo }
+	}
 }
 
 /**
@@ -109,50 +121,51 @@ export function convertItemsWithSegments(
  * @param items The set of items to compute for
  */
 export function computeRenderedValues(items: ItemWithValueSegments[]) {
-    "use strict";
-    if (items && items.length) {
-        const range = computeRange(items);
-        let maxWidth = 0;
-        items.forEach(item => {
-            const segments = (item.valueSegments || []);
-            let rowWidth = 0;
-            segments.forEach((segment, segmentIdx) => {
-                segment.width = (Math.abs(segment.value) / range.max / segments.length) * 100;
-                rowWidth += segment.width;
-            });
-            if (rowWidth > maxWidth) {
-                maxWidth = rowWidth;
-            }
-        });
-        if (maxWidth > 0) {
-            items.forEach(item => {
-                item.renderedValue = 100 * (100 / maxWidth);
-            });
-        }
-    }
+	'use strict'
+	if (items && items.length) {
+		const range = computeRange(items)
+		let maxWidth = 0
+		items.forEach(item => {
+			const segments = item.valueSegments || []
+			let rowWidth = 0
+			segments.forEach((segment, segmentIdx) => {
+				segment.width =
+					Math.abs(segment.value) / range.max / segments.length * 100
+				rowWidth += segment.width
+			})
+			if (rowWidth > maxWidth) {
+				maxWidth = rowWidth
+			}
+		})
+		if (maxWidth > 0) {
+			items.forEach(item => {
+				item.renderedValue = 100 * (100 / maxWidth)
+			})
+		}
+	}
 }
 
 /**
  * Computes the range of all of the value segments
  */
 function computeRange(items: ItemWithValueSegments[]) {
-    "use strict";
-    // const segmentDomains: IDomain[] = [];
-    let max = 0;
-    if (items && items.length) {
-        items.forEach(item => {
-            (item.valueSegments || []).forEach((segment, colIdx) => {
-                const segmentValue = segment.value;
-                if (typeof segmentValue === "number") {
-                    const absVal = Math.abs(segmentValue);
-                    if (absVal > max) {
-                        max = absVal;
-                    }
-                }
-            });
-        });
-    }
-    return { min: 0, max };
+	'use strict'
+	// const segmentDomains: IDomain[] = [];
+	let max = 0
+	if (items && items.length) {
+		items.forEach(item => {
+			;(item.valueSegments || []).forEach((segment, colIdx) => {
+				const segmentValue = segment.value
+				if (typeof segmentValue === 'number') {
+					const absVal = Math.abs(segmentValue)
+					if (absVal > max) {
+						max = absVal
+					}
+				}
+			})
+		})
+	}
+	return { min: 0, max }
 }
 
 /**
@@ -160,8 +173,8 @@ function computeRange(items: ItemWithValueSegments[]) {
  * @param dv The dataView to check
  */
 export function dataSupportsValueSegments(dv: powerbi.DataView) {
-    "use strict";
-    return ldget(dv, "categorical.values.length", 0) > 0;
+	'use strict'
+	return ldget(dv, 'categorical.values.length', 0) > 0
 }
 
 /**
@@ -169,14 +182,14 @@ export function dataSupportsValueSegments(dv: powerbi.DataView) {
  * @param dv The dataView to check
  */
 export function dataSupportsDefaultColor(dv: powerbi.DataView) {
-    "use strict";
+	'use strict'
 
-    // Default color only works on a single value instance
-    if (dataSupportsValueSegments(dv)) {
-        return get(dv, v => v.categorical.values.length, 0) === 1;
-    }
+	// Default color only works on a single value instance
+	if (dataSupportsValueSegments(dv)) {
+		return get(dv, v => v.categorical.values.length, 0) === 1
+	}
 
-    return false;
+	return false
 }
 
 /**
@@ -184,13 +197,13 @@ export function dataSupportsDefaultColor(dv: powerbi.DataView) {
  * @param dv The dataView to check
  */
 export function dataSupportsGradients(dv: powerbi.DataView) {
-    "use strict";
+	'use strict'
 
-    // We can use gradients on ANY data that has more than one value, otherwise it doesn't make sense
-    if (dataSupportsValueSegments(dv)) {
-        return get(dv, v => v.categorical.values.length, 0) > 0;
-    }
-    return false;
+	// We can use gradients on ANY data that has more than one value, otherwise it doesn't make sense
+	if (dataSupportsValueSegments(dv)) {
+		return get(dv, v => v.categorical.values.length, 0) > 0
+	}
+	return false
 }
 
 /**
@@ -198,15 +211,15 @@ export function dataSupportsGradients(dv: powerbi.DataView) {
  * @param dv The dataView to check
  */
 export function dataSupportsColorizedInstances(dv: powerbi.DataView) {
-    "use strict";
+	'use strict'
 
-    // If there are no value segments, then there is definitely going to be no instances
-    if (dataSupportsValueSegments(dv) && dv.categorical.values.grouped) {
-        // We can uniquely color items that have an identity associated with it
-        const grouped = dv.categorical.values.grouped();
-        return grouped.filter(n => !!n.identity).length > 0;
-    }
-    return false;
+	// If there are no value segments, then there is definitely going to be no instances
+	if (dataSupportsValueSegments(dv) && dv.categorical.values.grouped) {
+		// We can uniquely color items that have an identity associated with it
+		const grouped = dv.categorical.values.grouped()
+		return grouped.filter(n => !!n.identity).length > 0
+	}
+	return false
 }
 
 /**
@@ -216,48 +229,48 @@ export function dataSupportsColorizedInstances(dv: powerbi.DataView) {
  * @param rowIdx The row to generate the segment for
  */
 function createSegments(
-    columns: powerbi.DataViewValueColumns,
-    segmentData: IColoredObject[],
-    rowIdx: number) {
-    "use strict";
-    let total = 0;
-    const segments = segmentData.map((si, colIdx) => {
-        const highlights = (columns[colIdx].highlights || []);
-        const highlight = highlights[rowIdx];
-        const segmentValue = columns[colIdx].values[rowIdx];
-        if (typeof segmentValue === "number") {
-            total += segmentValue;
-        }
+	columns: powerbi.DataViewValueColumns,
+	segmentData: IColoredObject[],
+	rowIdx: number
+) {
+	'use strict'
+	let total = 0
+	const segments = segmentData.map((si, colIdx) => {
+		const highlights = columns[colIdx].highlights || []
+		const highlight = highlights[rowIdx]
+		const segmentValue = columns[colIdx].values[rowIdx]
+		if (typeof segmentValue === 'number') {
+			total += segmentValue
+		}
 
-        const { color, name } = si;
+		const { color, name } = si
 
-        // There is some sort of highlighting going on
-        const segment = {
-            name,
-            color,
-            value: segmentValue,
-            displayValue: segmentValue,
-            width: 0,
-        } as IValueSegment;
+		// There is some sort of highlighting going on
+		const segment = {
+			name,
+			color,
+			value: segmentValue,
+			displayValue: segmentValue,
+			width: 0
+		} as IValueSegment
 
-        if (highlights && highlights.length) {
-            let highlightWidth = 0;
-            if (segmentValue && typeof segmentValue === "number" && highlight) {
-                highlightWidth = (<number>highlight / segmentValue) * 100;
-            }
-            segment.highlightWidth = highlightWidth;
-        }
+		if (highlights && highlights.length) {
+			let highlightWidth = 0
+			if (segmentValue && typeof segmentValue === 'number' && highlight) {
+				highlightWidth = <number>highlight / segmentValue * 100
+			}
+			segment.highlightWidth = highlightWidth
+		}
 
-        return segment;
-    });
-    return { segments, total };
+		return segment
+	})
+	return { segments, total }
 }
-
 
 /**
  * Represents a domain of some value
  */
 export interface IDomain {
-    min: number;
-    max: number;
+	min: number
+	max: number
 }

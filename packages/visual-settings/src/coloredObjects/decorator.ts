@@ -22,14 +22,14 @@
  * SOFTWARE.
  */
 
-import { ISettingDescriptor } from "../interfaces";
-import { settings } from "../settingDecorator";
-import { ColoredObjectsSettings } from "./ColoredObjectsSettings";
+import { ISettingDescriptor } from '../interfaces'
+import { settings } from '../settingDecorator'
+import { ColoredObjectsSettings } from './ColoredObjectsSettings'
 
 /**
  * A decorator for colored objects.
  */
 export function coloredObjectsSettings<T>(config?: ISettingDescriptor<T>) {
-    "use strict";
-    return settings<T>(ColoredObjectsSettings, config);
+	'use strict'
+	return settings<T>(ColoredObjectsSettings, config)
 }

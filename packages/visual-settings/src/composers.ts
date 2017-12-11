@@ -22,36 +22,47 @@
  * SOFTWARE.
  */
 
-
-import { ISettingsComposer, IDefaultInstanceColor, IDefaultValue, IDefaultColor, ISetting, ISettingDescriptor } from "./interfaces"; // tslint:disable-line
-import { IColoredObject, IPersistObjectBuilder } from "@essex/visual-utils"; // tslint:disable-line
-import { getPBIObjectNameAndPropertyName } from "./helpers";
-const ldset = require("lodash.set"); // tslint:disable-line
+import {
+	ISettingsComposer,
+	IDefaultInstanceColor,
+	IDefaultValue,
+	IDefaultColor
+} from './interfaces' // tslint:disable-line
+import { IColoredObject, IPersistObjectBuilder } from '@essex/visual-utils' // tslint:disable-line
+import { getPBIObjectNameAndPropertyName } from './helpers'
+const ldset = require('lodash.set') // tslint:disable-line
 
 /**
  * Creates a composer which composes IColoredObjects into PBI
  * @param defaultColor The default color to use if a color instance is not found
  */
-export function coloredObjectInstanceComposer(defaultColor: IDefaultInstanceColor = "#ccc") {
-    "use strict";
-    return ((val, desc, dv, setting, b) => {
-        if (val) {
-            const { propName } = getPBIObjectNameAndPropertyName(setting);
-            return (((<any>val).forEach ? val : [val]) as IColoredObject[]).map((n, i) => {
-                const instanceColor = typeof defaultColor === "function" ? defaultColor(i, dv, n.identity) : defaultColor;
-                const finalColor = n.color || instanceColor;
-                return {
-                    displayName: n.name,
-                    selector: {
-                        data: [n.identity],
-                    },
-                    properties: {
-                        [propName]: finalColor,
-                    },
-                };
-            });
-        }
-    }) as ISettingsComposer<IColoredObject[]|IColoredObject>;
+export function coloredObjectInstanceComposer(
+	defaultColor: IDefaultInstanceColor = '#ccc'
+) {
+	'use strict'
+	return ((val, desc, dv, setting, b) => {
+		if (val) {
+			const { propName } = getPBIObjectNameAndPropertyName(setting)
+			return (((<any>val).forEach ? val : [val]) as IColoredObject[]).map(
+				(n, i) => {
+					const instanceColor =
+						typeof defaultColor === 'function'
+							? defaultColor(i, dv, n.identity)
+							: defaultColor
+					const finalColor = n.color || instanceColor
+					return {
+						displayName: n.name,
+						selector: {
+							data: [n.identity]
+						},
+						properties: {
+							[propName]: finalColor
+						}
+					}
+				}
+			)
+		}
+	}) as ISettingsComposer<IColoredObject[] | IColoredObject>
 }
 
 /**
@@ -59,26 +70,32 @@ export function coloredObjectInstanceComposer(defaultColor: IDefaultInstanceColo
  * @param path The path in the object to return
  * @param defaultValue The default value to return if the powerbi value is undefined
  */
-export function basicObjectComposer(path?: string, defaultValue?: IDefaultValue<any>) {
-    "use strict";
-    return ((val, desc, dv, setting) => {
-        defaultValue = typeof defaultValue === "function" ? defaultValue() : defaultValue;
-        if (val) {
-            if (path) {
-                const obj = { };
-                ldset(obj, path, val || defaultValue);
-                return obj;
-            }
-            return val || defaultValue;
-        }
-    }) as ISettingsComposer<any>;
+export function basicObjectComposer(
+	path?: string,
+	defaultValue?: IDefaultValue<any>
+) {
+	'use strict'
+	return ((val, desc, dv, setting) => {
+		defaultValue =
+			typeof defaultValue === 'function' ? defaultValue() : defaultValue
+		if (val) {
+			if (path) {
+				const obj = {}
+				ldset(obj, path, val || defaultValue)
+				return obj
+			}
+			return val || defaultValue
+		}
+	}) as ISettingsComposer<any>
 }
 
 /**
  * Provides a basic color composer
  * @param defaultColor The default color to use if the powerbi value is undefined.
  */
-export function colorComposer(defaultColor: IDefaultColor = "#ccc") {
-    "use strict";
-    return basicObjectComposer(undefined, defaultColor) as ISettingsComposer<string>;
+export function colorComposer(defaultColor: IDefaultColor = '#ccc') {
+	'use strict'
+	return basicObjectComposer(undefined, defaultColor) as ISettingsComposer<
+		string
+	>
 }

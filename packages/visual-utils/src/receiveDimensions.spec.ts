@@ -22,59 +22,61 @@
  * SOFTWARE.
  */
 /// <reference path="../../../node_modules/powerbi-visuals-tools/templates/visuals/.api/v1.3.0/PowerBI-visuals.d.ts"/>
-import "mocha";
-import { expect } from "chai";
+import 'mocha'
+import { expect } from 'chai'
 import {
-    IDimensions,
-    IReceiveDimensions,
-    receiveDimensions,
-} from "./receiveDimensions";
-import VisualUpdateOptions = powerbi.extensibility.visual.VisualUpdateOptions;
+	IDimensions,
+	IReceiveDimensions,
+	receiveDimensions
+} from './receiveDimensions'
+import VisualUpdateOptions = powerbi.extensibility.visual.VisualUpdateOptions
 
 class BaseRawDimensional implements IReceiveDimensions {
-    public dimensions: IDimensions;
-    public updateOptions: VisualUpdateOptions;
+	public dimensions: IDimensions
+	public updateOptions: VisualUpdateOptions
 
-    public setDimensions(dimensions: IDimensions) {
-        this.dimensions = dimensions;
-    }
+	public setDimensions(dimensions: IDimensions) {
+		this.dimensions = dimensions
+	}
 
-    public update(options: VisualUpdateOptions) {
-        this.updateOptions = options;
-    }
+	public update(options: VisualUpdateOptions) {
+		this.updateOptions = options
+	}
 }
 
+class BasePBIDimensional extends BaseRawDimensional
+	implements powerbi.extensibility.visual.IVisual {
+	public updateOptions: VisualUpdateOptions
 
-class BasePBIDimensional extends BaseRawDimensional implements powerbi.extensibility.visual.IVisual {
-    public updateOptions: VisualUpdateOptions;
-
-    public update(options: VisualUpdateOptions) {
-        this.updateOptions = options;
-    }
+	public update(options: VisualUpdateOptions) {
+		this.updateOptions = options
+	}
 }
 
-describe("receiveDimensions", () => {
-    it("will can decorate class, and not interfere with reflection", () => {
-        @receiveDimensions
-        class Test extends BaseRawDimensional {}
+describe('receiveDimensions', () => {
+	it('will can decorate class, and not interfere with reflection', () => {
+		@receiveDimensions
+		class Test extends BaseRawDimensional {}
 
-        const instance = new Test();
-        expect(instance instanceof Test).to.be.true;
-        expect(instance instanceof BaseRawDimensional).to.be.true;
-    });
+		const instance = new Test()
+		expect(instance instanceof Test).to.be.true
+		expect(instance instanceof BaseRawDimensional).to.be.true
+	})
 
-    it("will set dimensions on init and update", () => {
-        @receiveDimensions
-        class Test extends BasePBIDimensional {}
+	it('will set dimensions on init and update', () => {
+		@receiveDimensions
+		class Test extends BasePBIDimensional {}
 
-        const instance = new Test();
-        expect(instance instanceof Test).to.be.true;
-        expect(instance instanceof BaseRawDimensional).to.be.true;
-        expect(instance instanceof BasePBIDimensional).to.be.true;
+		const instance = new Test()
+		expect(instance instanceof Test).to.be.true
+		expect(instance instanceof BaseRawDimensional).to.be.true
+		expect(instance instanceof BasePBIDimensional).to.be.true
 
-        instance.update({ viewport: {width: 30, height: 40} } as VisualUpdateOptions);
-        expect(instance.dimensions).to.deep.equal({width: 30, height: 40});
+		instance.update({
+			viewport: { width: 30, height: 40 }
+		} as VisualUpdateOptions)
+		expect(instance.dimensions).to.deep.equal({ width: 30, height: 40 })
 
-        expect(instance.updateOptions).to.be.ok;
-    });
-});
+		expect(instance.updateOptions).to.be.ok
+	})
+})

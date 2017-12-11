@@ -21,7 +21,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-import * as models from "powerbi-models";
+import * as models from 'powerbi-models'
 
 /**
  * Builds a "contains" filter from the given search value, and the given dataView
@@ -29,41 +29,47 @@ import * as models from "powerbi-models";
  * @param source The column to create a contains filter for
  * @param searchVal The value to create the filter for
  */
-export default function buildContainsFilter(source: powerbi.DataViewMetadataColumn, searchVal: any) {
-    "use strict";
-    let filter: models.AdvancedFilter;
-    if (source) {
-        const sourceType = source.type;
-        // Only support "contains" with text columns
+export default function buildContainsFilter(
+	source: powerbi.DataViewMetadataColumn,
+	searchVal: any
+) {
+	'use strict'
+	let filter: models.AdvancedFilter
+	if (source) {
+		const sourceType = source.type
+		// Only support "contains" with text columns
 
-        const target: models.IFilterColumnTarget = {
-            table: source.queryName.substr(0, source.queryName.indexOf(".")),
-            column: source.displayName,
-        };
+		const target: models.IFilterColumnTarget = {
+			table: source.queryName.substr(0, source.queryName.indexOf('.')),
+			column: source.displayName
+		}
 
-        if (searchVal) {
-            if (sourceType.text) {
-                filter = new models.AdvancedFilter(target, "And", {
-                    operator: <models.AdvancedFilterConditionOperators>"Contains",
-                    value: searchVal,
-                });
-            } else {
-                if (sourceType.numeric) {
-                    filter = new models.AdvancedFilter(target, "And", {
-                        operator: <models.AdvancedFilterConditionOperators>"Is",
-                        value: searchVal,
-                    });
-                } else if (sourceType.bool) {
-                    filter = new models.AdvancedFilter(target, "Or", [{
-                        operator: <models.AdvancedFilterConditionOperators>"Is",
-                        value: "1",
-                    }, {
-                        operator: <models.AdvancedFilterConditionOperators>"Is",
-                        value: "true",
-                    }]);
-                }
-            }
-        }
-    }
-    return filter;
+		if (searchVal) {
+			if (sourceType.text) {
+				filter = new models.AdvancedFilter(target, 'And', {
+					operator: <models.AdvancedFilterConditionOperators>'Contains',
+					value: searchVal
+				})
+			} else {
+				if (sourceType.numeric) {
+					filter = new models.AdvancedFilter(target, 'And', {
+						operator: <models.AdvancedFilterConditionOperators>'Is',
+						value: searchVal
+					})
+				} else if (sourceType.bool) {
+					filter = new models.AdvancedFilter(target, 'Or', [
+						{
+							operator: <models.AdvancedFilterConditionOperators>'Is',
+							value: '1'
+						},
+						{
+							operator: <models.AdvancedFilterConditionOperators>'Is',
+							value: 'true'
+						}
+					])
+				}
+			}
+		}
+	}
+	return filter
 }

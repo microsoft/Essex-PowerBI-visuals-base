@@ -21,117 +21,124 @@
  * SOFTWARE.
  */
 
-'use strict';
+'use strict'
 
-const path = require('path');
-const cp = require('child_process');
-const crypto = require('crypto');
-const pbiviz = require(path.join(process.cwd(), 'pbiviz.json'));
-const packageJson = require(path.join(process.cwd(), 'package.json'));
-const capabilitiesJson = require(path.join(process.cwd(), 'capabilities.json'));
+const path = require('path')
+const cp = require('child_process')
+const crypto = require('crypto')
+const pbiviz = require(path.join(process.cwd(), 'pbiviz.json'))
+const packageJson = require(path.join(process.cwd(), 'package.json'))
+const capabilitiesJson = require(path.join(process.cwd(), 'capabilities.json'))
 
-const userName = cp.execSync('whoami').toString();
-const userHash = crypto.createHash('md5').update(userName).digest('hex');
+const userName = cp.execSync('whoami').toString()
+const userHash = crypto
+	.createHash('md5')
+	.update(userName)
+	.digest('hex')
 
-const patchAPI = function (version) {
-    /* source code must be ES 5 */
-    var essexAPIPatcherVersion = '0.0.1';
-    var essexAPIPatcherKey = '__essex_patcher__';
+const patchAPI = function(version) {
+	/* source code must be ES 5 */
+	var essexAPIPatcherVersion = '0.0.1'
+	var essexAPIPatcherKey = '__essex_patcher__'
 
-    var fetchAPIObject = function (version) {
-        var apiVersions = powerbi.extensibility.visualApiVersions;
-        for (var i = 0, n = apiVersions.length; i < n; ++i) {
-            if (apiVersions[i].version === version) {
-                return apiVersions[i];
-            }
-        }
-        return null;
-    };
+	var fetchAPIObject = function(version) {
+		var apiVersions = powerbi.extensibility.visualApiVersions
+		for (var i = 0, n = apiVersions.length; i < n; ++i) {
+			if (apiVersions[i].version === version) {
+				return apiVersions[i]
+			}
+		}
+		return null
+	}
 
-    var isAPIObjectPatched = function (api) {
-        return !!(api.overloads && api.overloads[essexAPIPatcherKey]);
-    };
+	var isAPIObjectPatched = function(api) {
+		return !!(api.overloads && api.overloads[essexAPIPatcherKey])
+	}
 
-    var isESSEXVisual = function (visual) {
-        return !!(visual.__essex_visual__);
-    };
+	var isESSEXVisual = function(visual) {
+		return !!visual.__essex_visual__
+	}
 
-    var patchAPIObject = function (api) {
-        var overloads = api.overloads;
-        api.overloads = function (visual, host) {
+	var patchAPIObject = function(api) {
+		var overloads = api.overloads
+		api.overloads = function(visual, host) {
+			if (!isESSEXVisual(visual)) {
+				return overloads ? overloads(visual, host) : visual
+			}
 
-            if (!isESSEXVisual(visual)) {
-                return overloads ? overloads(visual, host) : visual;
-            }
+			var proxy = {
+				update: function(/*...*/) {
+					var args = Array.prototype.slice.call(arguments)
 
-            var proxy = {
-                update: function(/*...*/) {
-                    var args = Array.prototype.slice.call(arguments);
+					if (proxy.options) {
+						var apiOptions = args[0]
+						for (var key in proxy.options) {
+							if (
+								proxy.options.hasOwnProperty(key) &&
+								!apiOptions.hasOwnProperty(key)
+							) {
+								apiOptions[key] = proxy.options[key]
+							}
+						}
 
-                    if (proxy.options) {
-                        var apiOptions = args[0];
-                        for (var key in proxy.options) {
-                            if (proxy.options.hasOwnProperty(key) && !apiOptions.hasOwnProperty(key)) {
-                                apiOptions[key] = proxy.options[key];
-                            }
-                        }
+						proxy.options = null
+					}
 
-                        proxy.options = null;
-                    }
+					visual.update.apply(visual, args)
+				},
 
-                    visual.update.apply(visual, args);
-                },
+				options: null
+			}
+			var overloadedProxy = overloads ? overloads(proxy, host) : proxy
 
-                options: null
-            };
-            var overloadedProxy = overloads ? overloads(proxy, host) : proxy;
+			return {
+				update: function(options) {
+					if (visual.update) {
+						proxy.options = options
+						overloadedProxy.update(options)
+					}
+				}
+			}
+		}
 
-            return {
-                update: function(options) {
-                    if (visual.update) {
-                        proxy.options = options;
-                        overloadedProxy.update(options);
-                    }
-                }
-            }
-        };
+		api.overloads[essexAPIPatcherKey] = essexAPIPatcherVersion
 
-        api.overloads[essexAPIPatcherKey] = essexAPIPatcherVersion;
+		return api
+	}
 
-        return api;
-    };
-
-    var api = fetchAPIObject(version);
-    if (api && !isAPIObjectPatched(api)) {
-        patchAPIObject(api);
-    }
-};
+	var api = fetchAPIObject(version)
+	if (api && !isAPIObjectPatched(api)) {
+		patchAPIObject(api)
+	}
+}
 
 const patchCapabilities = function(capabilities) {
-    if (capabilities.objects) {
-        var objects = capabilities.objects;
-        for (var objectKey in objects) {
-            if (objects.hasOwnProperty(objectKey)) {
-                var properties = objects[objectKey].properties;
-                if (properties) {
-                    for (var propertyKey in properties) {
-                        if (properties.hasOwnProperty(propertyKey)) {
-                            var property = properties[propertyKey];
-                            if (property.type && property.type.enumeration) {
-                                property.type.enumeration = powerbi.createEnumType(property.type.enumeration);
-                            }
-                        }
-                    }
-                }
-            }
-        }
-    }
+	if (capabilities.objects) {
+		var objects = capabilities.objects
+		for (var objectKey in objects) {
+			if (objects.hasOwnProperty(objectKey)) {
+				var properties = objects[objectKey].properties
+				if (properties) {
+					for (var propertyKey in properties) {
+						if (properties.hasOwnProperty(propertyKey)) {
+							var property = properties[propertyKey]
+							if (property.type && property.type.enumeration) {
+								property.type.enumeration = powerbi.createEnumType(
+									property.type.enumeration
+								)
+							}
+						}
+					}
+				}
+			}
+		}
+	}
 
-    return capabilities;
-};
+	return capabilities
+}
 
-function pbivizPluginTemplate (pbiviz) {
-    return `(function (powerbi) {
+function pbivizPluginTemplate(pbiviz) {
+	return `(function (powerbi) {
         var visuals;
         (function (visuals) {
             var plugins;
@@ -144,14 +151,26 @@ function pbivizPluginTemplate (pbiviz) {
                     displayName: '${pbiviz.visual.name}',
                     class: '${pbiviz.visual.visualClassName}',
                     version: '${packageJson.version}',
-                    apiVersion: ${pbiviz.apiVersion ? `'${pbiviz.apiVersion}'` : undefined },
-                    capabilities: ${pbiviz.apiVersion ? '{}' : 'patchCapabilities(' + `${JSON.stringify(capabilitiesJson)}` + ')'},
+                    apiVersion: ${
+						pbiviz.apiVersion ? `'${pbiviz.apiVersion}'` : undefined
+					},
+                    capabilities: ${
+						pbiviz.apiVersion
+							? '{}'
+							: 'patchCapabilities(' +
+								`${JSON.stringify(capabilitiesJson)}` +
+								')'
+					},
                     create: function (/*options*/) {
-                        var instance = Object.create(${pbiviz.visual.visualClassName}.prototype);
-                        ${pbiviz.apiVersion ?
-                            `${pbiviz.visual.visualClassName}.apply(instance, arguments);`
-                        :
-                            `var oldInit = instance.init;
+                        var instance = Object.create(${
+							pbiviz.visual.visualClassName
+						}.prototype);
+                        ${
+							pbiviz.apiVersion
+								? `${
+										pbiviz.visual.visualClassName
+									}.apply(instance, arguments);`
+								: `var oldInit = instance.init;
                             instance.init = function(options) {
                                 instance.init = oldInit;
                                 var adaptedOptions = {
@@ -166,38 +185,52 @@ function pbivizPluginTemplate (pbiviz) {
                                     element: options.element.get(0),
                                     viewport: {width: 500, height: 500},
                                 };
-                                ${pbiviz.visual.visualClassName}.call(instance, false, adaptedOptions);
+                                ${
+									pbiviz.visual.visualClassName
+								}.call(instance, false, adaptedOptions);
 
                                 instance.update = function(options) {
                                     options.type = powerbi.extensibility.v100.convertLegacyUpdateType(options);
-                                    ${pbiviz.visual.visualClassName}.prototype.update.call(instance, options);
+                                    ${
+										pbiviz.visual.visualClassName
+									}.prototype.update.call(instance, options);
                                 }
                             }`
-                        }
+						}
                         return instance;
                     },
                     custom: true
                 };
 
                 /* save version number to visual */
-                ${pbiviz.visual.visualClassName}.__essex_build_info__ = '${packageJson.version} ${Date.now()} [${userHash}]';
-                Object.defineProperty(${pbiviz.visual.visualClassName}.prototype, '__essex_build_info__', { get: function() { return ${pbiviz.visual.visualClassName}.__essex_build_info__; } } );
+                ${pbiviz.visual.visualClassName}.__essex_build_info__ = '${
+		packageJson.version
+	} ${Date.now()} [${userHash}]';
+                Object.defineProperty(${
+					pbiviz.visual.visualClassName
+				}.prototype, '__essex_build_info__', { get: function() { return ${
+		pbiviz.visual.visualClassName
+	}.__essex_build_info__; } } );
 
                 /* ESSEX API Patcher */
-                ${pbiviz.visual.visualClassName}.prototype.__essex_visual__ = true;
-                (${patchAPI.toString()})(${pbiviz.apiVersion ? `'${pbiviz.apiVersion}'` : `''`})
+                ${
+					pbiviz.visual.visualClassName
+				}.prototype.__essex_visual__ = true;
+                (${patchAPI.toString()})(${
+		pbiviz.apiVersion ? `'${pbiviz.apiVersion}'` : `''`
+	})
             })(plugins = visuals.plugins || (visuals.plugins = {}));
         })(visuals = powerbi.visuals || (powerbi.visuals = {}));
-    })(window['powerbi'] || (window['powerbi'] = {}));`;
+    })(window['powerbi'] || (window['powerbi'] = {}));`
 }
 
 /**
  * Webpack loader function that appends pbiviz plugin code at the end of the provided source
  */
-function pluginLoader (source, map) {
-    this.cacheable();
-    source = source + '\n' + pbivizPluginTemplate(pbiviz);
-    this.callback(null, source, map);
+function pluginLoader(source, map) {
+	this.cacheable()
+	source = source + '\n' + pbivizPluginTemplate(pbiviz)
+	this.callback(null, source, map)
 }
 
-module.exports = pluginLoader;
+module.exports = pluginLoader
