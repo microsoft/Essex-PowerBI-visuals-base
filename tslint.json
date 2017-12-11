@@ -15,7 +15,7 @@
 		"jsx-no-lambda": false,
 		"jsx-no-multiline-js": false,
 		"jsx-wrap-multiline": false,
-		"label-position": true,
+		"label-position": false,
 		"max-line-length": false,
 		"no-bitwise": false,
 		"no-consecutive-blank-lines": false,
