@@ -4,7 +4,7 @@
 	"description": "Essex PowerBI visual base",
 	"scripts": {
 		"clean": "lerna run clean --stream",
-		"lint": "tslint -t verbose \"./packages/*/{src,spec}/**/*.ts\"",
+		"lint": "tslint -t verbose './packages/*/{src,spec}/**/*.ts'",
 		"compile": "lerna run compile --concurrency=1 --stream",
 		"docs": "lerna run docs --stream",
 		"mocha":
