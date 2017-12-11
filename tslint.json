@@ -5,9 +5,6 @@
 		 Rules disabled because they are either style rules or we don't want them
 		 */
 		"arrow-parens": false,
-		"ban": false,
-		"curly": false,
-		"eofline": false,
 		"indent": false,
 		"interface-name": false,
 		"jsdoc-format": true,
@@ -40,10 +37,6 @@
 		"prefer-for-of": false,
 		"callable-types": false,
 		"ban-types": false,
-		/*
-         * Broken rules - re-enable when tslint updates
-         */
-		"class-name": false,
 		/*
          * Enabled Rule Config
          */
