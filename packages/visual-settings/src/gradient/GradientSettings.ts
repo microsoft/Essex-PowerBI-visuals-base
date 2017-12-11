@@ -22,63 +22,68 @@
  * SOFTWARE.
  */
 
-import { colorSetting as color, numberSetting as num } from "../decorators";
-import { HasSettings } from "../HasSettings";
-import { IGradient } from "@essex/visual-utils";
+import { colorSetting as color, numberSetting as num } from '../decorators'
+import { HasSettings } from '../HasSettings'
+import { IGradient } from '@essex/visual-utils'
 
 /**
  * A set of gradient settings
  */
 export class GradientSettings extends HasSettings implements IGradient {
+	/**
+	 * The start color for the gradient
+	 */
+	@color({
+		displayName: 'Start color',
+		description: 'The start color of the gradient',
+		defaultValue: '#bac2ff'
+	})
+	public startColor?: string
 
-    /**
-     * The start color for the gradient
-     */
-    @color({
-        displayName: "Start color",
-        description: "The start color of the gradient",
-        defaultValue: "#bac2ff",
-    })
-    public startColor?: string;
+	/**
+	 * The end color for the gradient
+	 */
+	@color({
+		displayName: 'End color',
+		description: 'The end color of the gradient',
+		defaultValue: '#0229bf'
+	})
+	public endColor?: string
 
-    /**
-     * The end color for the gradient
-     */
-    @color({
-        displayName: "End color",
-        description: "The end color of the gradient",
-        defaultValue: "#0229bf",
-    })
-    public endColor?: string;
+	/**
+	 * The start value of the gradient
+	 */
+	@num({
+		displayName: 'Start Value',
+		description: 'The value to use as the start value'
+	})
+	public startValue?: number
 
-    /**
-     * The start value of the gradient
-     */
-    @num({
-        displayName: "Start Value",
-        description: "The value to use as the start value",
-    })
-    public startValue?: number;
+	/**
+	 * The end value of the gradient
+	 */
+	@num({
+		displayName: 'End Value',
+		description: 'The value to use as the end value'
+	})
+	public endValue?: number
 
-    /**
-     * The end value of the gradient
-     */
-    @num({
-        displayName: "End Value",
-        description: "The value to use as the end value",
-    })
-    public endValue?: number;
-
-    /**
-     * Determines if this color settings is equal to another
-     */
-    public equals(other: GradientSettings) {
-        if (other) {
-            return (this.startColor || undefined) === (other.startColor || undefined) &&
-                (this.endColor || undefined) === (other.endColor || undefined) &&
-                (this.endValue || undefined) === (other.endValue || undefined) &&
-                (this.startValue || undefined) === (other.startValue || undefined);
-        }
-        return false;
-    }
+	/**
+	 * Determines if this color settings is equal to another
+	 */
+	public equals(other: GradientSettings) {
+		if (other) {
+			return (
+				(this.startColor || undefined) ===
+					(other.startColor || undefined) &&
+				(this.endColor || undefined) ===
+					(other.endColor || undefined) &&
+				(this.endValue || undefined) ===
+					(other.endValue || undefined) &&
+				(this.startValue || undefined) ===
+					(other.startValue || undefined)
+			)
+		}
+		return false
+	}
 }

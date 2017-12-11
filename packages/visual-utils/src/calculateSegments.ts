@@ -22,10 +22,10 @@
  * SOFTWARE.
  */
 
-import * as d3 from "d3";
-import * as _ from "lodash";
-import { fullColors } from "@essex/visual-styling";
-import { IGradient } from "./interfaces";
+import * as d3 from 'd3'
+import * as _ from 'lodash'
+import { fullColors } from '@essex/visual-styling'
+import { IGradient } from './interfaces'
 
 /**
  * A utility method that takes a dataView, and breaks down the values into named segments with colors
@@ -36,45 +36,61 @@ import { IGradient } from "./interfaces";
  * @param segmentColors The colors for the individual instances of segments to use
  */
 export default function calculateSegments(
-    columns: powerbi.DataViewValueColumns,
-    defaultColor?: string,
-    gradient?: IGradient, // The gradient used to color the individual segments
-    segmentColors?: { color: string; identity?: any }[]) {  /* The colors for each segment */
-    "use strict";
-    let segmentInfo: { name: any, identity?: any }[] = [];
-    if (columns && columns.length) {
-        const isSeriesData = !!(columns.source && columns.source.roles["Series"]);
-        segmentInfo =
-            (isSeriesData ?
-                <any>columns.grouped() :
-                columns.map((n, i) => ({ name: (i + 1) + "", identity: n.identity })));
-    }
+	columns: powerbi.DataViewValueColumns,
+	defaultColor?: string,
+	gradient?: IGradient, // The gradient used to color the individual segments
+	segmentColors?: { color: string; identity?: any }[]
+) {
+	/* The colors for each segment */
+	'use strict'
+	let segmentInfo: { name: any; identity?: any }[] = []
+	if (columns && columns.length) {
+		const isSeriesData = !!(
+			columns.source && columns.source.roles['Series']
+		)
+		segmentInfo = isSeriesData
+			? <any>columns.grouped()
+			: columns.map((n, i) => ({
+					name: i + 1 + '',
+					identity: n.identity
+				}))
+	}
 
-    let gradientScale: d3.scale.Linear<string, number>;
-    if (gradient) {
-        const { startValue, endValue, startColor, endColor } = gradient;
-        const minValue = typeof startValue !== "undefined" ? startValue : d3.min(segmentInfo.map(n => n.name));
-        const maxValue = typeof endValue !== "undefined" ? endValue : d3.max(segmentInfo.map(n => n.name));
-        gradientScale = d3.scale.linear<string, number>()
-                .domain([isNaN(minValue) ? 0 : minValue, isNaN(maxValue) ? segmentInfo.length - 1 : maxValue])
-                .interpolate(d3.interpolateRgb as any)
-                .range([startColor as any, endColor as any]);
-    }
+	let gradientScale: d3.scale.Linear<string, number>
+	if (gradient) {
+		const { startValue, endValue, startColor, endColor } = gradient
+		const minValue =
+			typeof startValue !== 'undefined'
+				? startValue
+				: d3.min(segmentInfo.map(n => n.name))
+		const maxValue =
+			typeof endValue !== 'undefined'
+				? endValue
+				: d3.max(segmentInfo.map(n => n.name))
+		gradientScale = d3.scale
+			.linear<string, number>()
+			.domain([
+				isNaN(minValue) ? 0 : minValue,
+				isNaN(maxValue) ? segmentInfo.length - 1 : maxValue
+			])
+			.interpolate(d3.interpolateRgb as any)
+			.range([startColor as any, endColor as any])
+	}
 
-    return _.sortBy(segmentInfo, ["name"]).map((v, i) => {
-        let color = fullColors[i];
-        if (segmentColors && segmentColors[i]) {
-            color = segmentColors[i].color;
-        } else if (gradientScale) {
-            color = gradientScale(isNaN(v.name) ? i : v.name) as any;
-        } else {
-            color = defaultColor || fullColors[i];
-        }
-        color = color || "#ccc";
-        return {
-            name: v.name,
-            identity: v.identity,
-            color,
-        };
-    });
+	return _.sortBy(segmentInfo, ['name']).map((v, i) => {
+		let color = fullColors[i]
+		if (segmentColors && segmentColors[i]) {
+			color = segmentColors[i].color
+		} else if (gradientScale) {
+			color = gradientScale(isNaN(v.name) ? i : v.name) as any
+		} else {
+			color = defaultColor || fullColors[i]
+		}
+		color = color || '#ccc'
+		return {
+			name: v.name,
+			identity: v.identity,
+			color
+		}
+	})
 }

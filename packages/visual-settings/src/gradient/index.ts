@@ -22,5 +22,5 @@
  * SOFTWARE.
  */
 
-export * from "./GradientSettings";
-export * from "./decorator";
+export * from './GradientSettings'
+export * from './decorator'

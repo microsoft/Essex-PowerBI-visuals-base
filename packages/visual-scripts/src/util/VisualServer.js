@@ -24,77 +24,90 @@
  *  THE SOFTWARE.
  */
 
-"use strict";
+'use strict'
 
-let fs = require('fs');
-let path = require('path');
-let https = require('https');
-let connect = require('connect');
-let serveStatic = require('serve-static');
-let config = require('../config');
+let fs = require('fs')
+let path = require('path')
+let https = require('https')
+let connect = require('connect')
+let serveStatic = require('serve-static')
+let config = require('../config')
 
 class VisualServer {
-    /**
-     * Creates an instance of a server for serving custom visuals
-     * 
-     * @param {VisualPackage} package - A visual package to be served
-     * @param {number} [port] - Port the server will listen on 
-     */
-    constructor(visualPackage, port) {
-        this.visualPackage = visualPackage;
-        this.config = config;
-        this.port = port || config.server.port;
-    }
+	/**
+	 * Creates an instance of a server for serving custom visuals
+	 *
+	 * @param {VisualPackage} package - A visual package to be served
+	 * @param {number} [port] - Port the server will listen on
+	 */
+	constructor(visualPackage, port) {
+		this.visualPackage = visualPackage
+		this.config = config
+		this.port = port || config.server.port
+	}
 
-    /**
-     * Starts the server
-     * 
-     * @returns {Promise}
-     */
-    start() {
-        return new Promise((resolve, reject) => {
-            try {
-                let options = {
-                    key: fs.readFileSync(path.join(__dirname, '../..', config.server.privateKey)),
-                    cert: fs.readFileSync(path.join(__dirname, '../..', config.server.certificate))
-                };
-                let dropPath = this.visualPackage.buildPath(config.build.dropFolder);
-                let precompilePath = this.visualPackage.buildPath(config.build.precompileFolder);
+	/**
+	 * Starts the server
+	 *
+	 * @returns {Promise}
+	 */
+	start() {
+		return new Promise((resolve, reject) => {
+			try {
+				let options = {
+					key: fs.readFileSync(
+						path.join(__dirname, '../..', config.server.privateKey)
+					),
+					cert: fs.readFileSync(
+						path.join(__dirname, '../..', config.server.certificate)
+					)
+				}
+				let dropPath = this.visualPackage.buildPath(
+					config.build.dropFolder
+				)
+				let precompilePath = this.visualPackage.buildPath(
+					config.build.precompileFolder
+				)
 
-                let app = connect();
-                let webRootPath = path.join(__dirname, '..', config.server.root);
-                app.use((req, res, next) => {
-                    res.setHeader('Access-Control-Allow-Origin', '*');
-                    next();
-                });
-                app.use(serveStatic(webRootPath));
-                app.use(config.server.assetsRoute, serveStatic(dropPath));
-                app.use('/' + path.basename(precompilePath), serveStatic(precompilePath));
+				let app = connect()
+				let webRootPath = path.join(__dirname, '..', config.server.root)
+				app.use((req, res, next) => {
+					res.setHeader('Access-Control-Allow-Origin', '*')
+					next()
+				})
+				app.use(serveStatic(webRootPath))
+				app.use(config.server.assetsRoute, serveStatic(dropPath))
+				app.use(
+					'/' + path.basename(precompilePath),
+					serveStatic(precompilePath)
+				)
 
-                this.server = https.createServer(options, app).listen(this.port, () => {
-                    resolve();
-                });
-            } catch (e) {
-                reject(e);
-            }
-        });
-    }
+				this.server = https
+					.createServer(options, app)
+					.listen(this.port, () => {
+						resolve()
+					})
+			} catch (e) {
+				reject(e)
+			}
+		})
+	}
 
-    /**
-     * Stops the server
-     */
-    stop() {
-        if (this.server) {
-            this.server.close((error) => {
-                if (error) {
-                    console.log("Server was closed with error:" + error);
-                }
+	/**
+	 * Stops the server
+	 */
+	stop() {
+		if (this.server) {
+			this.server.close(error => {
+				if (error) {
+					console.log('Server was closed with error:' + error)
+				}
 
-                process.exit(0);
-            });
-            this.server = null;
-        }
-    }
+				process.exit(0)
+			})
+			this.server = null
+		}
+	}
 }
 
-module.exports = VisualServer;
+module.exports = VisualServer

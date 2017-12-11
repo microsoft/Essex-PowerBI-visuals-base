@@ -23,85 +23,119 @@
  */
 
 import {
-    toJSON,
-    buildCapabilitiesObjects,
-    buildPersistObjects,
-    buildEnumerationObjects,
-    parseSettingsFromPBI,
-} from "./helpers";
-import {
-    ISettingsClass,
-} from "./interfaces";
-const assignIn = require("lodash.assignin"); // tslint:disable-line
+	toJSON,
+	buildCapabilitiesObjects,
+	buildPersistObjects,
+	buildEnumerationObjects,
+	parseSettingsFromPBI
+} from './helpers'
+import { ISettingsClass } from './interfaces'
+const assignIn = require('lodash.assignin') // tslint:disable-line
 
 /**
  * A simple class with utility methods to facilitate settings parsing.
  */
 export class HasSettings {
+	/**
+	 * Creates a new instance of this class
+	 * @param props A set of additional properties to mixin to this settings class
+	 */
+	public static create<T extends HasSettings>(props?: any): T {
+		return parseSettingsFromPBI(
+			(this as any) as ISettingsClass<T>,
+			undefined,
+			props,
+			true
+		) as T
+	}
 
-    /**
-     * Creates a new instance of this class
-     * @param props A set of additional properties to mixin to this settings class
-     */
-    public static create<T extends HasSettings>(props?: any): T {
-        return parseSettingsFromPBI(this as any as ISettingsClass<T>, undefined, props, true) as T;
-    }
+	/**
+	 * Creates a new instance of this class with the data from powerbi and the additional properties.
+	 * @param dv The dataview to create the settings from
+	 * @param additionalProps The additional set of properties to mixin to this settings class
+	 */
+	public static createFromPBI<T extends HasSettings>(
+		dv?: powerbi.DataView,
+		additionalProps?: any
+	): T {
+		return parseSettingsFromPBI(
+			(this as any) as ISettingsClass<T>,
+			dv,
+			additionalProps,
+			false
+		) as T
+	}
 
-    /**
-     * Creates a new instance of this class with the data from powerbi and the additional properties.
-     * @param dv The dataview to create the settings from
-     * @param additionalProps The additional set of properties to mixin to this settings class
-     */
-    public static createFromPBI<T extends HasSettings>(dv?: powerbi.DataView, additionalProps?: any): T {
-        return parseSettingsFromPBI(this as any as ISettingsClass<T>, dv, additionalProps, false) as T;
-    }
+	/**
+	 * Builds the capability objects for this settings class
+	 */
+	public static buildCapabilitiesObjects() {
+		return buildCapabilitiesObjects(this)
+	}
 
-    /**
-     * Builds the capability objects for this settings class
-     */
-    public static buildCapabilitiesObjects() {
-        return buildCapabilitiesObjects(this);
-    }
+	/**
+	 * Receives the given object and returns a new state with the object overlayed with the this set of settings
+	 * @param props The properties to mixin to the resulting class
+	 */
+	public receive(props?: any) {
+		return (this.constructor as any).create(
+			assignIn(this.toJSONObject(), props)
+		) as this
+	}
 
-    /**
-     * Receives the given object and returns a new state with the object overlayed with the this set of settings
-     * @param props The properties to mixin to the resulting class
-     */
-    public receive(props?: any) {
-        return (this.constructor as any).create(assignIn(this.toJSONObject(), props)) as this;
-    }
+	/**
+	 * Receives the given pbi settings and returns a new state with the new pbi settings overlayed with the this state
+	 * @param dv The dataView to receive
+	 */
+	public receiveFromPBI(dv?: powerbi.DataView) {
+		return (this.constructor as any).createFromPBI(
+			dv,
+			this.toJSONObject()
+		) as this
+	}
 
-    /**
-     * Receives the given pbi settings and returns a new state with the new pbi settings overlayed with the this state
-     * @param dv The dataView to receive
-     */
-    public receiveFromPBI(dv?: powerbi.DataView) {
-        return (this.constructor as any).createFromPBI(dv, this.toJSONObject()) as this;
-    }
+	/**
+	 * Builds the enumeration objects
+	 * @param objectName The objectName being requested from enumerateObjectInstances
+	 * @param dataView The currently loaded dataView
+	 * @param includeHidden If true, 'hidden' settings will be returned
+	 */
+	public buildEnumerationObjects(
+		objectName: string,
+		dataView: powerbi.DataView,
+		includeHidden = false
+	) {
+		return buildEnumerationObjects(
+			this.constructor as any,
+			this,
+			objectName,
+			dataView,
+			includeHidden
+		)
+	}
 
-    /**
-     * Builds the enumeration objects
-     * @param objectName The objectName being requested from enumerateObjectInstances
-     * @param dataView The currently loaded dataView
-     * @param includeHidden If true, 'hidden' settings will be returned
-     */
-    public buildEnumerationObjects(objectName: string, dataView: powerbi.DataView, includeHidden = false) {
-        return buildEnumerationObjects(this.constructor as any, this, objectName, dataView, includeHidden);
-    }
+	/**
+	 * Builds a set of persistance objects to be persisted from the current set of settings.
+	 * @param dataView The currently loaded dataView
+	 * @param includeHidden If true, 'hidden' settings will be returned
+	 */
+	public buildPersistObjects(
+		dataView: powerbi.DataView,
+		includeHidden = false
+	) {
+		return buildPersistObjects(
+			this.constructor as any,
+			this,
+			dataView,
+			includeHidden
+		)
+	}
 
-    /**
-     * Builds a set of persistance objects to be persisted from the current set of settings.
-     * @param dataView The currently loaded dataView
-     * @param includeHidden If true, 'hidden' settings will be returned
-     */
-    public buildPersistObjects(dataView: powerbi.DataView, includeHidden = false) {
-        return buildPersistObjects(this.constructor as any, this, dataView, includeHidden);
-    }
-
-    /**
-     * Converts this class into a json object.
-     */
-    public toJSONObject() { // Important that this is not called "toJSON" otherwise infinite loops
-        return toJSON(this.constructor as any, this);
-    }
+	/**
+	 * Converts this class into a json object.
+	 */
+	public toJSONObject() {
+		// Important that this is not called "toJSON" otherwise infinite loops
+		return toJSON(this.constructor as any, this)
+	}
 }

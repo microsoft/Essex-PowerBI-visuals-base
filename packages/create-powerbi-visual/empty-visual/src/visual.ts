@@ -25,36 +25,47 @@
  */
 /// <reference path="../powerbi.d.ts" />
 
-import { VisualSettings } from "./settings";
+import { VisualSettings } from './settings'
 
 export default class Visual implements powerbi.extensibility.IVisual {
-    private target: HTMLElement;
-    private updateCount: number;
-    private settings: VisualSettings;
+	private target: HTMLElement
+	private updateCount: number
+	private settings: VisualSettings
 
-    constructor(options: powerbi.extensibility.visual.VisualConstructorOptions) {
-        console.log('Visual constructor', options);
-        this.target = options.element;
-        this.updateCount = 0;
-    }
+	constructor(
+		options: powerbi.extensibility.visual.VisualConstructorOptions
+	) {
+		console.log('Visual constructor', options)
+		this.target = options.element
+		this.updateCount = 0
+	}
 
-    public update(options: powerbi.extensibility.visual.VisualUpdateOptions) {
-        this.settings = Visual.parseSettings(options && options.dataViews && options.dataViews[0]);
-        console.log('Visual update', options);
-        this.target.innerHTML = `<p>Update count: <em>${(this.updateCount++)}</em></p>`;
-    }
+	public update(options: powerbi.extensibility.visual.VisualUpdateOptions) {
+		this.settings = Visual.parseSettings(
+			options && options.dataViews && options.dataViews[0]
+		)
+		console.log('Visual update', options)
+		this.target.innerHTML = `<p>Update count: <em>${this
+			.updateCount++}</em></p>`
+	}
 
-    private static parseSettings(dataView: powerbi.DataView): VisualSettings {
-        return VisualSettings.parse(dataView) as VisualSettings;
-    }
+	private static parseSettings(dataView: powerbi.DataView): VisualSettings {
+		return VisualSettings.parse(dataView) as VisualSettings
+	}
 
-    /** 
-     * This function gets called for each of the objects defined in the capabilities files and allows you to select which of the 
-     * objects and properties you want to expose to the users in the property pane.
-     * 
-     */
-    public enumerateObjectInstances(options: powerbi.EnumerateVisualObjectInstancesOptions)
-    : powerbi.VisualObjectInstance[] | powerbi.VisualObjectInstanceEnumerationObject {
-        return VisualSettings.enumerateObjectInstances(this.settings || VisualSettings.getDefault(), options);
-    }
+	/**
+	 * This function gets called for each of the objects defined in the capabilities files and allows you to select which of the
+	 * objects and properties you want to expose to the users in the property pane.
+	 *
+	 */
+	public enumerateObjectInstances(
+		options: powerbi.EnumerateVisualObjectInstancesOptions
+	):
+		| powerbi.VisualObjectInstance[]
+		| powerbi.VisualObjectInstanceEnumerationObject {
+		return VisualSettings.enumerateObjectInstances(
+			this.settings || VisualSettings.getDefault(),
+			options
+		)
+	}
 }

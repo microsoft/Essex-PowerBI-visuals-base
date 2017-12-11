@@ -22,21 +22,32 @@
  * SOFTWARE.
  */
 
-import global from "./testSetup"; // tslint:disable-line
-import * as $ from "jquery";
-global["powerbi"] = $.extend(true, {
-    VisualUpdateType: {},
-    VisualDataRoleKind: {
-    },
-    data: {
-        createDisplayNameGetter: () => ({}),
-        createDataViewScopeIdentity: (expr: any) => ({ expr: expr }),
-    },
-}, global["powerbi"] || {});
+import global from './testSetup' // tslint:disable-line
+import * as $ from 'jquery'
+global['powerbi'] = $.extend(
+	true,
+	{
+		VisualUpdateType: {},
+		VisualDataRoleKind: {},
+		data: {
+			createDisplayNameGetter: () => ({}),
+			createDataViewScopeIdentity: (expr: any) => ({ expr: expr })
+		}
+	},
+	global['powerbi'] || {}
+)
 
-global["jsCommon"] = $.extend(true, {
-    PixelConverter: {
-        fromPointToPixel: function (value: any) { return value; },
-        toPoint: function (value: any) { return value; },
-    },
-}, global["jsCommon"] || {});
+global['jsCommon'] = $.extend(
+	true,
+	{
+		PixelConverter: {
+			fromPointToPixel: function(value: any) {
+				return value
+			},
+			toPoint: function(value: any) {
+				return value
+			}
+		}
+	},
+	global['jsCommon'] || {}
+)

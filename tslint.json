@@ -1,26 +1,50 @@
 {
-    "extends": "tslint:recommended",
-    "rules": {
-        "no-bitwise": false,
-        "max-line-length": false,
-        "object-literal-sort-keys": false,
-        "no-string-literal": false,
-        "interface-name": false,
-        "no-consecutive-blank-lines": false,
-        "no-reference": false,
-        "member-ordering": [
-            true,
-            "public-before-private",
-            "static-before-instance",
-            "variables-before-functions"
-        ],
-        "whitespace": [
-            true,
-            "check-branch",
-            "check-decl",
-            "check-operator",
-            "check-separator",
-            "check-type"
-        ]
-    }
+	"extends": "tslint:recommended",
+	"rules": {
+		//
+		// Rules disabled because they are either style rules or we don't want them
+		//
+		"no-bitwise": false,
+		"max-line-length": false,
+		"object-literal-sort-keys": false,
+		"no-string-literal": false,
+		"interface-name": false,
+		"no-consecutive-blank-lines": false,
+		"no-reference": false,
+		"ban": false,
+		"eofline": false,
+		"semicolon": false,
+		"quotemark": false,
+		"whitespace": false,
+		"jsdoc-format": true,
+		"label-position": true,
+		"indent": false,
+		"jsx-no-lambda": false,
+		"trailing-comma": false,
+		"arrow-parens": false,
+		"jsx-no-multiline-js": false,
+		"jsx-wrap-multiline": false,
+		"jsx-curly-spacing": false,
+		//
+		// TODO: Enable these disabled rules. They showed up when we upgrade tslint, but we
+		// punted on resolving issues associated with them
+		//
+		"no-unused-expression": false,
+		"max-classes-per-file": false,
+		"object-literal-shorthand": false,
+		"ordered-imports": false,
+		"no-angle-bracket-type-assertion": false,
+		"only-arrow-functions": false,
+		"array-type": false,
+		"prefer-for-of": false,
+		"callable-types": false,
+		"ban-types": false,
+		// Enabled Rule Configrogue
+		"member-ordering": [
+			true,
+			"public-before-private",
+			"static-before-instance",
+			"variables-before-functions"
+		]
+	}
 }

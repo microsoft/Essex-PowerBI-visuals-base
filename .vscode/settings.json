@@ -1,6 +1,7 @@
 {
 	"editor.useTabStops": true,
 	"editor.formatOnSave": true,
+	"editor.tabSize": 2,
 	"files.eol": "\n",
 	"files.exclude": {
 		"**/.git": true,
