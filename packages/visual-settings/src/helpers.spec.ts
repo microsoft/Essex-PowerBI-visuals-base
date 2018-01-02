@@ -666,28 +666,6 @@ function createFakeSetting(
 	} as ISetting
 }
 
-class ClassWithNoSettings {}
-function createFakeSetting(
-	defaultValue?: any,
-	name?: string,
-	classType?: any,
-	category?: any,
-	compose?: any
-) {
-	'use strict'
-	return {
-		propertyName: name || 'fakeprop',
-		descriptor: {
-			category: category || 'fakecategory',
-			name: name || 'fakename',
-			defaultValue: defaultValue,
-			compose: compose
-		},
-		classType: classType || ClassWithNoSettings,
-		isChildSettings: false
-	} as ISetting
-}
-
 function defineFakeSettingValueOnDataView(
 	setting: any,
 	value: any,

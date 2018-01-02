@@ -382,14 +382,14 @@ export function buildCapabilitiesObjects<T>(
 function buildCapabilitiesObject(setting: ISetting) {
 	'use strict'
 	const { objName, propName } = getPBIObjectNameAndPropertyName(setting)
-	let {
+	const {
 		category,
 		displayName,
 		defaultValue,
-		config,
 		description,
 		readOnly
 	} = setting.descriptor
+	let config = setting.descriptor.config
 	const defaultCategory = 'General'
 	if (readOnly !== true) {
 		const catObj = {
