@@ -113,10 +113,15 @@ export interface ISettingDescriptor<T> extends INumericalSettingDescriptor {
 	enumerable?: boolean | IHiddenFn<T>
 
 	/**
-	 * Whether or not this setting should be persisted to powerbi
+	 * Whether or not this setting should be returned in the persist properties call
 	 * @default true
 	 */
 	persist?: boolean
+
+	/**
+	 * This is a setting that does not store any values in powerbi, but computes its value from powerbi
+	 */
+	readOnly?: boolean
 
 	/**
 	 * Additional configuration options

@@ -123,7 +123,7 @@ function parseDependencies(info, runtimeDependencies, isParentRoot) {
 	const devDependencies = info.devDependencies
 	const nodeModulesPath = path.join(path.resolve('./'), 'node_modules/')
 	let csv =
-		'' /* usage */ /* included in product */ /* in git repository */ /* licence */ /* URL */ /* description */ /* version */ /* type */
+		'' /* version */ /* type */ /* usage */ /* included in product */ /* in git repository */ /* licence */ /* URL */ /* description */
 
 	/* dependency */ Object.keys(dependencies).forEach(key => {
 		const dependency = dependencies[key]

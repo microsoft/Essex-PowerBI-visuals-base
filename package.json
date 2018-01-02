@@ -16,7 +16,7 @@
 			"mocha --require ts-node/register \"./packages/*/{src,spec,lib}/**/*.spec.ts\"",
 		"test": "run-s info clean lint compile mocha docs",
 		"publish_all": "lerna publish",
-		"prettify": "prettier \"packages/*/**/*.{js,jsx,ts,tsx}\"",
+		"prettify": "prettier \"packages/*/**/*.{js,jsx,ts,tsx}\" --write",
 		"precommit": "lint-staged",
 		"prepush": "yarn lint"
 	},

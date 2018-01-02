@@ -66,6 +66,99 @@ describe('Helpers', () => {
 				}
 			])
 		})
+		it('should not return a persist:false setting', () => {
+			const { settings, classType } = createClassWithSettings()
+			const objs = helpers.buildPersistObjects(
+				classType,
+				new classType(),
+				undefined
+			)
+			const toCheck = (objs.merge || []).concat(objs.remove || [])
+
+			expect(
+				toCheck.filter(
+					n =>
+						// It should return NO objects with this setting name
+						Object.keys(n.properties).indexOf(
+							'persistFalseSetting'
+						) >= 0
+				).length
+			).to.be.eq(0)
+		})
+		it('should not return a readOnly:true setting', () => {
+			const { settings, classType } = createClassWithSettings()
+			const objs = helpers.buildPersistObjects(
+				classType,
+				new classType(),
+				undefined
+			)
+			const toCheck = (objs.merge || []).concat(objs.remove || [])
+
+			expect(
+				toCheck.filter(
+					n =>
+						// It should return NO objects with this setting name
+						Object.keys(n.properties).indexOf('readOnlySetting') >=
+						0
+				).length
+			).to.be.eq(0)
+		})
+	})
+
+	describe('buildEnumerationObjects', () => {
+		it('should not return an enumerable:false', () => {
+			const { settings, classType } = createClassWithSettings()
+			const objs = helpers.buildEnumerationObjects(
+				classType,
+				new classType(),
+				'fakecategory',
+				{} as any
+			)
+
+			expect(
+				objs.filter(
+					n =>
+						Object.keys(n.properties).indexOf(
+							'enumerableFalseSetting'
+						) >= 0
+				).length
+			).to.be.eq(0)
+		})
+		it('should return persist:false setting', () => {
+			const { settings, classType } = createClassWithSettings()
+			const objs = helpers.buildEnumerationObjects(
+				classType,
+				new classType(),
+				'fakecategory',
+				{} as any
+			)
+
+			expect(
+				objs.filter(
+					n =>
+						Object.keys(n.properties).indexOf(
+							'persistFalseSetting'
+						) >= 0
+				).length
+			).to.be.eq(1)
+		})
+		it('should not return a readOnly:true setting', () => {
+			const { settings, classType } = createClassWithSettings()
+			const objs = helpers.buildEnumerationObjects(
+				classType,
+				new classType(),
+				'fakecategory',
+				{} as any
+			)
+
+			expect(
+				objs.filter(
+					n =>
+						Object.keys(n.properties).indexOf('readOnlySetting') >=
+						0
+				).length
+			).to.be.eq(0)
+		})
 	})
 
 	describe('parseSettingsFromPBI', () => {
@@ -449,6 +542,7 @@ describe('Helpers', () => {
 	})
 })
 
+const u = undefined
 function createClassWithSettings() {
 	'use strict'
 	class ClassWithSettings {}
@@ -503,6 +597,33 @@ function createClassWithSettings() {
 					}
 				]
 			}
+		),
+		readOnlySetting: createFakeSetting(
+			null,
+			'readOnlySetting',
+			ClassWithSettings,
+			u,
+			u,
+			u,
+			true
+		),
+		persistFalseSetting: createFakeSetting(
+			null,
+			'persistFalseSetting',
+			ClassWithSettings,
+			u,
+			u,
+			false
+		),
+		enumerableFalseSetting: createFakeSetting(
+			null,
+			'enumerableFalseSetting',
+			ClassWithSettings,
+			u,
+			u,
+			u,
+			u,
+			false
 		)
 	}
 	ClassWithSettings.constructor[helpers.METADATA_KEY] = {
@@ -521,7 +642,10 @@ function createFakeSetting(
 	name?: string,
 	classType?: any,
 	category?: any,
-	compose?: any
+	compose?: any,
+	persist?: any,
+	readOnly?: any,
+	enumerable?: any
 ) {
 	'use strict'
 	return {
@@ -530,7 +654,10 @@ function createFakeSetting(
 			category: category || 'fakecategory',
 			name: name || 'fakename',
 			defaultValue: defaultValue,
-			compose: compose
+			compose: compose,
+			persist,
+			readOnly,
+			enumerable
 		},
 		classType: classType || ClassWithNoSettings,
 		isChildSettings: false
