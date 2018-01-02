@@ -136,23 +136,26 @@ function buildPersistObject(
     builder: IPersistObjectBuilder) {
     "use strict";
     const { readOnly, persist } = setting.descriptor;
-    const adapted = convertValueToPBI(settingsObj, setting, dataView, includeHidden);
-    if (adapted && persist !== false && readOnly !== true) {
-        const { objName, propName } = getPBIObjectNameAndPropertyName(setting);
-        let value = adapted.adaptedValue;
-        value = value && value.forEach ? value : [value];
-        value.forEach((n: any) => {
-            const isVisualInstance = !!(n && n.properties);
-            const instance = n as powerbi.VisualObjectInstance;
-            builder.persist(
-                objName,
-                propName,
-                n,
-                undefined,
-                instance && instance.selector,
-                instance && instance.displayName,
-                isVisualInstance);
-        });
+    // There is no reason to run the setting conversion if it shouldn't even be persisted
+    if (persist !== false && readOnly !== true) {
+        const adapted = convertValueToPBI(settingsObj, setting, dataView, includeHidden);
+        if (adapted) {
+            const { objName, propName } = getPBIObjectNameAndPropertyName(setting);
+            let value = adapted.adaptedValue;
+            value = value && value.forEach ? value : [value];
+            value.forEach((n: any) => {
+                const isVisualInstance = !!(n && n.properties);
+                const instance = n as powerbi.VisualObjectInstance;
+                builder.persist(
+                    objName,
+                    propName,
+                    n,
+                    undefined,
+                    instance && instance.selector,
+                    instance && instance.displayName,
+                    isVisualInstance);
+            });
+        }
     }
 }
 
@@ -228,27 +231,30 @@ function buildEnumerationObject(
     instances: powerbi.VisualObjectInstance[]) {
     "use strict";
     const { readOnly, enumerable } = setting.descriptor;
-    const adapted = convertValueToPBI(settingsObj, setting, dataView, includeHidden);
-    if (adapted && readOnly !== true && enumerable !== false) {
-        const { objName, propName } = getPBIObjectNameAndPropertyName(setting);
-        let value = adapted.adaptedValue;
-        value = value && value.forEach ? value : [value];
-        value.forEach((n: any) => {
-            const isVisualInstance = !!(n && n.properties);
-            let instance = n as powerbi.VisualObjectInstance;
-            if (isVisualInstance) {
-                instance = merge(instance, {
-                    objectName: objName,
-                });
-                if (typeof instance.displayName === "undefined" || instance.displayName === null) { // tslint:disable-line
-                    instance.displayName = "(Blank)";
+    if (readOnly !== true && enumerable !== false) {
+        const adapted = convertValueToPBI(settingsObj, setting, dataView, includeHidden);
+        // There is no reason to run the setting conversion if it shouldn't even be enumerated
+        if (adapted) {
+            const { objName, propName } = getPBIObjectNameAndPropertyName(setting);
+            let value = adapted.adaptedValue;
+            value = value && value.forEach ? value : [value];
+            value.forEach((n: any) => {
+                const isVisualInstance = !!(n && n.properties);
+                let instance = n as powerbi.VisualObjectInstance;
+                if (isVisualInstance) {
+                    instance = merge(instance, {
+                        objectName: objName,
+                    });
+                    if (typeof instance.displayName === "undefined" || instance.displayName === null) { // tslint:disable-line
+                        instance.displayName = "(Blank)";
+                    }
+                    instance.displayName = instance.displayName + ""; // Some times there are numbers
+                    instances.push(instance);
+                } else {
+                    instances[0].properties[propName] = adapted.adaptedValue;
                 }
-                instance.displayName = instance.displayName + ""; // Some times there are numbers
-                instances.push(instance);
-            } else {
-                instances[0].properties[propName] = adapted.adaptedValue;
-            }
-        });
+            });
+        }
     }
 }
 
