@@ -21,9 +21,9 @@
  * SOFTWARE.
  */
 
-const path = require('path');
-const cp = require('child_process');
-const fs = require('fs');
+const path = require('path')
+const cp = require('child_process')
+const fs = require('fs')
 
 /**
  * Object containing the modules that should always be considered as runtime modules.
@@ -31,8 +31,8 @@ const fs = require('fs');
  * @type {Object}
  */
 const alwaysRuntimeDependencies = {
-    'font-awesome': true
-};
+	'font-awesome': true
+}
 
 /**
  * Parses the output of `npm ll` making sure that the private sub-modules are included in the report.
@@ -41,45 +41,45 @@ const alwaysRuntimeDependencies = {
  * @param {Function} cb - Callback to be invoked when the operation is complete.
  */
 function parseNPMLL(cb) {
-    /* read the original package.json file and parse it */
-    const packagePath = path.resolve('./package.json');
-    const packageJsonContent = fs.readFileSync(packagePath, 'utf8');
-    const packageJson = JSON.parse(packageJsonContent);
+	/* read the original package.json file and parse it */
+	const packagePath = path.resolve('./package.json')
+	const packageJsonContent = fs.readFileSync(packagePath, 'utf8')
+	const packageJson = JSON.parse(packageJsonContent)
 
-    /* save a version of package.json with the privateSubmodules added to the dependencies object */
-    const privateSubmodules = packageJson.privateSubmodules;
-    const dependencies = packageJson.dependencies;
-    Object.keys(privateSubmodules || {}).forEach(key => {
-        if (!dependencies.hasOwnProperty(key)) {
-            dependencies[key] = privateSubmodules[key];
-        }
-    });
-    fs.writeFile(packagePath, JSON.stringify(packageJson), err => {
-        if (err) throw(err);
+	/* save a version of package.json with the privateSubmodules added to the dependencies object */
+	const privateSubmodules = packageJson.privateSubmodules
+	const dependencies = packageJson.dependencies
+	Object.keys(privateSubmodules || {}).forEach(key => {
+		if (!dependencies.hasOwnProperty(key)) {
+			dependencies[key] = privateSubmodules[key]
+		}
+	})
+	fs.writeFile(packagePath, JSON.stringify(packageJson), err => {
+		if (err) throw err
 
-        /* process the output of `npm ll` */
-        let output;
-        try {
-            output = cp.execSync('npm ll --json', {env: process.env});
-        } catch (e) {
-            output = e.stdout;
-        }
+		/* process the output of `npm ll` */
+		let output
+		try {
+			output = cp.execSync('npm ll --json', { env: process.env })
+		} catch (e) {
+			output = e.stdout
+		}
 
-        /* restore the previous package.json */
-        fs.writeFile(packagePath, packageJsonContent, err => {
-            if (err) throw(err);
+		/* restore the previous package.json */
+		fs.writeFile(packagePath, packageJsonContent, err => {
+			if (err) throw err
 
-            /* parse the output and call the callback */
-            let parsed;
-            try {
-                parsed = JSON.parse(output);
-            } catch (e) {
-                console.warn('Cannot parse `npm ll` output:', e);
-                parsed = null;
-            }
-            cb(parsed);
-        });
-    });
+			/* parse the output and call the callback */
+			let parsed
+			try {
+				parsed = JSON.parse(output)
+			} catch (e) {
+				console.warn('Cannot parse `npm ll` output:', e)
+				parsed = null
+			}
+			cb(parsed)
+		})
+	})
 }
 
 /**
@@ -90,23 +90,23 @@ function parseNPMLL(cb) {
  * @returns {String}
  */
 function readObjectValue(object) {
-    let result = '';
+	let result = ''
 
-    if (typeof object === 'string' || object instanceof String) {
-        result = object;
-    } else if (typeof object === 'number' || object instanceof Number) {
-        result = object.toString();
-    } else if (object) {
-        Object.keys(object).forEach(key => {
-            result += key + ': ' + object[key] + '\t';
-        });
-    }
+	if (typeof object === 'string' || object instanceof String) {
+		result = object
+	} else if (typeof object === 'number' || object instanceof Number) {
+		result = object.toString()
+	} else if (object) {
+		Object.keys(object).forEach(key => {
+			result += key + ': ' + object[key] + '\t'
+		})
+	}
 
-    if (!result.length) {
-        result = 'Not Specified';
-    }
+	if (!result.length) {
+		result = 'Not Specified'
+	}
 
-    return result.replace(new RegExp('"', 'g'), '""');
+	return result.replace(new RegExp('"', 'g'), '""')
 }
 
 /**
@@ -119,35 +119,65 @@ function readObjectValue(object) {
  * @returns {String}
  */
 function parseDependencies(info, runtimeDependencies, isParentRoot) {
-    const dependencies = info.dependencies;
-    const devDependencies = info.devDependencies;
-    const nodeModulesPath = path.join(path.resolve('./'), 'node_modules/');
-    let csv = '';
+	const dependencies = info.dependencies
+	const devDependencies = info.devDependencies
+	const nodeModulesPath = path.join(path.resolve('./'), 'node_modules/')
+	let csv =
+		'' /* version */ /* type */ /* usage */ /* included in product */ /* in git repository */ /* licence */ /* URL */ /* description */
 
-    /* dependency */ /* version */ /* type */ /* usage */ /* included in product */ /* in git repository */ /* licence */ /* URL */ /* description */
-    Object.keys(dependencies).forEach(key => {
-        const dependency = dependencies[key];
-        const name = readObjectValue(dependency.name);
-        const version = readObjectValue(dependency.version);
+	/* dependency */ Object.keys(dependencies).forEach(key => {
+		const dependency = dependencies[key]
+		const name = readObjectValue(dependency.name)
+		const version = readObjectValue(dependency.version)
 
-        if (dependency.name && dependency.version) {
-            const type = isParentRoot ? 'dependency' : 'sub-dependency';
-            const usage = devDependencies.hasOwnProperty(key) ? 'development' : 'runtime';
-            const included = (!runtimeDependencies.hasOwnProperty(key) || !runtimeDependencies[key]) ? 'No' : 'Yes';
-            /* TODO: This could be done using `git check-ignore` for better results */
-            const inRepo = (dependency.link && !dependency.link.startsWith(nodeModulesPath)) ? 'Yes' : 'No';
-            const license = readObjectValue(dependency.license);
-            const url = readObjectValue(dependency.homepage || dependency.repository || null);
-            const description = readObjectValue(dependency.description);
-            csv += '"' + name + '","' + version + '","' + type + '","' + usage + '","' + included + '","' + inRepo + '","' + license + '","' + url + '","' + description + '"\n';
-        }
+		if (dependency.name && dependency.version) {
+			const type = isParentRoot ? 'dependency' : 'sub-dependency'
+			const usage = devDependencies.hasOwnProperty(key)
+				? 'development'
+				: 'runtime'
+			const included =
+				!runtimeDependencies.hasOwnProperty(key) ||
+				!runtimeDependencies[key]
+					? 'No'
+					: 'Yes'
+			/* TODO: This could be done using `git check-ignore` for better results */
+			const inRepo =
+				dependency.link && !dependency.link.startsWith(nodeModulesPath)
+					? 'Yes'
+					: 'No'
+			const license = readObjectValue(dependency.license)
+			const url = readObjectValue(
+				dependency.homepage || dependency.repository || null
+			)
+			const description = readObjectValue(dependency.description)
+			csv +=
+				'"' +
+				name +
+				'","' +
+				version +
+				'","' +
+				type +
+				'","' +
+				usage +
+				'","' +
+				included +
+				'","' +
+				inRepo +
+				'","' +
+				license +
+				'","' +
+				url +
+				'","' +
+				description +
+				'"\n'
+		}
 
-        if (dependency.dependencies) {
-            csv += parseDependencies(dependency, runtimeDependencies, false);
-        }
-    });
+		if (dependency.dependencies) {
+			csv += parseDependencies(dependency, runtimeDependencies, false)
+		}
+	})
 
-    return csv;
+	return csv
 }
 
 /**
@@ -159,23 +189,27 @@ function parseDependencies(info, runtimeDependencies, isParentRoot) {
  * @returns {Object}
  */
 function findRuntimeDependencies(webpackModules) {
-    const runtimeDependencies = {};
-    webpackModules.forEach(module => {
-        const name = module.name;
-        if (name.startsWith('./~/') || name.startsWith('./node_modules/') || name.startsWith('./lib/')) {
-            const components = name.split('/');
-            let i = 2;
-            let moduleName = '';
-            let moduleComponent = components[i++];
-            while (moduleComponent.startsWith('@')) {
-                moduleName += moduleComponent + '/';
-                moduleComponent = components[i++];
-            }
-            moduleName += moduleComponent;
-            runtimeDependencies[moduleName] = module.built && module.cacheable;
-        }
-    });
-    return Object.assign({}, runtimeDependencies, alwaysRuntimeDependencies);
+	const runtimeDependencies = {}
+	webpackModules.forEach(module => {
+		const name = module.name
+		if (
+			name.startsWith('./~/') ||
+			name.startsWith('./node_modules/') ||
+			name.startsWith('./lib/')
+		) {
+			const components = name.split('/')
+			let i = 2
+			let moduleName = ''
+			let moduleComponent = components[i++]
+			while (moduleComponent.startsWith('@')) {
+				moduleName += moduleComponent + '/'
+				moduleComponent = components[i++]
+			}
+			moduleName += moduleComponent
+			runtimeDependencies[moduleName] = module.built && module.cacheable
+		}
+	})
+	return Object.assign({}, runtimeDependencies, alwaysRuntimeDependencies)
 }
 
 /**
@@ -186,11 +220,18 @@ function findRuntimeDependencies(webpackModules) {
  * @param {Function} cb - A callback function to be invoked qhen the process is complete.
  */
 function buildOSSReport(webpackModules, cb) {
-    parseNPMLL(dependencies => {
-        const runtimeDependencies = findRuntimeDependencies(webpackModules);
-        const dependenciesCSV = parseDependencies(dependencies, runtimeDependencies, true);
-        cb('"Dependency","Version","Type","Usage","Included In Product","In Git Repository","License","URL","Description"\n' + dependenciesCSV);
-    });
+	parseNPMLL(dependencies => {
+		const runtimeDependencies = findRuntimeDependencies(webpackModules)
+		const dependenciesCSV = parseDependencies(
+			dependencies,
+			runtimeDependencies,
+			true
+		)
+		cb(
+			'"Dependency","Version","Type","Usage","Included In Product","In Git Repository","License","URL","Description"\n' +
+				dependenciesCSV
+		)
+	})
 }
 
-module.exports = buildOSSReport;
+module.exports = buildOSSReport

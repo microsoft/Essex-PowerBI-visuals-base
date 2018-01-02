@@ -21,81 +21,92 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-const path = require('path');
-const webpack = require('webpack');
-const fs = require("fs");
-const config = require('./config');
-const INIT_CWD = process.env.INIT_CWD;
-
-const regex = path.normalize(config.build.entry.js).replace(/\\/g, '\\\\').replace(/\./g, '\\.');
+const path = require('path')
+const webpack = require('webpack')
+const fs = require('fs')
+const INIT_CWD = process.env.INIT_CWD
 
 const modulesPaths = [
-    'node_modules',
-    path.join(process.env.INIT_CWD, 'node_modules'),
-    path.join(__dirname, '../node_modules'),
-    path.join(process.env.INIT_CWD, '../../node_modules'), // Lerna Monorepos
-];
-const webpackConf = module.exports = {
-    entry: config.build.entry.js,
-    resolve: {
-        extensions: ['.js', '.jsx', '.json', '.ts', '.tsx'],
-        modules: modulesPaths,
-    },
-    output: {
-        filename: 'visual.js', 
-        path: config.build.dropFolder,
-    },
-    resolveLoader: {
-        modules: modulesPaths,
-    },
-    module: {
-        loaders: [
-            {
-                test: new RegExp(regex),
-                loader: path.join(__dirname, 'util/pbiPluginLoader'),
-            },
-            {
-                test: /\.scss$/,
-                loaders: ["style-loader", "css-loader", "sass-loader"],
-            },
-            {
-                test: /\.json$/,
-                loader: 'json-loader',
-            },
-            {
-                test: /\.ts(x|)$/,
-                loader: 'ts-loader',
-                options: {
-                    configFile: path.join(INIT_CWD, 'tsconfig.json'),
-                },
-            },
-        ],
-    },
-    plugins: [
-        new webpack.optimize.OccurrenceOrderPlugin(),
-        new webpack.DefinePlugin({
-            'process.env': {
-                DEBUG: "\"" + (process.env.DEBUG || "") + "\"",
-                NODE_ENV: JSON.stringify(process.env.NODE_ENV || "development"),
-            },
-        }),
-    ],
-};
+	'node_modules',
+	path.join(process.env.INIT_CWD, 'node_modules'),
+	path.join(__dirname, '../node_modules'),
+	path.join(process.env.INIT_CWD, '../../node_modules') // Lerna Monorepos
+]
 
-if (process.env.NODE_ENV !== "production") {
-    webpackConf.devtool = "eval";    
-} else {
-    var banner = new webpack.BannerPlugin(fs.readFileSync("LICENSE").toString());
-    var uglify = new webpack.optimize.UglifyJsPlugin({
-        mangle: true,
-        minimize: true,
-        compress: false,
-        beautify: false,
-        output: {
-            ascii_only: true, // Necessary, otherwise it messes up the unicode characters that lineup is using for font-awesome 
-            comments: false,
-        }
-    });
-    webpackConf.plugins.push(uglify);
-    webpackConf.plugins.push(banner);
+module.exports = buildConfig => {
+	const webpackConf = {
+		entry: buildConfig.entry.js,
+		resolve: {
+			extensions: ['.js', '.jsx', '.json', '.ts', '.tsx'],
+			modules: modulesPaths
+		},
+		output: {
+			filename: 'visual.js',
+			path: buildConfig.dropFolder
+		},
+		resolveLoader: {
+			modules: modulesPaths
+		},
+		module: {
+			loaders: [
+				{
+					test: new RegExp(
+						path
+							.normalize(buildConfig.entry.js)
+							.replace(/\\/g, '\\\\')
+							.replace(/\./g, '\\.')
+					),
+					loader: path.join(__dirname, 'util/pbiPluginLoader')
+				},
+				{
+					test: /\.scss$/,
+					loaders: ['style-loader', 'css-loader', 'sass-loader']
+				},
+				{
+					test: /\.json$/,
+					loader: 'json-loader'
+				},
+				{
+					test: /\.ts(x|)$/,
+					loader: 'ts-loader',
+					options: {
+						configFile: path.join(INIT_CWD, 'tsconfig.json')
+					}
+				}
+			]
+		},
+		plugins: [
+			new webpack.optimize.OccurrenceOrderPlugin(),
+			new webpack.DefinePlugin({
+				'process.env': {
+					DEBUG: '"' + (process.env.DEBUG || '') + '"',
+					NODE_ENV: JSON.stringify(
+						process.env.NODE_ENV || 'development'
+					)
+				}
+			})
+		]
+	}
+
+	if (process.env.NODE_ENV !== 'production') {
+		webpackConf.devtool = 'eval'
+	} else {
+		var banner = new webpack.BannerPlugin(
+			fs.readFileSync('LICENSE').toString()
+		)
+		var uglify = new webpack.optimize.UglifyJsPlugin({
+			mangle: true,
+			minimize: true,
+			compress: false,
+			beautify: false,
+			output: {
+				ascii_only: true, // Necessary, otherwise it messes up the unicode characters that lineup is using for font-awesome
+				comments: false
+			}
+		})
+		webpackConf.plugins.push(uglify)
+		webpackConf.plugins.push(banner)
+	}
+
+	return webpackConf
 }

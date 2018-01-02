@@ -22,30 +22,34 @@
  * SOFTWARE.
  */
 
-import { setting } from "./settingDecorator";
-import { ISettingDescriptor, IDefaultInstanceColor, IDefaultColor } from "./interfaces";
-import { colorParser, colorCategoricalInstanceObjectParser } from "./parsers";
-import { coloredObjectInstanceComposer, colorComposer } from "./composers";
-import * as _ from "lodash";
+import { setting } from './settingDecorator'
+import {
+	ISettingDescriptor,
+	IDefaultInstanceColor,
+	IDefaultColor
+} from './interfaces'
+import { colorParser, colorCategoricalInstanceObjectParser } from './parsers'
+import { coloredObjectInstanceComposer, colorComposer } from './composers'
+import * as _ from 'lodash'
 
 /**
  * Defines the type for a color in powerbi
  */
 const FILL_TYPE = {
-    fill: {
-        solid: {
-            color: true,
-        },
-    },
-};
+	fill: {
+		solid: {
+			color: true
+		}
+	}
+}
 
 /**
  * Defines a text setting to be used with powerBI
  * @param config The additional configuration to control how a setting operates
  */
 export function textSetting<T>(config?: ISettingDescriptor<T>) {
-    "use strict";
-    return typedSetting<T>({ text: {} }, config);
+	'use strict'
+	return typedSetting<T>({ text: {} }, config)
 }
 
 /**
@@ -53,8 +57,8 @@ export function textSetting<T>(config?: ISettingDescriptor<T>) {
  * @param config The additional configuration to control how a setting operates
  */
 export function boolSetting<T>(config?: ISettingDescriptor<T>) {
-    "use strict";
-    return typedSetting<T>({ bool: true }, config);
+	'use strict'
+	return typedSetting<T>({ bool: true }, config)
 }
 
 /**
@@ -62,8 +66,8 @@ export function boolSetting<T>(config?: ISettingDescriptor<T>) {
  * @param config The additional configuration to control how a setting operates
  */
 export function numberSetting<T>(config?: ISettingDescriptor<T>) {
-    "use strict";
-    return typedSetting<T>({ numeric: true }, config);
+	'use strict'
+	return typedSetting<T>({ numeric: true }, config)
 }
 
 /**
@@ -71,17 +75,21 @@ export function numberSetting<T>(config?: ISettingDescriptor<T>) {
  * @param config The additional configuration to control how a setting operates
  */
 export function jsonSetting<J, T>(config?: ISettingDescriptor<T>) {
-    "use strict";
-    config = _.merge({}, {
-        config: {
-            type: {
-                text: true,
-            },
-        },
-        compose: val => val && JSON.stringify(val),
-        parse: val => val && JSON.parse(val),
-    }, config);
-    return setting(config);
+	'use strict'
+	config = _.merge(
+		{},
+		{
+			config: {
+				type: {
+					text: true
+				}
+			},
+			compose: val => val && JSON.stringify(val),
+			parse: val => val && JSON.parse(val)
+		},
+		config
+	)
+	return setting(config)
 }
 
 /**
@@ -89,41 +97,54 @@ export function jsonSetting<J, T>(config?: ISettingDescriptor<T>) {
  * @param config The additional configuration to control how a setting operates
  */
 export function selectionSetting<J, T>(config?: ISettingDescriptor<T>) {
-    "use strict";
-    return jsonSetting<J, T>(config);
+	'use strict'
+	return jsonSetting<J, T>(config)
 }
-
 
 /**
  * Defines a setting to be used with powerBI
  * @param config The additional configuration to control how a setting operates
  */
 export function colorSetting<T>(config?: IColorSettingDescriptor<T>) {
-    "use strict";
-    config = _.merge({}, {
-        config: {
-            type: FILL_TYPE,
-        },
-        compose: colorComposer(config ? config.defaultValue : "#ccc"),
-        parse: colorParser(config ? config.defaultValue : "#ccc"),
-    }, config);
-    return setting(config);
+	'use strict'
+	config = _.merge(
+		{},
+		{
+			config: {
+				type: FILL_TYPE
+			},
+			compose: colorComposer(config ? config.defaultValue : '#ccc'),
+			parse: colorParser(config ? config.defaultValue : '#ccc')
+		},
+		config
+	)
+	return setting(config)
 }
 
 /**
  * Defines a setting to be used with powerBI
  * @param config The additional configuration to control how a setting operates
  */
-export function instanceColorSetting<T>(config?: IColorInstanceSettingDescriptor<T>) {
-    "use strict";
-    config = _.merge({}, {
-        config: {
-            type: FILL_TYPE,
-        },
-        compose: coloredObjectInstanceComposer(config ? config.defaultValue : "#ccc"),
-        parse: colorCategoricalInstanceObjectParser(config ? config.defaultValue : "#ccc"),
-    }, config);
-    return setting(config);
+export function instanceColorSetting<T>(
+	config?: IColorInstanceSettingDescriptor<T>
+) {
+	'use strict'
+	config = _.merge(
+		{},
+		{
+			config: {
+				type: FILL_TYPE
+			},
+			compose: coloredObjectInstanceComposer(
+				config ? config.defaultValue : '#ccc'
+			),
+			parse: colorCategoricalInstanceObjectParser(
+				config ? config.defaultValue : '#ccc'
+			)
+		},
+		config
+	)
+	return setting(config)
 }
 
 /**
@@ -132,19 +153,28 @@ export function instanceColorSetting<T>(config?: IColorInstanceSettingDescriptor
  * @param config The additional configuration to control how a setting operates
  */
 export function enumSetting<T>(enumType: any, config?: ISettingDescriptor<T>) {
-    "use strict";
-    return typedSetting({
-        enumeration: {
-            members(validMembers?: powerbi.EnumMemberValue[]): powerbi.IEnumMember[] {
-                const objValues = Object.keys(enumType).map(k => enumType[k]);
-                const names = objValues.filter(v => typeof v === "string") as string[];
-                return names.map(n => ({
-                    value: enumType[n],
-                    displayName: n,
-                }));
-            },
-        },
-    }, config);
+	'use strict'
+	return typedSetting(
+		{
+			enumeration: {
+				members(
+					validMembers?: powerbi.EnumMemberValue[]
+				): powerbi.IEnumMember[] {
+					const objValues = Object.keys(enumType).map(
+						k => enumType[k]
+					)
+					const names = objValues.filter(
+						v => typeof v === 'string'
+					) as string[]
+					return names.map(n => ({
+						value: enumType[n],
+						displayName: n
+					}))
+				}
+			}
+		},
+		config
+	)
 }
 
 /**
@@ -153,19 +183,24 @@ export function enumSetting<T>(enumType: any, config?: ISettingDescriptor<T>) {
  * @param config The additional configuration to control how a setting operates
  */
 function typedSetting<T>(type: any, config?: ISettingDescriptor<T>) {
-    "use strict";
-    config = _.merge({}, {
-        config: {
-            type: type,
-        },
-    }, config);
-    return setting<T>(config);
+	'use strict'
+	config = _.merge(
+		{},
+		{
+			config: {
+				type: type
+			}
+		},
+		config
+	)
+	return setting<T>(config)
 }
 
 export interface IColorSettingDescriptor<T> extends ISettingDescriptor<T> {
-    defaultValue?: IDefaultColor;
+	defaultValue?: IDefaultColor
 }
 
-export interface IColorInstanceSettingDescriptor<T> extends ISettingDescriptor<T> {
-    defaultValue?: IDefaultInstanceColor;
+export interface IColorInstanceSettingDescriptor<T>
+	extends ISettingDescriptor<T> {
+	defaultValue?: IDefaultInstanceColor
 }

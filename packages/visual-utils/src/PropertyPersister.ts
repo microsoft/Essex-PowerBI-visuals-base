@@ -22,55 +22,61 @@
  * SOFTWARE.
  */
 
-declare var _: any;
+declare var _: any
 
 /**
  * A class that provides a way to easily persist multiple objects at the same time without multiple calls to host.persistProperties
  */
 export default class PropertyPersister {
-    constructor(
-        private host: powerbi.extensibility.visual.IVisualHost, // tslint:disable-line
-        private delay: number = 100 // tslint:disable-line
-    ) {}
+	/**
+	 * Queues the given property changes
+	 */
+	private propsToUpdate: {
+		changes: powerbi.VisualObjectInstancesToPersist[]
+		selection: boolean
+	}[] = [] // tslint:disable-line
 
-    /**
-     * Queues the given property changes
-     */
-    private propsToUpdate: { changes: powerbi.VisualObjectInstancesToPersist[], selection: boolean }[] = []; // tslint:disable-line
-    private propUpdater = _.debounce(() => {
-        if (this.propsToUpdate && this.propsToUpdate.length) {
-            const toUpdate = this.propsToUpdate.slice(0);
-            this.propsToUpdate.length = 0;
-            const final: powerbi.VisualObjectInstancesToPersist = {};
-            let isSelection: boolean;
-            toUpdate.forEach(n => {
-                n.changes.forEach(m => {
-                    Object.keys(m).forEach(operation => {
-                        if (!final[operation]) {
-                            final[operation] = [];
-                        }
-                        final[operation].push(...m[operation]);
-                    });
-                });
-                if (n.selection) {
-                    isSelection = true;
-                }
+	private propUpdater = _.debounce(() => {
+		if (this.propsToUpdate && this.propsToUpdate.length) {
+			const toUpdate = this.propsToUpdate.slice(0)
+			this.propsToUpdate.length = 0
+			const final: powerbi.VisualObjectInstancesToPersist = {}
+			let isSelection: boolean
+			toUpdate.forEach(n => {
+				n.changes.forEach(m => {
+					Object.keys(m).forEach(operation => {
+						if (!final[operation]) {
+							final[operation] = []
+						}
+						final[operation].push(...m[operation])
+					})
+				})
+				if (n.selection) {
+					isSelection = true
+				}
+			})
 
-            });
+			this.host.persistProperties(final)
+		}
+	}, this.delay)
 
-            this.host.persistProperties(final);
-        }
-    }, this.delay);
+	constructor(
+		private host: powerbi.extensibility.visual.IVisualHost, // tslint:disable-line
+		private delay: number = 100 // tslint:disable-line
+	) {}
 
-    /**
-     * Queues a set of property changes for the next update
-     * @param selection True if the properties contains selection
-     */
-    public persist(selection: boolean, ...changes: powerbi.VisualObjectInstancesToPersist[]) {
-        this.propsToUpdate.push({
-            changes,
-            selection,
-        });
-        this.propUpdater();
-    }
+	/**
+	 * Queues a set of property changes for the next update
+	 * @param selection True if the properties contains selection
+	 */
+	public persist(
+		selection: boolean,
+		...changes: powerbi.VisualObjectInstancesToPersist[]
+	) {
+		this.propsToUpdate.push({
+			changes,
+			selection
+		})
+		this.propUpdater()
+	}
 }

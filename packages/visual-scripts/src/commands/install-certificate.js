@@ -20,28 +20,31 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-const os = require('os');
-const path = require('path');
-const exec = require('child_process').execSync;
+const os = require('os')
+const path = require('path')
+const exec = require('child_process').execSync
 
 const OPEN_COMMANDS = {
-    linux: 'xdg-open',
-    darwin: 'open',
-    win32: 'powershell start'
-};
+	linux: 'xdg-open',
+	darwin: 'open',
+	win32: 'powershell start'
+}
 
-const getOpenCommand = () => OPEN_COMMANDS[os.platform()];
+const getOpenCommand = () => OPEN_COMMANDS[os.platform()]
 
 module.exports = function openCertFile() {
-    const certPath = path.join(__dirname, '../../certs/PowerBICustomVisualTest_public.crt');
-    const startCmd = getOpenCommand();
-    if (startCmd) {
-        try {
-            exec(`${startCmd} "${certPath}"`);
-        } catch (e) {
-            console.error('Error installing certificate:', e);
-        }
-    } else {
-        console.error('Unable to install certificate at ', certPath);
-    }
+	const certPath = path.join(
+		__dirname,
+		'../../certs/PowerBICustomVisualTest_public.crt'
+	)
+	const startCmd = getOpenCommand()
+	if (startCmd) {
+		try {
+			exec(`${startCmd} "${certPath}"`)
+		} catch (e) {
+			console.error('Error installing certificate:', e)
+		}
+	} else {
+		console.error('Unable to install certificate at ', certPath)
+	}
 }

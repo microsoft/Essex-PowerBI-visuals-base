@@ -25,33 +25,33 @@
 /**
  * The key used to store settings metadata on the settings class
  */
-import { ISetting, ISettingDescriptor, ISettingsClass } from "./interfaces";
-import { METADATA_KEY } from "./helpers";
-const assignIn = require("lodash.assignin"); // tslint:disable-line
+import { ISetting, ISettingDescriptor, ISettingsClass } from './interfaces'
+import { METADATA_KEY } from './helpers'
+const assignIn = require('lodash.assignin') // tslint:disable-line
 
 /**
  * Defines a setting to be used with powerBI
  * @param config The configuration used to control how a setting operates
  */
 export function setting<T>(config: ISettingDescriptor<T>) {
-    "use strict";
-    return function (target: any, key: string) {
-        let setting = {
-            propertyName: key,
-            descriptor: config,
-            isChildSettings: false,
-            classType: target,
-        } as ISetting;
-        if (Object.freeze) {
-            setting = Object.freeze(setting);
-        }
-        defineSetting(target, key, setting);
-        Object.defineProperty(target, key, {
-            writable: true,
-            enumerable: true,
-        });
-        return target;
-    };
+	'use strict'
+	return function(target: any, key: string) {
+		let settingItem = {
+			propertyName: key,
+			descriptor: config,
+			isChildSettings: false,
+			classType: target
+		} as ISetting
+		if (Object.freeze) {
+			settingItem = Object.freeze(settingItem)
+		}
+		defineSetting(target, key, settingItem)
+		Object.defineProperty(target, key, {
+			writable: true,
+			enumerable: true
+		})
+		return target
+	}
 }
 
 /**
@@ -59,50 +59,53 @@ export function setting<T>(config: ISettingDescriptor<T>) {
  * @param config The child setting class type
  * @param descriptor The additional set of configuration settings to control how a setting operates
  */
-export function settings<T>(config: Function, descriptor?: ISettingDescriptor<T>) {
-    "use strict";
-    return function (target: any, key: string) {
-        const childCtor = <ISettingsClass<Object>>config;
+export function settings<T>(
+	config: Function,
+	descriptor?: ISettingDescriptor<T>
+) {
+	'use strict'
+	return function(target: any, key: string) {
+		const childCtor = <ISettingsClass<Object>>config
 
-        // Extend the class so we can add custom properties on it
-        const augmentedChildClass = class ChildSettingsClass extends childCtor {};
+		// Extend the class so we can add custom properties on it
+		const augmentedChildClass = class ChildSettingsClass extends childCtor {}
 
-        // Define the metadata object of the augmentedChildClass as the metadata on the actual child ctor
-        const childMetadata = defineMetadata(childCtor);
+		// Define the metadata object of the augmentedChildClass as the metadata on the actual child ctor
+		const childMetadata = defineMetadata(childCtor)
 
-        descriptor = descriptor || {};
+		descriptor = descriptor || {}
 
-        let setting = {
-            propertyName: key,
-            descriptor,
-            isChildSettings: true,
-            childClassType: augmentedChildClass,
-            classType: target,
-        } as ISetting;
+		let settingItem = {
+			propertyName: key,
+			descriptor,
+			isChildSettings: true,
+			childClassType: augmentedChildClass,
+			classType: target
+		} as ISetting
 
-        // Extend from the child metadata, so we can add additional properties
-        defineMetadata(augmentedChildClass, Object.create(childMetadata));
+		// Extend from the child metadata, so we can add additional properties
+		defineMetadata(augmentedChildClass, Object.create(childMetadata))
 
-        // Sets up the child inheritance to point to this setting
-        setupChildInheritance(setting);
+		// Sets up the child inheritance to point to this setting
+		setupChildInheritance(settingItem)
 
-        if (!config) {
-            throw new Error(`Could not find config for setting: ${key}`);
-        }
+		if (!config) {
+			throw new Error(`Could not find config for setting: ${key}`)
+		}
 
-        if (Object.freeze) {
-            setting = Object.freeze(setting);
-        }
+		if (Object.freeze) {
+			settingItem = Object.freeze(settingItem)
+		}
 
-        // Define the setting on the target
-        defineSetting(target, key, setting);
+		// Define the setting on the target
+		defineSetting(target, key, settingItem)
 
-        Object.defineProperty(target, key, {
-            writable: true,
-            enumerable: true,
-        });
-        return target;
-    };
+		Object.defineProperty(target, key, {
+			writable: true,
+			enumerable: true
+		})
+		return target
+	}
 }
 
 /**
@@ -111,48 +114,52 @@ export function settings<T>(config: Function, descriptor?: ISettingDescriptor<T>
  * @param child The child setting
  */
 function inheritSetting(parent: ISetting, child: ISetting) {
-    "use strict";
-    const newSetting = Object.create(assignIn({}, child), {
+	'use strict'
+	const newSetting = Object.create(assignIn({}, child), {
+		// Make the child setting inherit the parent
+		descriptor: {
+			value: Object.create(
+				{
+					category: parent.descriptor.category // Only inherit the category for now
+				},
+				Object.keys(child.descriptor).reduce((a, b) => {
+					a[b] = {
+						enumerable: true,
+						value: child.descriptor[b]
+					}
+					return a
+				}, {})
+			)
+		}
+	})
+	newSetting.parentSetting = parent
+	newSetting.classType = parent.childClassType
 
-        // Make the child setting inherit the parent
-        descriptor: {
-            value: Object.create({
-                category: parent.descriptor.category, // Only inherit the category for now
-            }, Object.keys(child.descriptor).reduce((a, b) => {
-                a[b] = {
-                    enumerable: true,
-                    value: child.descriptor[b],
-                };
-                return a;
-            }, {})),
-        },
-    });
-    newSetting.parentSetting = parent;
-    newSetting.classType = parent.childClassType;
+	// Update the children too, if necessary
+	setupChildInheritance(newSetting)
 
-    // Update the children too, if necessary
-    setupChildInheritance(newSetting);
-
-    return newSetting;
+	return newSetting
 }
 
 /**
  * Sets up the child inheirtance for the given parent setting
  */
-function setupChildInheritance(setting: ISetting) {
-    "use strict";
+function setupChildInheritance(settingItem: ISetting) {
+	'use strict'
 
-    if (setting.isChildSettings) {
-        // Gets the metadata for the child class
-        const metadata = defineMetadata(setting.childClassType);
+	if (settingItem.isChildSettings) {
+		// Gets the metadata for the child class
+		const metadata = defineMetadata(settingItem.childClassType)
 
-        // Update the child settings to point to ourselves
-        metadata.settings =
-            Object.keys(metadata.settings).reduce((map, name) => {
-                map[name] = inheritSetting(setting, metadata.settings[name]);
-                return map;
-            }, {});
-    }
+		// Update the child settings to point to ourselves
+		metadata.settings = Object.keys(metadata.settings).reduce(
+			(map, name) => {
+				map[name] = inheritSetting(settingItem, metadata.settings[name])
+				return map
+			},
+			{}
+		)
+	}
 }
 
 /**
@@ -161,9 +168,11 @@ function setupChildInheritance(setting: ISetting) {
  * @param metadata The metadata to add
  */
 function defineMetadata<T>(target: ISettingsClass<T>, metadata?: any) {
-    "use strict";
-    const metadataTarget = target.constructor === Function ? target : target.constructor;
-    return metadataTarget[METADATA_KEY] = metadata || metadataTarget[METADATA_KEY] || {};
+	'use strict'
+	const metadataTarget =
+		target.constructor === Function ? target : target.constructor
+	return (metadataTarget[METADATA_KEY] =
+		metadata || metadataTarget[METADATA_KEY] || {})
 }
 
 /**
@@ -171,9 +180,9 @@ function defineMetadata<T>(target: ISettingsClass<T>, metadata?: any) {
  * @param target The target to define the metadata on
  */
 function defineSettingsMetadata<T>(target: ISettingsClass<T>) {
-    "use strict";
-    const metadata = defineMetadata(target);
-    return metadata.settings = metadata.settings || {};
+	'use strict'
+	const metadata = defineMetadata(target)
+	return (metadata.settings = metadata.settings || {})
 }
 
 /**
@@ -182,7 +191,11 @@ function defineSettingsMetadata<T>(target: ISettingsClass<T>) {
  * @param propName The name of the metadata to add
  * @param value The value of the metadata to add.
  */
-export function defineSetting<T>(target: ISettingsClass<T>, propName: string, value: ISetting) {
-    "use strict";
-    defineSettingsMetadata(target)[propName] = value;
+export function defineSetting<T>(
+	target: ISettingsClass<T>,
+	propName: string,
+	value: ISetting
+) {
+	'use strict'
+	defineSettingsMetadata(target)[propName] = value
 }

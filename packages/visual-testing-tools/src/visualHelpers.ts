@@ -22,93 +22,93 @@
  * SOFTWARE.
  */
 
-import * as $ from "jquery";
-import global from "./testSetup"; // tslint:disable-line
-import "./mockPBI";
+import * as $ from 'jquery'
+import global from './testSetup' // tslint:disable-line
+import './mockPBI'
 
-const noop = (<any>function() {}); // tslint:disable-line
+const noop = <any>function() {} // tslint:disable-line
 
-global["$"] = $;
-export var Utils = { // tslint:disable-line
-    FAKE_TABLE_DATA_ONE_COLUMN: <powerbi.DataView>{
-        metadata: <powerbi.DataViewMetadata>{},
-        table: {
-            columns: <powerbi.DataViewMetadataColumn[]>[{
-                displayName: "COLUMN_1",
-                type: <any>{
-                    text: true,
-                },
-            }],
-            rows: [
-                ["COLUMN_1_ROW_1"],
-                ["COLUMN_1_ROW_2"],
-            ],
-        },
-    },
+global['$'] = $
+export const Utils = {
+	// tslint:disable-line
+	FAKE_TABLE_DATA_ONE_COLUMN: <powerbi.DataView>{
+		metadata: <powerbi.DataViewMetadata>{},
+		table: {
+			columns: <powerbi.DataViewMetadataColumn[]>[
+				{
+					displayName: 'COLUMN_1',
+					type: <any>{
+						text: true
+					}
+				}
+			],
+			rows: [['COLUMN_1_ROW_1'], ['COLUMN_1_ROW_2']]
+		}
+	},
 
-    FAKE_TABLE_DATA_TWO_COLUMN: <powerbi.DataView>{
-        metadata: <powerbi.DataViewMetadata>{},
-        table: {
-            columns: <powerbi.DataViewMetadataColumn[]>[{
-                displayName: "COLUMN_1",
-                type: <any>{
-                    text: true,
-                },
-            }, {
-                displayName: "COLUMN_2",
-                type: <any> {
-                    numeric: true,
-                },
-            }],
-            rows: [
-                ["COLUMN_1_ROW_1", 1],
-                ["COLUMN_1_ROW_2", 2],
-            ],
-        },
-    },
+	FAKE_TABLE_DATA_TWO_COLUMN: <powerbi.DataView>{
+		metadata: <powerbi.DataViewMetadata>{},
+		table: {
+			columns: <powerbi.DataViewMetadataColumn[]>[
+				{
+					displayName: 'COLUMN_1',
+					type: <any>{
+						text: true
+					}
+				},
+				{
+					displayName: 'COLUMN_2',
+					type: <any>{
+						numeric: true
+					}
+				}
+			],
+			rows: [['COLUMN_1_ROW_1', 1], ['COLUMN_1_ROW_2', 2]]
+		}
+	},
 
-    createElement: () => {
-        return $("<div>");
-    },
+	createElement: () => {
+		return $('<div>')
+	},
 
-    createUpdateOptionsWithSmallData: () => {
-        return <powerbi.extensibility.visual.VisualUpdateOptions>{
-            viewport: {
-                width: 100,
-                height: 100,
-            },
-            dataViews: [Utils.FAKE_TABLE_DATA_ONE_COLUMN],
-        };
-    },
+	createUpdateOptionsWithSmallData: () => {
+		return <powerbi.extensibility.visual.VisualUpdateOptions>{
+			viewport: {
+				width: 100,
+				height: 100
+			},
+			dataViews: [Utils.FAKE_TABLE_DATA_ONE_COLUMN]
+		}
+	},
 
-    createUpdateOptionsWithData: () => {
-        return <powerbi.extensibility.visual.VisualUpdateOptions>{
-            viewport: {
-                width: 100,
-                height: 100,
-            },
-            dataViews: [Utils.FAKE_TABLE_DATA_TWO_COLUMN],
-        };
-    },
+	createUpdateOptionsWithData: () => {
+		return <powerbi.extensibility.visual.VisualUpdateOptions>{
+			viewport: {
+				width: 100,
+				height: 100
+			},
+			dataViews: [Utils.FAKE_TABLE_DATA_TWO_COLUMN]
+		}
+	},
 
-    createFakeHost: () => {
-        return <powerbi.extensibility.visual.IVisualHost>{
-            createSelectionIdBuilder: noop,
-            persistProperties: noop,
-            createSelectionManager: () => ({
-                getSelectionIds: () => <any[]>[],
-            }),
-        };
-    },
+	createFakeHost: () => {
+		return <powerbi.extensibility.visual.IVisualHost>{
+			createSelectionIdBuilder: noop,
+			persistProperties: noop,
+			createSelectionManager: () => ({
+				getSelectionIds: () => <any[]>[]
+			})
+		}
+	},
 
-    createFakeConstructorOptions: () => {
-        return <powerbi.extensibility.visual.VisualConstructorOptions>{
-            element: Utils.createElement()[0],
-            host: Utils.createFakeHost(),
-            // viewport: {
-            //     width: 100,
-            //     height: 100,
-            // },
-        };
-    },
-};
+	createFakeConstructorOptions: () => {
+		return <powerbi.extensibility.visual.VisualConstructorOptions>{
+			element: Utils.createElement()[0],
+			host: Utils.createFakeHost()
+			// viewport: {
+			//     width: 100,
+			//     height: 100,
+			// },
+		}
+	}
+}

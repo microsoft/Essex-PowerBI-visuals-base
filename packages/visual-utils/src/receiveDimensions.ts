@@ -23,35 +23,43 @@
  */
 
 export interface IDimensions {
-    width: number;
-    height: number;
-};
+	width: number
+	height: number
+}
 
-export interface IReceiveDimensions extends powerbi.extensibility.visual.IVisual {
-    setDimensions(dimensions: IDimensions): void;
+export interface IReceiveDimensions
+	extends powerbi.extensibility.visual.IVisual {
+	setDimensions(dimensions: IDimensions): void
 }
 
 /**
  * Represents a class that implements a IStateful interface
  */
-export interface DimensionReceiverClass<T extends IReceiveDimensions>{
-    new (...args: any[]): T;
+export interface DimensionReceiverClass<T extends IReceiveDimensions> {
+	new (...args: any[]): T
 }
 
-export function receiveDimensions<T extends IReceiveDimensions>(target: DimensionReceiverClass<T>): any {
-    "use strict";
-    class ReceivesUpdateClass extends (target as DimensionReceiverClass<IReceiveDimensions>) {
-        constructor(...args: any[]) {
-            args = args || [];
-            super(...args);
-        }
-        public update(options: powerbi.extensibility.visual.VisualUpdateOptions, ...args: any[]) {
-            const { width, height } = options.viewport;
-            this.setDimensions({ width, height });
-            if (super.update) {
-                return super.update.apply(this, [options, ...args]);
-            }
-        }
-    }
-    return ReceivesUpdateClass as any;
+export function receiveDimensions<T extends IReceiveDimensions>(
+	target: DimensionReceiverClass<T>
+): any {
+	'use strict'
+	class ReceivesUpdateClass extends (target as DimensionReceiverClass<
+		IReceiveDimensions
+	>) {
+		constructor(...args: any[]) {
+			args = args || []
+			super(...args)
+		}
+		public update(
+			options: powerbi.extensibility.visual.VisualUpdateOptions,
+			...args: any[]
+		) {
+			const { width, height } = options.viewport
+			this.setDimensions({ width, height })
+			if (super.update) {
+				return super.update.apply(this, [options, ...args])
+			}
+		}
+	}
+	return ReceivesUpdateClass as any
 }

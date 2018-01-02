@@ -1,53 +1,75 @@
 {
-  "name": "@essex/pbi-base",
-  "private": true,
-  "description": "Essex PowerBI visual base",
-  "scripts": {
-    "clean": "lerna run clean --stream",
-    "lint": "tslint -t verbose \"./packages/*/{src,spec}/**/*.ts\"",
-    "compile": "lerna run compile --concurrency=1 --stream",
-    "docs": "lerna run docs --stream",
-    "mocha": "mocha --require ts-node/register \"./packages/*/{src,spec,lib}/**/*.spec.ts\"",
-    "test": "npm-run-all clean lint compile mocha docs",
-    "publish_all": "lerna publish"
-  },
-  "main": "dist/index.js",
-  "typings": "dist/index.d.ts",
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/Microsoft/Essex-PowerBI-visuals-base"
-  },
-  "keywords": [
-    "PowerBI",
-    "Base"
-  ],
-  "author": "Microsoft",
-  "license": "MIT",
-  "dependencies": {
-    "powerbi-visuals-tools": "^1.7.2"
-  },
-  "workspaces": [
-    "packages/*"
-  ],
-  "devDependencies": {
-    "@types/chai": "^4.0.4",
-    "@types/d3": "^3.x",
-    "@types/jquery": "^2.0.33",
-    "@types/mocha": "^2.2.32",
-    "@types/mock-require": "^1.3.3",
-    "chai": "^4.1.2",
-    "d3": "3.5.12",
-    "del-cli": "^1.1.0",
-    "jquery": "^2.2.3",
-    "jsdom": "^9.6.0",
-    "lerna": "^2.1.2",
-    "mocha": "^3.1.0",
-    "mock-require": "^1.3.0",
-    "node-sass": "^3.4.2",
-    "npm-run-all": "^3.1.0",
-    "ts-node": "^3.1.0",
-    "tslint": "^3.7.4",
-    "typedoc": "^0.7.1",
-    "typescript": "^2.5.3"
-  }
+	"name": "@essex/pbi-base",
+	"private": true,
+	"description": "Essex PowerBI visual base",
+	"scripts": {
+		"info:yarn": "yarn -v",
+		"info:tslint": "tslint -v",
+		"info:typescript": "tsc -v",
+		"info:node": "node -v",
+		"info": "run-s info:*",
+		"clean": "lerna run clean --stream",
+		"lint": "tslint -t verbose './packages/*/{src,spec}/**/*.ts'",
+		"compile": "lerna run compile --concurrency=1 --stream",
+		"docs": "lerna run docs --stream",
+		"mocha":
+			"mocha --require ts-node/register \"./packages/*/{src,spec,lib}/**/*.spec.ts\"",
+		"test": "run-s info clean lint compile mocha docs",
+		"publish_all": "lerna publish",
+		"prettify": "prettier \"packages/*/**/*.{js,jsx,ts,tsx}\" --write",
+		"precommit": "lint-staged",
+		"prepush": "yarn lint"
+	},
+	"main": "dist/index.js",
+	"typings": "dist/index.d.ts",
+	"repository": {
+		"type": "git",
+		"url": "https://github.com/Microsoft/Essex-PowerBI-visuals-base"
+	},
+	"keywords": ["PowerBI", "Base"],
+	"author": "Microsoft",
+	"license": "MIT",
+	"dependencies": {
+		"powerbi-visuals-tools": "^1.7.2"
+	},
+	"workspaces": ["packages/*"],
+	"devDependencies": {
+		"@types/chai": "^4.0.4",
+		"@types/d3": "^3.x",
+		"@types/jquery": "^2.0.33",
+		"@types/mocha": "^2.2.32",
+		"@types/mock-require": "^1.3.3",
+		"chai": "^4.1.2",
+		"d3": "3.5.12",
+		"del-cli": "^1.1.0",
+		"husky": "^0.14.3",
+		"jquery": "^2.2.3",
+		"jsdom": "^9.6.0",
+		"lerna": "^2.1.2",
+		"lint-staged": "^6.0.0",
+		"mocha": "^3.1.0",
+		"mock-require": "^1.3.0",
+		"node-sass": "^3.4.2",
+		"npm-run-all": "^3.1.0",
+		"prettier": "^1.9.1",
+		"ts-node": "^3.1.0",
+		"tslint": "^5.8.0",
+		"typedoc": "^0.9.0",
+		"typescript": "^2.6.1"
+	},
+	"lint-staged": {
+		"packages/**/*.{js,tsx}": [
+			"prettier --trailingComma=es5 --write",
+			"git add"
+		],
+		"packages/**/*.{ts,tsx}": [
+			"prettier --trailingComma=all --write",
+			"git add"
+		]
+	},
+	"prettier": {
+		"singleQuote": true,
+		"semi": false,
+		"useTabs": true
+	}
 }

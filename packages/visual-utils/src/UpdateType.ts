@@ -26,36 +26,35 @@
  * Represents an update type for a visual
  */
 enum UpdateType {
+	/**
+	 * This is an unknown update type
+	 */
+	Unknown = 0,
 
-    /**
-     * This is an unknown update type
-     */
-    Unknown = 0,
+	/**
+	 * This is a data update
+	 */
+	Data = 1 << 0,
 
-    /**
-     * This is a data update
-     */
-    Data = 1 << 0,
+	/**
+	 * This is a resize operation
+	 */
+	Resize = 1 << 1,
 
-    /**
-     * This is a resize operation
-     */
-    Resize = 1 << 1,
+	/**
+	 * This has some settings that have been changed
+	 */
+	Settings = 1 << 2,
 
-    /**
-     * This has some settings that have been changed
-     */
-    Settings = 1 << 2,
+	/**
+	 * This is the initial update
+	 */
+	Initial = 1 << 3,
 
-    /**
-     * This is the initial update
-     */
-    Initial = 1 << 3,
-
-    // Some utility keys for debugging
-    DataAndResize = UpdateType.Data | UpdateType.Resize,
-    DataAndSettings = UpdateType.Data | UpdateType.Settings,
-    SettingsAndResize = UpdateType.Settings | UpdateType.Resize,
-    All = UpdateType.Data | UpdateType.Resize | UpdateType.Settings
+	// Some utility keys for debugging
+	DataAndResize = UpdateType.Data | UpdateType.Resize,
+	DataAndSettings = UpdateType.Data | UpdateType.Settings,
+	SettingsAndResize = UpdateType.Settings | UpdateType.Resize,
+	All = UpdateType.Data | UpdateType.Resize | UpdateType.Settings
 }
-export default UpdateType;
+export default UpdateType

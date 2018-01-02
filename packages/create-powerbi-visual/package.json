@@ -1,6 +1,6 @@
 {
   "name": "@essex/create-powerbi-visual",
-  "version": "1.1.1",
+  "version": "1.1.7",
   "author": "Microsoft",
   "license": "MIT",
   "publishConfig": {
@@ -12,11 +12,9 @@
   "scripts": {
     "tarball-empty-viz": "node scripts/package-empty-viz-tarball"
   },
-  "devDependencies": {
-    "targz": "^1.0.1"
-  },
   "dependencies": {
     "guid": "^0.0.12",
-    "lodash": "^4.17.4"
+    "lodash": "^4.17.4",
+    "targz": "^1.0.1"
   }
 }

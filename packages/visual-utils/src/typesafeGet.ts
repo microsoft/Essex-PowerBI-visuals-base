@@ -22,8 +22,8 @@
  * SOFTWARE.
  */
 
-const ldget = require("lodash.get"); // tslint:disable-line
-const pathFinder = /return\s+([^\;\}]+)/;
+const ldget = require('lodash.get') // tslint:disable-line
+const pathFinder = /return\s+([^\;\}]+)/
 
 /**
  * A simple function that wraps _.get to add type safety to it
@@ -31,8 +31,19 @@ const pathFinder = /return\s+([^\;\}]+)/;
  * @param obj The object to get a property on
  * @param getter The getter for the path
  */
-export default function get<T, J>(obj: T, getter: (obj: T) => J, defaultValue?: any): J {
-    "use strict";
-    const path = pathFinder.exec(getter.toString())[1];
-    return ldget(obj, path.split(".").slice(1).join("."), defaultValue) as J;
+export default function get<T, J>(
+	obj: T,
+	getter: (obj: T) => J,
+	defaultValue?: any
+): J {
+	'use strict'
+	const path = pathFinder.exec(getter.toString())[1]
+	return ldget(
+		obj,
+		path
+			.split('.')
+			.slice(1)
+			.join('.'),
+		defaultValue
+	) as J
 }
