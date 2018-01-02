@@ -75,8 +75,6 @@ describe('Helpers', () => {
 			)
 			const toCheck = (objs.merge || []).concat(objs.remove || [])
 
-			console.log(JSON.stringify(objs, null, 2)) // tslint:disable-line
-
 			expect(
 				toCheck.filter(
 					n =>
