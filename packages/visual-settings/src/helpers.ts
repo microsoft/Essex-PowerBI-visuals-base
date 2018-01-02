@@ -100,9 +100,10 @@ export function buildPersistObjects<T>(
             const builder = createPersistObjectBuilder();
             Object.keys(settingsMetadata).forEach(key => {
                 const setting = settingsMetadata[key];
+                const { readOnly, persist } = setting.descriptor;
                 if (setting.isChildSettings) {
                     const childSettingValue = settingsObj[setting.propertyName];
-                    if (childSettingValue && shouldPersist(setting.descriptor) !== false) {
+                    if (childSettingValue && persist !== false && readOnly !== true) {
                         const childSettings = buildPersistObjects(
                             setting.childClassType as any,
                             settingsObj[setting.propertyName],
@@ -134,8 +135,9 @@ function buildPersistObject(
     includeHidden = true,
     builder: IPersistObjectBuilder) {
     "use strict";
+    const { readOnly, persist } = setting.descriptor;
     const adapted = convertValueToPBI(settingsObj, setting, dataView, includeHidden);
-    if (adapted) {
+    if (adapted && persist !== false && readOnly !== true) {
         const { objName, propName } = getPBIObjectNameAndPropertyName(setting);
         let value = adapted.adaptedValue;
         value = value && value.forEach ? value : [value];
@@ -225,8 +227,9 @@ function buildEnumerationObject(
     includeHidden = false,
     instances: powerbi.VisualObjectInstance[]) {
     "use strict";
+    const { readOnly, enumerable } = setting.descriptor;
     const adapted = convertValueToPBI(settingsObj, setting, dataView, includeHidden);
-    if (adapted) {
+    if (adapted && readOnly !== true && enumerable !== false) {
         const { objName, propName } = getPBIObjectNameAndPropertyName(setting);
         let value = adapted.adaptedValue;
         value = value && value.forEach ? value : [value];
@@ -264,12 +267,11 @@ export function buildCapabilitiesObjects<T>(settingsClass: ISettingsClass<T>): a
                 const setting = settingsMetadata[key];
                 const { isChildSettings, childClassType } = setting;
                 if (isChildSettings) {
-                    if (shouldPersist(setting.descriptor) !== false) {
+                    if (setting.descriptor.readOnly !== true) {
                         merge(objects, buildCapabilitiesObjects(childClassType));
                     }
                 } else {
                     const catObj = buildCapabilitiesObject(setting);
-                    // TODO: Test.  This can fail if setting.persist is false
                     if (catObj) {
                         const { objectName } = catObj;
                         const finalObj = objects[objectName] || catObj;
@@ -295,9 +297,9 @@ export function buildCapabilitiesObjects<T>(settingsClass: ISettingsClass<T>): a
 function buildCapabilitiesObject(setting: ISetting) {
     "use strict";
     const { objName, propName } = getPBIObjectNameAndPropertyName(setting);
-    let { category, displayName, defaultValue, config, description, persist } = setting.descriptor;
+    let { category, displayName, defaultValue, config, description, readOnly } = setting.descriptor;
     const defaultCategory = "General";
-    if (persist !== false) {
+    if (readOnly !== true) {
         const catObj = {
             objectName: objName,
             displayName: category || defaultCategory,
@@ -396,10 +398,9 @@ export function getPBIObjectNameAndPropertyName(setting: ISetting) {
 export function convertValueToPBI(settingsObj: any, setting: ISetting, dataView: powerbi.DataView, includeHidden: boolean = false) {
     "use strict";
     const { descriptor, propertyName: fieldName } = setting;
-    const { compose } = descriptor;
+    const { compose, readOnly } = descriptor;
     const enumerate = shouldEnumerate(settingsObj, descriptor, dataView);
-    const persist = shouldPersist(descriptor);
-    if ((includeHidden || enumerate) && persist !== false) {
+    if ((includeHidden || enumerate) && readOnly !== true) {
         let value: IComposeResult = settingsObj[fieldName];
         if (compose) {
             value = compose(value, descriptor, dataView, setting);
@@ -456,20 +457,15 @@ function camelize(str: string) {
  */
 function shouldEnumerate(settingsObj: any, descriptor: ISettingDescriptor<any>, dataView: powerbi.DataView) {
     "use strict";
-    const { hidden, enumerable } = descriptor;
+    const { hidden, enumerable, readOnly } = descriptor;
+    if (readOnly === true) {
+        return false;
+    }
+
     if (typeof enumerable !== "undefined") {
         return !!(typeof enumerable === "function" ? enumerable(settingsObj, dataView) : enumerable);
     }
     return !(typeof hidden === "function" ? hidden(settingsObj, dataView) : hidden);
-}
-
-/**
- * Determines if the given descriptor should be persisted
- * @param descriptor The descriptor to check
- */
-function shouldPersist(descriptor: ISettingDescriptor<any>)  {
-    "use strict";
-    return descriptor.persist;
 }
 
 /**
