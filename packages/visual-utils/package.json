@@ -1,6 +1,6 @@
 {
   "name": "@essex/visual-utils",
-  "version": "2.0.0",
+  "version": "2.0.1",
   "description": "A collection of utilities to help in the creation of powerbi visuals",
   "scripts": {
     "clean": "node ../../run del lib",

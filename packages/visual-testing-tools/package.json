@@ -1,11 +1,10 @@
 {
 	"name": "@essex/visual-testing-tools",
-	"version": "2.0.0",
+	"version": "2.0.1",
 	"description": "A set of testing tools for ease of testing within PowerBI",
 	"scripts": {
 		"clean": "node ../../run del lib",
-		"docs":
-			"typedoc --out docs --ignoreCompilerErrors ./ --externalPattern **/node_modules/**/*.* --exclude **/src/**/*.spec.ts",
+		"docs": "typedoc --out docs --ignoreCompilerErrors ./ --externalPattern **/node_modules/**/*.* --exclude **/src/**/*.spec.ts",
 		"compile": "node ../../run tsc"
 	},
 	"main": "lib/index.js",
@@ -17,7 +16,10 @@
 	"publishConfig": {
 		"access": "public"
 	},
-	"keywords": ["PowerBI", "Base"],
+	"keywords": [
+		"PowerBI",
+		"Base"
+	],
 	"author": "Microsoft",
 	"license": "MIT",
 	"dependencies": {
