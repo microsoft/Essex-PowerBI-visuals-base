@@ -22,8 +22,6 @@
  * SOFTWARE.
  */
 
-import 'jquery'
-
 /**
  * Represents an object that can build persistence objects
  */
@@ -129,11 +127,6 @@ export interface ItemWithValueSegments {
 	 * Returns true if this == b
 	 */
 	equals: (b: ItemWithValueSegments) => boolean
-
-	/**
-	 * Called when an item is created
-	 */
-	onCreate?: (ele: JQuery) => void
 
 	/**
 	 * The segments that make up this items value, the total of the widths must === 100
