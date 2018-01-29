@@ -22,6 +22,7 @@
  * SOFTWARE.
  */
 import * as models from 'powerbi-models'
+import buildColumnTarget from './buildColumnTarget'
 
 /**
  * Builds a "contains" filter from the given search value, and the given dataView
@@ -39,10 +40,7 @@ export default function buildContainsFilter(
 		const sourceType = source.type
 		// Only support "contains" with text columns
 
-		const target: models.IFilterColumnTarget = {
-			table: source.queryName.substr(0, source.queryName.indexOf('.')),
-			column: source.displayName
-		}
+		const target = buildColumnTarget(source)
 
 		if (searchVal) {
 			if (sourceType.text) {
