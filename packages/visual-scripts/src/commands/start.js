@@ -29,7 +29,7 @@ const connect = require('connect')
 const webpack = require('webpack')
 const chokidar = require('chokidar')
 const serveStatic = require('serve-static')
-const webpackConfig = require('../webpack.config')
+const conf = require('../config')
 const pbivizJson = require(path.join(process.env.INIT_CWD, 'pbiviz.json'))
 
 const config = {
@@ -100,7 +100,7 @@ const runWatchTask = (task, isSass) => {
 const startWatchers = () => {
 	// watch script change and re-compile
 	const compiler = webpack(
-		Object.assign(webpackConfig, {
+		Object.assign(conf.webpackConfig, {
 			output: {
 				path: config.tmpDropDir,
 				filename: 'visual.js'
