@@ -30,47 +30,24 @@ const webpack = require('webpack')
 const chokidar = require('chokidar')
 const serveStatic = require('serve-static')
 const conf = require('../config')
-const pbivizJson = require(path.join(process.env.INIT_CWD, 'pbiviz.json'))
 
-const config = {
-	pbivizJsonPath: path.join(process.env.INIT_CWD, 'pbiviz.json'),
-	capabilitiesJsonPath: path.join(
-		process.env.INIT_CWD,
-		pbivizJson.capabilities
-	),
-	tmpDropDir: path.join(process.env.INIT_CWD, '.tmp/drop'),
-	sassEntry: path.join(process.env.INIT_CWD, pbivizJson.style),
-	server: {
-		cert: path.join(
-			__dirname,
-			'../../certs/PowerBICustomVisualTest_public.crt'
-		),
-		key: path.join(
-			__dirname,
-			'../../certs/PowerBICustomVisualTest_private.key'
-		),
-		port: 8080
-	}
-}
 const pbiResource = {
-	jsFile: `${config.tmpDropDir}/visual.js`,
-	cssFile: `${config.tmpDropDir}/visual.css`,
-	pbivizJsonFile: `${config.tmpDropDir}/pbiviz.json`,
-	statusFile: `${config.tmpDropDir}/status`
+	jsFile: `${conf.build.dropFolder}/visual.js`,
+	cssFile: `${conf.build.dropFolder}/visual.css`,
+	pbivizJsonFile: `${conf.build.dropFolder}/pbiviz.json`,
+	statusFile: `${conf.build.dropFolder}/status`
 }
 
 const compileSass = () => {
 	console.info('Building Sass...')
-	const cssContent = sass.renderSync({ file: config.sassEntry }).css
+	const cssContent = sass.renderSync({ file: conf.build.entry.sass }).css
 	fs.writeFileSync(pbiResource.cssFile, cssContent)
 }
 
 const emitPbivizJson = () => {
 	console.info('Composing pbiviz.json...')
-	const pbiviz = JSON.parse(fs.readFileSync(config.pbivizJsonPath))
-	const capabilities = JSON.parse(
-		fs.readFileSync(config.capabilitiesJsonPath)
-	)
+	const pbiviz = conf.build.pbivizJson
+	const capabilities = conf.build.capabilitiesJson
 	pbiviz.capabilities = capabilities
 	fs.writeFileSync(
 		pbiResource.pbivizJsonFile,
@@ -102,7 +79,7 @@ const startWatchers = () => {
 	const compiler = webpack(
 		Object.assign(conf.webpackConfig, {
 			output: {
-				path: config.tmpDropDir,
+				path: conf.build.dropFolder,
 				filename: 'visual.js'
 			}
 		})
@@ -117,8 +94,15 @@ const startWatchers = () => {
 	})
 
 	// watch for pbiviz.json or capabilities.json change
+	const watchFiles = []
+	if (conf.build.pbivizJsonPath) {
+		watchFiles.push(conf.build.pbivizJsonPath)
+	}
+	if (conf.build.capabilitiesJsonPath) {
+		watchFiles.push(conf.build.capabilitiesJsonPath)
+	}
 	chokidar
-		.watch([config.pbivizJsonPath, config.capabilitiesJsonPath])
+		.watch(watchFiles)
 		.on('change', path => runWatchTask(emitPbivizJson))
 
 	// watch for sass file changes
@@ -138,8 +122,8 @@ const startWatchers = () => {
 
 const startServer = () => {
 	const options = {
-		key: fs.readFileSync(config.server.key),
-		cert: fs.readFileSync(config.server.cert)
+		key: fs.readFileSync(conf.server.privateKey),
+		cert: fs.readFileSync(conf.server.certificate)
 	}
 
 	const app = connect()
@@ -147,19 +131,19 @@ const startServer = () => {
 		res.setHeader('Access-Control-Allow-Origin', '*')
 		next()
 	})
-	app.use('/assets', serveStatic(config.tmpDropDir))
+	app.use('/assets', serveStatic(conf.build.dropFolder))
 
-	https.createServer(options, app).listen(config.server.port, err => {
+	https.createServer(options, app).listen(conf.server.port, err => {
 		if (err) {
-			console.log('Error starting server', err)
+			console.error('Error starting server', err)
 			process.exit(1)
 		}
-		console.info('Server listening on port ', config.server.port + '.')
+		console.info('Server listening on port ', conf.server.port + '.')
 	})
 }
 
 const start = () => {
-	mkdirp.sync(config.tmpDropDir)
+	mkdirp.sync(conf.build.dropFolder)
 	compileSass()
 	emitPbivizJson()
 	updateStatus()

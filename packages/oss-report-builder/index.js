@@ -42,7 +42,7 @@ const alwaysRuntimeDependencies = {
  */
 function parseNPMLL(cb) {
 	/* read the original package.json file and parse it */
-	const packagePath = path.resolve('./package.json')
+	const packagePath = path.join(process.cwd(), 'package.json')
 	const packageJsonContent = fs.readFileSync(packagePath, 'utf8')
 	const packageJson = JSON.parse(packageJsonContent)
 
@@ -123,7 +123,7 @@ function parseDependencies(info, runtimeDependencies, isParentRoot) {
 	const devDependencies = info.devDependencies
 	const nodeModulesPath = path.join(path.resolve('./'), 'node_modules/')
 	let csv =
-		'' /* version */ /* type */ /* usage */ /* included in product */ /* in git repository */ /* licence */ /* URL */ /* description */
+		'' /* licence */ /* URL */ /* description */ /* version */ /* type */ /* usage */ /* included in product */ /* in git repository */
 
 	/* dependency */ Object.keys(dependencies).forEach(key => {
 		const dependency = dependencies[key]

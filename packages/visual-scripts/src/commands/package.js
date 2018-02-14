@@ -23,6 +23,7 @@
 
 'use strict'
 
+const buildOSSReport = require('@essex/oss-report-builder')
 const fs = require('fs')
 const zip = require('node-zip')()
 const path = require('path')
@@ -31,9 +32,8 @@ const CleanCSS = require('clean-css')
 const mkdirp = require('mkdirp')
 const webpack = require('webpack')
 const MemoryFS = require('memory-fs')
-const buildOSSReport = require('../util/buildOSSReport.js')
 const config = require('../config')
-const { pbivizJson } = config
+const { build: { pbivizJson } } = config
 
 const _buildLegacyPackageJson = () => {
 	const pack = {

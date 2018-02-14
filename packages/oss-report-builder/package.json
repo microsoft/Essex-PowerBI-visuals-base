@@ -1,0 +1,6 @@
+{
+	"name": "@essex/oss-report-builder",
+	"version": "0.0.1",
+	"description": "Generates OSS License Reports for NodeJS Projects",
+	"main": "index.js"
+}
