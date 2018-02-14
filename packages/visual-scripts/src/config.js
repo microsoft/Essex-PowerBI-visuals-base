@@ -60,12 +60,13 @@ module.exports = {
 		}
 	},
 	metadata: {
+		name: pbivizJson.visual.name,
+		description: packageJson.description,
 		version: packageJson.version,
 		author: packageJson.author,
 		license: packageJson.license,
 		privacy: packageJson.privacy,
-		guid: pbivizJson.visual.guid,
-		name: pbivizJson.visual.name
+		guid: pbivizJson.visual.guid
 	},
 	assets: pbivizJson.assets,
 	build: buildConfig,

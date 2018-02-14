@@ -1,18 +1,16 @@
 {
-  "compilerOptions": {
-    "target": "es5",
-    "module": "commonjs",
-    "allowJs": true,
-    "experimentalDecorators": true,
-    "emitDecoratorMetadata": true,
-    "noImplicitAny": false,
-    "noUnusedLocals": true,
-    "sourceMap": true,
-    "skipLibCheck": true,
-    "suppressImplicitAnyIndexErrors": true,
-    "lib": [
-      "es2017",
-      "dom"
-    ]
-  }
+	"compilerOptions": {
+		"target": "es5",
+		"module": "commonjs",
+		"jsx": "react",
+		"allowJs": true,
+		"experimentalDecorators": true,
+		"emitDecoratorMetadata": true,
+		"noImplicitAny": false,
+		"noUnusedLocals": true,
+		"sourceMap": true,
+		"skipLibCheck": true,
+		"suppressImplicitAnyIndexErrors": true,
+		"lib": ["es2017", "dom"]
+	}
 }

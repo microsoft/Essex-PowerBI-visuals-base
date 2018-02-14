@@ -1,4 +1,4 @@
-const EXPECTED_TOP_LEVEL = ['visual', 'apiVersion', 'entry']
+const EXPECTED_TOP_LEVEL = ['visual', 'apiVersion', 'entry', 'capabilities']
 const EXPECTED_VISUAL_PROPS = ['displayName', 'guid', 'visualClassName', 'name']
 
 const SUPPORTED_TOP_LEVEL = {
@@ -14,7 +14,8 @@ const SUPPORTED_VISUAL_PROPS = {
 	displayName: 1,
 	guid: 1,
 	visualClassName: 1,
-	name: 1
+	name: 1,
+	capabilities: 1
 }
 
 const SUPPORTED_ASSET_PROPS = {

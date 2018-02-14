@@ -23,8 +23,7 @@
  *  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  *  THE SOFTWARE.
  */
-/// <reference path="../powerbi.d.ts" />
-
+import './prerequisites'
 import { VisualSettings } from './settings'
 
 export default class Visual implements powerbi.extensibility.IVisual {

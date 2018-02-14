@@ -33,94 +33,7 @@ const mkdirp = require('mkdirp')
 const webpack = require('webpack')
 const MemoryFS = require('memory-fs')
 const config = require('../config')
-const { build: { pbivizJson } } = config
-
-const _buildLegacyPackageJson = () => {
-	const pack = {
-		version: config.metadata.version,
-		author: config.metadata.author,
-		licenseTerms: config.metadata.license,
-		privacyTerms: config.metadata.privacyTerms,
-		resources: [
-			{
-				resourceId: 'rId0',
-				sourceType: 5,
-				file: `resources/${config.metadata.guid}.ts`
-			},
-			{
-				resourceId: 'rId1',
-				sourceType: 0,
-				file: `resources/${config.metadata.guid}.js`
-			},
-			{
-				resourceId: 'rId2',
-				sourceType: 1,
-				file: `resources/${config.metadata.guid}.css`
-			},
-			{
-				resourceId: 'rId3',
-				sourceType: 3,
-				file: `resources/${path.basename(config.assets.icon)}`
-			},
-			{
-				resourceId: 'rId4',
-				sourceType: 6,
-				file: `resources/${path.basename(config.assets.thumbnail)}`
-			},
-			{
-				resourceId: 'rId5',
-				sourceType: 2,
-				file: `resources/${path.basename(config.assets.screenshot)}`
-			}
-		],
-		visual: Object.assign(
-			{ version: config.metadata.version },
-			pbivizJson.visual
-		),
-		code: {
-			typeScript: {
-				resourceId: 'rId0'
-			},
-			javaScript: {
-				resourceId: 'rId1'
-			},
-			css: {
-				resourceId: 'rId2'
-			}
-		},
-		images: {
-			icon: {
-				resourceId: 'rId3'
-			},
-			thumbnail: {
-				resourceId: 'rId4'
-			},
-			screenshots: [
-				{
-					resourceId: 'rId5'
-				}
-			]
-		}
-	}
-
-	delete pack.visual.visualClassName
-
-	const date = new Date()
-	pack.build =
-		date
-			.getUTCFullYear()
-			.toString()
-			.substring(2) +
-		'.' +
-		(date.getUTCMonth() + 1) +
-		'.' +
-		date.getUTCDate() +
-		'.' +
-		(date.getUTCHours() * 3600 +
-			date.getUTCMinutes() * 60 +
-			date.getUTCSeconds())
-	return pack
-}
+const { build: { pbivizJson, capabilitiesJson } } = config
 
 const _buildPackageJson = () => {
 	return {
@@ -146,10 +59,6 @@ const _buildPackageJson = () => {
 		}
 	}
 }
-
-const buildPackageJson = pbivizJson.apiVersion
-	? _buildPackageJson()
-	: _buildLegacyPackageJson()
 
 const compileSass = () => {
 	if (pbivizJson.style) {
@@ -204,38 +113,8 @@ const compileScripts = callback => {
 	})
 }
 
-const _buildLegacyPackage = fileContent => {
-	const icon = fs.readFileSync(config.assets.icon)
-	const thumbnail = fs.readFileSync(config.assets.thumbnail)
-	const screenshot = fs.readFileSync(config.assets.screenshot)
-	const iconType = config.assets.icon.indexOf('.svg') >= 0 ? 'svg+xml' : 'png'
-	const iconBase64 =
-		`data:image/${iconType};base64,` + icon.toString('base64')
-	const cssContent =
-		compileSass() +
-		`\n.visual-icon.${
-			config.metadata.guid
-		} {background-image: url(${iconBase64});}`
-	zip.file('package.json', JSON.stringify(buildPackageJson, null, 2))
-	zip.file(`resources/${config.metadata.guid}.js`, fileContent)
-	zip.file(
-		`resources/${config.metadata.guid}.ts`,
-		`/** See ${config.metadata.guid}.js **/`
-	)
-	zip.file(`resources/${config.metadata.guid}.css`, cssContent + `\n`)
-	zip.file(`resources/${path.basename(config.assets.icon)}`, icon)
-	zip.file(`resources/${path.basename(config.assets.thumbnail)}`, thumbnail)
-	zip.file(`resources/${path.basename(config.assets.screenshot)}`, screenshot)
-	fs.writeFileSync(
-		config.dist.outputFile,
-		zip.generate({ base64: false, compression: 'DEFLATE' }),
-		'binary'
-	)
-}
-
 const _buildPackage = fileContent => {
 	const js = fileContent
-	const { capabilities } = config
 	const css = compileSass()
 	const icon = fs.readFileSync(config.assets.icon)
 	const iconType = config.assets.icon.indexOf('.svg') >= 0 ? 'svg+xml' : 'png'
@@ -243,14 +122,14 @@ const _buildPackage = fileContent => {
 		`data:image/${iconType};base64,` + icon.toString('base64')
 
 	const constructedPbiViz = Object.assign({}, pbivizJson, {
-		capabilities,
+		capabilities: capabilitiesJson,
 		content: {
 			js,
 			css,
 			iconBase64
 		}
 	})
-	zip.file('package.json', JSON.stringify(buildPackageJson, null, 2))
+	zip.file('package.json', JSON.stringify(_buildPackageJson(), null, 2))
 	zip.file(
 		`resources/${config.metadata.guid}.pbiviz.json`,
 		JSON.stringify(constructedPbiViz, null, 2)
@@ -267,11 +146,7 @@ module.exports = function buildPackage() {
 	compileScripts((err, result, ossReport) => {
 		if (err) throw err
 
-		if (!pbivizJson.apiVersion) {
-			_buildLegacyPackage(result)
-		} else {
-			_buildPackage(result)
-		}
+		_buildPackage(result)
 
 		const ossReportFile = path.join(
 			config.build.output.dir,

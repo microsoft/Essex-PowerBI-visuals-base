@@ -9,14 +9,18 @@
 		"package": "essex-powerbi-visual-scripts package"
 	},
 	"dependencies": {
-		"@essex/powerbi-visual-scripts": "*",
 		"powerbi-visuals-utils-typeutils": "^1.1.0",
 		"powerbi-visuals-utils-svgutils": "^1.1.0",
-		"powerbi-visuals-utils-dataviewutils": "^1.2.0",
-		"powerbi-visuals-tools": "^1.7.2",
+		"powerbi-visuals-utils-dataviewutils": "^1.4.1",
+		"powerbi-visuals-tools": "^1.10.1",
 		"@types/d3": "^4.10.0",
 		"@types/node": "^8.0.26",
 		"d3": "^4.10.0"
+	},
+	"devDependencies": {
+		"@essex/powerbi-visual-scripts": "2.0.3",
+		"tslint": "5.9.1",
+		"typescript": "2.7.1"
 	},
 	"pbiviz": {
 		"visual": {
@@ -25,8 +29,8 @@
 			"visualClassName": "Visual"
 		},
 		"entry": "src/visual.ts",
-		"apiVersion": "1.7.0",
-		"style": "style/visual.less",
+		"apiVersion": "1.9.0",
+		"style": "style/visual.scss",
 		"capabilities": "capabilities.json"
 	}
 }
