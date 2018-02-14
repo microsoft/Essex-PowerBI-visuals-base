@@ -2,6 +2,9 @@
 	"name": "@essex/visual-entry-loader",
 	"description": "A webpack loader for injecting powerbi visual bootstrapping logic around a custom visual module",
 	"version": "2.0.3",
+	"publishConfig": {
+		"access": "public"
+	},
 	"main": "src/index.js",
 	"license": "MIT",
 	"dependencies": {
