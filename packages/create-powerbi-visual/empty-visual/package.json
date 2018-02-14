@@ -1,20 +1,32 @@
 {
-  "name": "powerbi-visual-<%= name %>",
-  "version": "0.0.1",
-  "license": "UNLICENSED",
-  "scripts": {
-    "install-certificate": "essex-powerbi-visual-scripts install-certificate",
-    "start": "essex-powerbi-visual-scripts start",
-    "package": "essex-powerbi-visual-scripts package"
-  },
-  "dependencies": {
-    "@essex/powerbi-visual-scripts": "*",
-    "powerbi-visuals-utils-typeutils": "^1.1.0",
-    "powerbi-visuals-utils-svgutils": "^1.1.0",
-    "powerbi-visuals-utils-dataviewutils": "^1.2.0",
-    "powerbi-visuals-tools": "^1.7.2",
-    "@types/d3": "^4.10.0",
-    "@types/node": "^8.0.26",
-    "d3": "^4.10.0"
-  }
+	"name": "powerbi-visual-<%= name %>",
+	"version": "0.0.1",
+	"license": "UNLICENSED",
+	"scripts": {
+		"install-certificate":
+			"essex-powerbi-visual-scripts install-certificate",
+		"start": "essex-powerbi-visual-scripts start",
+		"package": "essex-powerbi-visual-scripts package"
+	},
+	"dependencies": {
+		"@essex/powerbi-visual-scripts": "*",
+		"powerbi-visuals-utils-typeutils": "^1.1.0",
+		"powerbi-visuals-utils-svgutils": "^1.1.0",
+		"powerbi-visuals-utils-dataviewutils": "^1.2.0",
+		"powerbi-visuals-tools": "^1.7.2",
+		"@types/d3": "^4.10.0",
+		"@types/node": "^8.0.26",
+		"d3": "^4.10.0"
+	},
+	"pbiviz": {
+		"visual": {
+			"displayName": "<%= name %>",
+			"guid": "<%= name %><%= guid %>",
+			"visualClassName": "Visual"
+		},
+		"entry": "src/visual.ts",
+		"apiVersion": "1.7.0",
+		"style": "style/visual.less",
+		"capabilities": "capabilities.json"
+	}
 }

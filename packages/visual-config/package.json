@@ -1,0 +1,7 @@
+{
+	"name": "@essex/visual-config",
+	"version": "0.0.1",
+	"description":
+		"Configuration utilities for the Essex PowerBI visual build system",
+	"main": "index.js"
+}

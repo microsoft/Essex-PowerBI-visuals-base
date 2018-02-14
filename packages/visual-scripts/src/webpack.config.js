@@ -24,13 +24,13 @@
 const path = require('path')
 const webpack = require('webpack')
 const fs = require('fs')
-const INIT_CWD = process.env.INIT_CWD
+const powerbiEntryLoader = require('@essex/visual-entry-loader')
+const cwd = process.cwd()
 
 const modulesPaths = [
 	'node_modules',
-	path.join(process.env.INIT_CWD, 'node_modules'),
-	path.join(__dirname, '../node_modules'),
-	path.join(process.env.INIT_CWD, '../../node_modules') // Lerna Monorepos
+	path.join(cwd, 'node_modules'),
+	path.join(__dirname, '../node_modules')
 ]
 
 module.exports = buildConfig => {
@@ -56,7 +56,7 @@ module.exports = buildConfig => {
 							.replace(/\\/g, '\\\\')
 							.replace(/\./g, '\\.')
 					),
-					loader: path.join(__dirname, 'util/pbiPluginLoader')
+					loader: '@essex/visual-entry-loader'
 				},
 				{
 					test: /\.scss$/,
@@ -70,7 +70,7 @@ module.exports = buildConfig => {
 					test: /\.ts(x|)$/,
 					loader: 'ts-loader',
 					options: {
-						configFile: path.join(INIT_CWD, 'tsconfig.json')
+						configFile: path.join(cwd, 'tsconfig.json')
 					}
 				}
 			]

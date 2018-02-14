@@ -1,37 +1,47 @@
 const path = require('path')
 const fs = require('fs')
-const CWD = process.env.INIT_CWD
+const {
+	packageJson,
+	pbivizJson,
+	capabilitiesJson,
+	packageJsonPath,
+	pbivizJsonPath,
+	capabilitiesJsonPath
+} = require('@essex/visual-config')
 
-const pbivizJson = require(path.join(CWD, 'pbiviz.json'))
-const packageJson = require(path.join(CWD, 'package.json'))
+const CWD = process.cwd()
+
 const webpackExtend = fs.existsSync(path.join(CWD, 'webpack.extend.js'))
 	? require(path.join(CWD, 'webpack.extend.js'))
 	: t => t
 const outputFile = path.join(CWD, pbivizJson.output || 'dist/Visual.pbiviz')
 const outputDir = path.parse(outputFile).dir
 const dropFolder = path.join(CWD, '.tmp/drop')
+const precompileFolder = path.join(CWD, '.tmp/precompile')
 const webpackBase = require('./webpack.config')
-const capabilitiesPath = path.join(CWD, pbivizJson.capabilities)
+const sassEntry = path.join(CWD, pbivizJson.style)
+const scriptEntry = path.join(CWD, pbivizJson.visual.entry || 'src/Visual.ts')
 
 const buildConfig = {
 	entry: {
-		sass: path.join(CWD, pbivizJson.style),
-		js: path.join(CWD, pbivizJson.visual.entry || 'src/Visual.ts'),
-		capabilities: capabilitiesPath
+		sass: sassEntry,
+		js: scriptEntry,
+		capabilities: capabilitiesJsonPath
 	},
-	precompileFolder: path.join(CWD, '.tmp/precompile'),
+	precompileFolder,
 	dropFolder,
 	js: path.join(dropFolder, 'visual.js'),
 	css: path.join(dropFolder, 'visual.css'),
 	output: {
 		dir: outputDir,
 		file: outputFile
-	}
-}
-
-// Wire in the version from package.json
-if (!pbivizJson.visual.version) {
-	pbivizJson.visual.version = packageJson.version
+	},
+	packageJson,
+	pbivizJson,
+	capabilitiesJson,
+	packageJsonPath,
+	pbivizJsonPath,
+	capabilitiesJsonPath
 }
 
 module.exports = {
@@ -58,12 +68,10 @@ module.exports = {
 		name: pbivizJson.visual.name
 	},
 	assets: pbivizJson.assets,
-	capabilities: require(capabilitiesPath),
 	build: buildConfig,
 	dist: {
 		outputDir,
 		outputFile
 	},
-	pbivizJson,
 	webpackConfig: webpackExtend(webpackBase(buildConfig))
 }
