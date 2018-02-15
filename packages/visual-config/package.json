@@ -1,8 +1,7 @@
 {
 	"name": "@essex/visual-config",
-	"version": "2.0.3",
-	"description":
-		"Configuration utilities for the Essex PowerBI visual build system",
+	"version": "2.0.4",
+	"description": "Configuration utilities for the Essex PowerBI visual build system",
 	"main": "index.js",
 	"license": "MIT",
 	"publishConfig": {

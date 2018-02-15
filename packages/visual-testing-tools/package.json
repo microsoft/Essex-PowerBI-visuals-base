@@ -1,6 +1,6 @@
 {
 	"name": "@essex/visual-testing-tools",
-	"version": "2.0.1",
+	"version": "2.0.4",
 	"description": "A set of testing tools for ease of testing within PowerBI",
 	"scripts": {
 		"clean": "node ../../run del lib",
