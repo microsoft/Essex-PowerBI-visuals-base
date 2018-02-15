@@ -1,6 +1,6 @@
 {
 	"name": "@essex/powerbi-visual-scripts",
-	"version": "2.0.5",
+	"version": "2.0.6",
 	"publishConfig": {
 		"access": "public"
 	},
@@ -11,8 +11,8 @@
 	"author": "Microsoft",
 	"dependencies": {
 		"@essex/oss-report-builder": "^2.0.4",
-		"@essex/visual-config": "^2.0.4",
-		"@essex/visual-entry-loader": "^2.0.4",
+		"@essex/visual-config": "^2.0.6",
+		"@essex/visual-entry-loader": "^2.0.6",
 		"@types/chai": "^4.0.4",
 		"@types/d3": "^4.10.0",
 		"@types/mocha": "^2.2.42",
