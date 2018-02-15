@@ -20,7 +20,7 @@ const dropFolder = path.join(CWD, '.tmp/drop')
 const precompileFolder = path.join(CWD, '.tmp/precompile')
 const webpackBase = require('./webpack.config')
 const sassEntry = path.join(CWD, pbivizJson.style)
-const scriptEntry = path.join(CWD, pbivizJson.visual.entry || 'src/Visual.ts')
+const scriptEntry = path.join(CWD, pbivizJson.entry || 'src/Visual.ts')
 
 const buildConfig = {
 	entry: {

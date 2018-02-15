@@ -22,43 +22,13 @@
  */
 const fs = require('fs')
 const path = require('path')
-const https = require('https')
-const sass = require('node-sass')
-const mkdirp = require('mkdirp')
-const connect = require('connect')
 const webpack = require('webpack')
 const chokidar = require('chokidar')
-const serveStatic = require('serve-static')
-const conf = require('../config')
-
-const pbiResource = {
-	jsFile: `${conf.build.dropFolder}/visual.js`,
-	cssFile: `${conf.build.dropFolder}/visual.css`,
-	pbivizJsonFile: `${conf.build.dropFolder}/pbiviz.json`,
-	statusFile: `${conf.build.dropFolder}/status`
-}
-
-const compileSass = () => {
-	console.info('Building Sass...')
-	const cssContent = sass.renderSync({ file: conf.build.entry.sass }).css
-	fs.writeFileSync(pbiResource.cssFile, cssContent)
-}
-
-const emitPbivizJson = () => {
-	console.info('Composing pbiviz.json...')
-	const pbiviz = conf.build.pbivizJson
-	const capabilities = conf.build.capabilitiesJson
-	pbiviz.capabilities = capabilities
-	fs.writeFileSync(
-		pbiResource.pbivizJsonFile,
-		JSON.stringify(pbiviz, null, 2)
-	)
-}
-
-const updateStatus = () => {
-	fs.writeFileSync(pbiResource.statusFile, Date.now().toString())
-	console.info('Visual updated')
-}
+const conf = require('../../config')
+const updateStatus = require('./updateStatus')
+const pbiResource = require('./pbiResource')
+const compileSass = require('./compileSass')
+const emitPbivizJson = require('./emitPbivizJson')
 
 const runWatchTask = (task, isSass) => {
 	try {
@@ -74,7 +44,10 @@ const runWatchTask = (task, isSass) => {
 	}
 }
 
-const startWatchers = () => {
+//
+// Watch the Webpack BUndle
+//
+const watchWebpackBundle = () => {
 	// watch script change and re-compile
 	const compiler = webpack(
 		Object.assign(conf.webpackConfig, {
@@ -92,8 +65,12 @@ const startWatchers = () => {
 		// log = log.split('\n\n').filter(msg => msg.indexOf('node_module') === -1 ).join('\n\n');
 		console.info(log)
 	})
+}
 
-	// watch for pbiviz.json or capabilities.json change
+//
+// watch for pbiviz.json or capabilities.json change
+//
+const watchJson = () => {
 	const watchFiles = []
 	if (conf.build.pbivizJsonPath) {
 		watchFiles.push(conf.build.pbivizJsonPath)
@@ -104,13 +81,21 @@ const startWatchers = () => {
 	chokidar
 		.watch(watchFiles)
 		.on('change', path => runWatchTask(emitPbivizJson))
+}
 
-	// watch for sass file changes
+//
+// Watch Sass Files
+//
+const watchSass = () => {
 	chokidar
 		.watch(['**/*.scss', '**/*.sass'])
 		.on('change', path => runWatchTask(compileSass, true))
+}
 
-	// watch pbi resource change and update status to trigger debug visual update
+//
+// watch pbi resource change and update status to trigger debug visual update
+//
+const watchResources = () => {
 	chokidar
 		.watch([
 			pbiResource.jsFile,
@@ -120,35 +105,9 @@ const startWatchers = () => {
 		.on('change', path => runWatchTask(updateStatus))
 }
 
-const startServer = () => {
-	const options = {
-		key: fs.readFileSync(conf.server.privateKey),
-		cert: fs.readFileSync(conf.server.certificate)
-	}
-
-	const app = connect()
-	app.use((req, res, next) => {
-		res.setHeader('Access-Control-Allow-Origin', '*')
-		next()
-	})
-	app.use('/assets', serveStatic(conf.build.dropFolder))
-
-	https.createServer(options, app).listen(conf.server.port, err => {
-		if (err) {
-			console.error('Error starting server', err)
-			process.exit(1)
-		}
-		console.info('Server listening on port ', conf.server.port + '.')
-	})
+module.exports = () => {
+	watchWebpackBundle()
+	watchJson()
+	watchSass()
+	watchResources()
 }
-
-const start = () => {
-	mkdirp.sync(conf.build.dropFolder)
-	compileSass()
-	emitPbivizJson()
-	updateStatus()
-	startWatchers()
-	startServer()
-}
-
-module.exports = start
