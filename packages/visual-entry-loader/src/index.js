@@ -24,21 +24,13 @@
 'use strict'
 const path = require('path')
 const pbivizPluginTemplate = require('./pbivizPluginTemplate')
-const {
-	packageJson,
-	pbivizJson,
-	capabilitiesJson
-} = require('@essex/visual-config')
+const { packageJson, pbivizJson } = require('@essex/visual-config')
 
 /**
  * Webpack loader function that appends pbiviz plugin code at the end of the provided source
  */
 module.exports = function pluginLoader(source, map) {
 	this.cacheable()
-	const injection = pbivizPluginTemplate(
-		pbivizJson,
-		packageJson,
-		capabilitiesJson
-	)
+	const injection = pbivizPluginTemplate(pbivizJson, packageJson)
 	this.callback(null, `${source}\n${injection}`, map)
 }

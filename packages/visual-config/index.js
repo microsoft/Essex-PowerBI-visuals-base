@@ -20,6 +20,12 @@ const capabilitiesJsonPath = path.join(
 )
 const capabilitiesJson = require(capabilitiesJsonPath)
 
+if (!packageJson.main) {
+	throw new Error(
+		'packageJson.main should be defined as the visual entry point'
+	)
+}
+
 module.exports = {
 	packageJsonPath,
 	pbivizJsonPath,
