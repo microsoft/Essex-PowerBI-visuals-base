@@ -27,27 +27,28 @@ const sass = require('node-sass')
 const CleanCSS = require('clean-css')
 
 module.exports = config => {
-	const {
-		build: { entry: { sass: sassEntry }, pbivizJson, capabilitiesJson }
-	} = config
+	const { build: { entry: { sass: sassEntry }, pbivizJson } } = config
 	if (pbivizJson.style) {
-		return new Promise((resolve, reject) => {
-			sass.render(
-				{ file: sassEntry },
-				(err, res) => (err ? reject(err) : resolve(res))
-			)
-		}).then(renderOutput => {
-			const sassOutput = renderOutput.css.toString()
-			const options = {
-				level: {
-					2: {
-						all: true,
-						mergeNonAdjacentRules: false
-					}
-				}
-			}
-			return new CleanCSS(options).minify(sassOutput).styles
-		})
+		return render(sassEntry).then(renderOutput =>
+			cleanup(renderOutput.css.toString())
+		)
 	}
 	return Promise.resolve('')
+}
+
+const render = file =>
+	new Promise((resolve, reject) =>
+		sass.render({ file }, (err, res) => (err ? reject(err) : resolve(res)))
+	)
+
+const cleanup = output => {
+	const options = {
+		level: {
+			2: {
+				all: true,
+				mergeNonAdjacentRules: false
+			}
+		}
+	}
+	return new CleanCSS(options).minify(output).styles
 }

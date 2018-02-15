@@ -22,37 +22,52 @@
  */
 
 'use strict'
-
 const webpack = require('webpack')
 const MemoryFS = require('memory-fs')
 
 module.exports = config => {
-	return new Promise((resolve, reject) => {
-		const fs = new MemoryFS()
+	const fs = new MemoryFS()
+	const readFile = file =>
+		new Promise((resolve, reject) =>
+			fs.readFile(file, (err, res) => (err ? reject(err) : resolve(res)))
+		)
+	let stats
+	return executeWebpack(fs, config)
+		.then(s => (stats = s))
+		.then(() => readFile(config.build.js))
+		.then(fileContent => ({
+			stats,
+			result: fileContent.toString()
+		}))
+}
+
+const executeWebpack = (fs, config) =>
+	new Promise((resolve, reject) => {
 		const compiler = webpack(config.webpackConfig)
 		compiler.outputFileSystem = fs
-		compiler.run((err, stats) => {
+		compiler.run((err, s) => {
 			if (err) throw err
-			const jsonStats = stats.toJson(true)
-			console.info('Time:', jsonStats.time)
-			console.info('Hash:', jsonStats.hash)
-			console.info(
-				'%s Warnings, %s Errors',
-				jsonStats.warnings.length,
-				jsonStats.errors.length
-			)
-			jsonStats.warnings.forEach(warning =>
-				console.warn('WARNING:', warning)
-			)
-			jsonStats.errors.forEach(error => console.error('ERROR:', error))
-			const hasRealErrors = jsonStats.errors.some(
-				e => e.indexOf('node_modules') === -1
-			)
-			if (hasRealErrors) {
-				return reject(jsonStats.errors)
+			const stats = s.toJson(true)
+			printInfo(stats)
+			if (hasRealErrors(stats)) {
+				reject(stats.errors)
 			} else {
-				return resolve(jsonStats)
+				resolve(stats)
 			}
 		})
 	})
+
+const hasRealErrors = stats =>
+	stats.errors.some(e => e.indexOf('node_modules') === -1)
+
+const printInfo = stats => {
+	console.info('Time:', stats.time)
+	console.info('Hash:', stats.hash)
+	console.info(
+		'%s Warnings, %s Errors',
+		stats.warnings.length,
+		stats.errors.length
+	)
+	stats.warnings.forEach(warning => console.warn('WARNING:', warning))
+	stats.errors.forEach(error => console.error('ERROR:', error))
 }

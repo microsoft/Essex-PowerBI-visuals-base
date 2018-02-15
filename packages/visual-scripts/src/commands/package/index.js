@@ -31,8 +31,8 @@ const bundle = require('./bundle')
 module.exports = () => {
 	mkdirp.sync(config.build.output.dir)
 	return compileScripts(config)
-		.then(stats => Promise.all([writeOSSReport(stats), bundle(config)]))
-		.catch(err => {
-			console.log('ERR', err)
-		})
+		.then(({ stats, result }) =>
+			Promise.all([writeOSSReport(stats), bundle(result, config)])
+		)
+		.catch(err => console.log('ERR', err))
 }
