@@ -58,18 +58,19 @@ function decompressImage() {
 function renderTemplates() {
 	const renderTemplate = file => {
 		const templatePath = path.join(visualPath, file)
-		const templateContent = fs.readFileSync(templatePath, {
-			encoding: 'utf-8'
-		})
-		const rendered = _.template(templateContent)({
-			name: visualName,
-			guid: visualGuid
-		})
-		fs.writeFileSync(templatePath, rendered, { encoding: 'utf-8' })
+		if (fs.existsSync(templatePath)) {
+			const templateContent = fs.readFileSync(templatePath, {
+				encoding: 'utf-8'
+			})
+			const rendered = _.template(templateContent)({
+				name: visualName,
+				guid: visualGuid
+			})
+			fs.writeFileSync(templatePath, rendered, { encoding: 'utf-8' })
+		}
 	}
 
 	renderTemplate('package.json')
-	renderTemplate('pbiviz.json')
 }
 
 downloadNewVisualImage()
