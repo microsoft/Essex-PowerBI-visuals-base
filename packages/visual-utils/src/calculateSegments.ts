@@ -23,7 +23,6 @@
  */
 
 import * as d3 from 'd3'
-import * as _ from 'lodash'
 import { fullColors } from '@essex/visual-styling'
 import { IGradient } from './interfaces'
 
@@ -77,20 +76,30 @@ export default function calculateSegments(
 			.range([startColor as any, endColor as any])
 	}
 
-	return _.sortBy(segmentInfo, ['name']).map((v, i) => {
-		let color = fullColors[i]
-		if (segmentColors && segmentColors[i]) {
-			color = segmentColors[i].color
-		} else if (gradientScale) {
-			color = gradientScale(isNaN(v.name) ? i : v.name) as any
-		} else {
-			color = defaultColor || fullColors[i]
-		}
-		color = color || '#ccc'
-		return {
-			name: v.name,
-			identity: v.identity,
-			color
-		}
-	})
+	return segmentInfo
+		.sort((a, b) => {
+			if ((!a && b) || a.name < b.name) {
+				return -1
+			} else if ((a && !b) || a.name > b.name) {
+				return 1
+			}
+			return 0
+		})
+		.map((si, i) => {
+			const { name, identity } = si
+			let color = fullColors[i]
+			if (segmentColors && segmentColors[i]) {
+				color = segmentColors[i].color
+			} else if (gradientScale) {
+				color = gradientScale(isNaN(name) ? i : name) as any
+			} else {
+				color = defaultColor || fullColors[i]
+			}
+			color = color || '#ccc'
+			return {
+				name,
+				identity,
+				color
+			}
+		})
 }
