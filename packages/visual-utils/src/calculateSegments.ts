@@ -85,19 +85,20 @@ export default function calculateSegments(
 			}
 			return 0
 		})
-		.map((v, i) => {
+		.map((si, i) => {
+			const { name, identity } = si
 			let color = fullColors[i]
 			if (segmentColors && segmentColors[i]) {
 				color = segmentColors[i].color
 			} else if (gradientScale) {
-				color = gradientScale(isNaN(v.name) ? i : v.name) as any
+				color = gradientScale(isNaN(name) ? i : name) as any
 			} else {
 				color = defaultColor || fullColors[i]
 			}
 			color = color || '#ccc'
 			return {
-				name: v.name,
-				identity: v.identity,
+				name,
+				identity,
 				color
 			}
 		})
