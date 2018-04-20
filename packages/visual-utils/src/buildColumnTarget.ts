@@ -34,23 +34,50 @@ export default function buildColumnTarget(
 	if (source) {
 		const categoryExpr: any =
 			source && source.expr ? (source.expr as any) : null
-		const filteringColumn: string =
-			categoryExpr &&
-			categoryExpr.arg &&
-			categoryExpr.arg.arg &&
-			categoryExpr.arg.arg.property
-				? categoryExpr.arg.arg.property
-				: source.displayName
+
+		// A lot of this code is based on timeline: https://github.com/Microsoft/powerbi-visuals-timeline/blob/master/src/visual.ts#L950-L958
+		// but some extra checks have been added to catch edge cases.
+
+		// I'm not sure when this case happens, but I believe it is an heirarchy, but I took this from PowerBI-visuals-timeline
+		const argArg = categoryExpr && categoryExpr.arg && categoryExpr.arg.arg
+
+		// This gets the column name from the heirarchy
+		const argEntity = argArg && argArg.entity
+
+		// This gets the column off of the heirarchy
+		const argProp = argArg && argArg.property
+
+		const {
+			// This one will differ from source.displayName when the user creates a "heirarchy"
+			// and then drags one of the columns to the visual, but sometimes the arg from above is there too
+			// who knows
+			level,
+
+			// This one will differ from source.displayName when the user renames the
+			// column explicitly bound to a specific visual...NOT at the global level
+			// just for each visual on their fields pane, they can rename the field there.
+			ref
+		} =
+			categoryExpr || ({} as any)
+
+		// The table off of the expression that represents the field
+		const exprSourceEntity =
+			categoryExpr && categoryExpr.source && categoryExpr.source.entity
+
+		// ?
+		const queryName = source.queryName.substring(
+			0,
+			source.queryName.indexOf('.')
+		)
+
+		const table = argEntity || exprSourceEntity || queryName
+		const column = argProp || ref || level || source.displayName
+
 		// source.queryName contains wrong table name in case when table was renamed! source.expr.source.entity contains correct table name.
 		// source.displayName contains wrong column name in case when Hierarchy mode of showing date was chosen
 		return {
-			table:
-				categoryExpr &&
-				categoryExpr.source &&
-				categoryExpr.source.entity
-					? categoryExpr.source.entity
-					: source.queryName.substr(0, source.queryName.indexOf('.')),
-			column: filteringColumn
+			table,
+			column
 		}
 	}
 }
