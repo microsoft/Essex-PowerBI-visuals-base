@@ -41,7 +41,7 @@ export default function buildColumnTarget(
 		// I'm not sure when this case happens, but I believe it is an heirarchy, but I took this from PowerBI-visuals-timeline
 		const argArg = categoryExpr && categoryExpr.arg && categoryExpr.arg.arg
 
-		// This gets the column name from the heirarchy
+		// This gets the table name from the heirarchy
 		const argEntity = argArg && argArg.entity
 
 		// This gets the column off of the heirarchy
