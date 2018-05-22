@@ -9,7 +9,7 @@ const packageJson = require(packageJsonPath)
 const isPbivizJsonInline = !!packageJson.pbiviz
 const pbivizJsonPath = isPbivizJsonInline
 	? undefined
-	: path.join(CWD, 'pbiviz.json')
+	: path.join(cwd, 'pbiviz.json')
 const pbivizJson = isPbivizJsonInline
 	? packageJson.pbiviz
 	: require(pbivizJsonPath)
