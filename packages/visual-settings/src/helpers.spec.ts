@@ -25,7 +25,7 @@
 import * as helpers from './helpers'
 import { ISetting } from './interfaces'
 import { expect } from 'chai'
-import * as _ from 'lodash'
+const merge = require('lodash.merge') // tslint:disable-line
 
 describe('Helpers', () => {
 	describe('buildPersistObjects', () => {
@@ -670,7 +670,7 @@ function defineFakeSettingValueOnDataView(
 	dataView: any
 ) {
 	'use strict'
-	_.merge(dataView || {}, {
+	merge(dataView || {}, {
 		metadata: <any>{
 			objects: <any>{
 				[setting.descriptor.category]: {
