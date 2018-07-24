@@ -27,7 +27,6 @@
     "@essex/visual-utils": "^2.0.4",
     "font-awesome": "^4.6.1",
     "json-stringify-safe": "^5.0.1",
-    "lodash": "3.6.0",
     "lodash.assignin": "^4.2.0",
     "lodash.get": "^4.4.2",
     "lodash.merge": "^4.6.0",

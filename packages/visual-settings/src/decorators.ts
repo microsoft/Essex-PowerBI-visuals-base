@@ -30,7 +30,7 @@ import {
 } from './interfaces'
 import { colorParser, colorCategoricalInstanceObjectParser } from './parsers'
 import { coloredObjectInstanceComposer, colorComposer } from './composers'
-import * as _ from 'lodash'
+const merge = require('lodash.merge') // tslint:disable-line
 
 /**
  * Defines the type for a color in powerbi
@@ -76,7 +76,7 @@ export function numberSetting<T>(config?: ISettingDescriptor<T>) {
  */
 export function jsonSetting<J, T>(config?: ISettingDescriptor<T>) {
 	'use strict'
-	config = _.merge(
+	config = merge(
 		{},
 		{
 			config: {
@@ -129,7 +129,7 @@ export function instanceColorSetting<T>(
 	config?: IColorInstanceSettingDescriptor<T>
 ) {
 	'use strict'
-	config = _.merge(
+	config = merge(
 		{},
 		{
 			config: {
@@ -184,7 +184,7 @@ export function enumSetting<T>(enumType: any, config?: ISettingDescriptor<T>) {
  */
 function typedSetting<T>(type: any, config?: ISettingDescriptor<T>) {
 	'use strict'
-	config = _.merge(
+	config = merge(
 		{},
 		{
 			config: {
