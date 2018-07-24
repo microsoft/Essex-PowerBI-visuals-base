@@ -24,7 +24,9 @@
 import VisualUpdateOptions = powerbi.extensibility.visual.VisualUpdateOptions
 import UpdateType from './UpdateType'
 const assignIn = require('lodash.assignin') // tslint:disable-line
-import * as _ from 'lodash'
+const ldIsEqual = require('lodash.isequal') // tslint:disable-line
+const pick = require('lodash.pick') // tslint:disable-line
+const some = require('lodash.some') // tslint:disable-line
 
 export const DEFAULT_CALCULATE_SETTINGS: ICalcUpdateTypeOptions = {
 	checkHighlights: false,
@@ -118,7 +120,7 @@ function hasSettingsChanged(
 	for (let i = 0; i < oldDvs.length; i++) {
 		const oM: any = oldDvs[i].metadata || {}
 		const nM: any = dvs[i].metadata || {}
-		if (!_.isEqual(oM.objects, nM.objects)) {
+		if (!ldIsEqual(oM.objects, nM.objects)) {
 			return true
 		}
 	}
@@ -179,7 +181,7 @@ function hasArrayChanged<T>(
 			!isEqual(a1[0], a2[0]) ||
 			!isEqual(a1[last], a2[last]) ||
 			// Check everything
-			_.some(a1, (n: any, i: number) => !isEqual(n, a2[i]))
+			some(a1, (n: any, i: number) => !isEqual(n, a2[i]))
 		)
 	}
 	return false
@@ -237,9 +239,7 @@ function hasDataViewChanged(
 
 	for (let i = 0; i < cols1.length; i++) {
 		// The underlying column has changed, or if the roles have changed
-		if (
-			!_.isEqual(_.pick(cols1[i], colProps), _.pick(cols2[i], colProps))
-		) {
+		if (!ldIsEqual(pick(cols1[i], colProps), pick(cols2[i], colProps))) {
 			return true
 		}
 	}
