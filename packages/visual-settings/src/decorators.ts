@@ -107,7 +107,7 @@ export function selectionSetting<J, T>(config?: ISettingDescriptor<T>) {
  */
 export function colorSetting<T>(config?: IColorSettingDescriptor<T>) {
 	'use strict'
-	config = _.merge(
+	config = merge(
 		{},
 		{
 			config: {

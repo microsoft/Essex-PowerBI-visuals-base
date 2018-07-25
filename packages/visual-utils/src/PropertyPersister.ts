@@ -22,7 +22,7 @@
  * SOFTWARE.
  */
 
-declare var _: any
+const debounce = require('lodash.debounce') // tslint:disable-line
 
 /**
  * A class that provides a way to easily persist multiple objects at the same time without multiple calls to host.persistProperties
@@ -36,7 +36,7 @@ export default class PropertyPersister {
 		selection: boolean
 	}[] = [] // tslint:disable-line
 
-	private propUpdater = _.debounce(() => {
+	private propUpdater = debounce(() => {
 		if (this.propsToUpdate && this.propsToUpdate.length) {
 			const toUpdate = this.propsToUpdate.slice(0)
 			this.propsToUpdate.length = 0
