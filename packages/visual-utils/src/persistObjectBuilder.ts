@@ -23,7 +23,7 @@
  */
 
 import { IPersistObjectBuilder } from './interfaces'
-const assignIn = require('lodash.assignIn') // tslint:disable-line
+const assignIn = require('lodash.assignin') // tslint:disable-line
 
 /**
  * Creates a builder that will build a set of VisualObjectInstancesToPersist using a fluent style syntax
