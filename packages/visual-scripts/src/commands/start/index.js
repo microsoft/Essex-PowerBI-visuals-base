@@ -21,6 +21,7 @@
  * SOFTWARE.
  */
 const mkdirp = require('mkdirp')
+const chalk = require('chalk')
 const conf = require('../../config')
 const compileSass = require('./compileSass')
 const emitPbivizJson = require('./emitPbivizJson')
@@ -29,11 +30,17 @@ const startServer = require('./startServer')
 const startWatchers = require('./startWatchers')
 
 const start = () => {
+	console.log(chalk.green('creating drop folder'))
 	mkdirp.sync(conf.build.dropFolder)
+	console.log(chalk.green('compilings sass'))
 	compileSass()
+	console.log(chalk.green('constructing pbiviz.json'))
 	emitPbivizJson()
+	console.log(chalk.green('update statusfile'))
 	updateStatus()
+	console.log(chalk.green('beginning watchers'))
 	startWatchers()
+	console.log(chalk.green('starting server'))
 	startServer()
 }
 

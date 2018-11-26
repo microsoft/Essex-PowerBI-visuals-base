@@ -24,7 +24,6 @@
 const path = require('path')
 const webpack = require('webpack')
 const fs = require('fs')
-const powerbiEntryLoader = require('@essex/visual-entry-loader')
 const cwd = process.cwd()
 
 const modulesPaths = [
@@ -33,80 +32,52 @@ const modulesPaths = [
 	path.join(__dirname, '../node_modules')
 ]
 
-module.exports = buildConfig => {
-	const webpackConf = {
-		entry: buildConfig.entry.js,
-		resolve: {
-			extensions: ['.js', '.jsx', '.json', '.ts', '.tsx'],
-			modules: modulesPaths
-		},
-		output: {
-			filename: 'visual.js',
-			path: buildConfig.dropFolder
-		},
-		resolveLoader: {
-			modules: modulesPaths
-		},
-		module: {
-			loaders: [
-				{
-					test: new RegExp(
-						path
-							.normalize(buildConfig.entry.js)
-							.replace(/\\/g, '\\\\')
-							.replace(/\./g, '\\.')
-					),
-					loader: '@essex/visual-entry-loader'
-				},
-				{
-					test: /\.scss$/,
-					loaders: ['style-loader', 'css-loader', 'sass-loader']
-				},
-				{
-					test: /\.json$/,
-					loader: 'json-loader'
-				},
-				{
-					test: /\.ts(x|)$/,
-					loader: 'ts-loader',
-					options: {
-						configFile: path.join(cwd, 'tsconfig.json')
+const mode =
+	process.env.NODE_ENV === 'production' ? 'production' : 'development'
+const licenseText = fs.readFileSync(path.join(cwd, 'LICENSE')).toString()
+const tsConfigFilePath = path.join(cwd, 'tsconfig.json')
+
+module.exports = buildConfig => ({
+	entry: buildConfig.entry.js,
+	mode,
+	resolve: {
+		extensions: ['.js', '.jsx', '.json', '.ts', '.tsx'],
+		modules: modulesPaths
+	},
+	output: {
+		filename: 'visual.js',
+		path: buildConfig.dropFolder
+	},
+	resolveLoader: {
+		modules: modulesPaths
+	},
+	module: {
+		rules: [
+			{
+				test: new RegExp(
+					path
+						.normalize(buildConfig.entry.js)
+						.replace(/\\/g, '\\\\')
+						.replace(/\./g, '\\.')
+				),
+				use: '@essex/visual-entry-loader'
+			},
+			{
+				test: /\.scss$/,
+				use: ['style-loader', 'css-loader', 'sass-loader']
+			},
+			{
+				test: /\.tsx?$/,
+				use: [
+					{
+						loader: 'ts-loader',
+						options: {
+							configFile: tsConfigFilePath
+						}
 					}
-				}
-			]
-		},
-		plugins: [
-			new webpack.optimize.OccurrenceOrderPlugin(),
-			new webpack.DefinePlugin({
-				'process.env': {
-					DEBUG: '"' + (process.env.DEBUG || '') + '"',
-					NODE_ENV: JSON.stringify(
-						process.env.NODE_ENV || 'development'
-					)
-				}
-			})
-		]
-	}
-
-	if (process.env.NODE_ENV !== 'production') {
-		webpackConf.devtool = 'eval'
-	} else {
-		var banner = new webpack.BannerPlugin(
-			fs.readFileSync('LICENSE').toString()
-		)
-		var uglify = new webpack.optimize.UglifyJsPlugin({
-			mangle: true,
-			minimize: true,
-			compress: false,
-			beautify: false,
-			output: {
-				ascii_only: true, // Necessary, otherwise it messes up the unicode characters that lineup is using for font-awesome
-				comments: false
+				]
 			}
-		})
-		webpackConf.plugins.push(uglify)
-		webpackConf.plugins.push(banner)
-	}
-
-	return webpackConf
-}
+		]
+	},
+	plugins: [new webpack.BannerPlugin(licenseText)]
+})

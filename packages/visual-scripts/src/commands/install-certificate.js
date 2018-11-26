@@ -22,6 +22,7 @@
  */
 const os = require('os')
 const path = require('path')
+const chalk = require('chalk')
 const exec = require('child_process').execSync
 
 const OPEN_COMMANDS = {
@@ -40,11 +41,13 @@ module.exports = function openCertFile() {
 	const startCmd = getOpenCommand()
 	if (startCmd) {
 		try {
-			exec(`${startCmd} "${certPath}"`)
+			const command = `${startCmd} "${certPath}"`
+			console.log(chalk.blue(`...executing [${command}]`))
+			exec(command)
 		} catch (e) {
-			console.error('Error installing certificate:', e)
+			console.log(chalk.red('Error installing certificate:', e))
 		}
 	} else {
-		console.error('Unable to install certificate at ', certPath)
+		console.log(chalk.red('Unable to install certificate at ', certPath))
 	}
 }

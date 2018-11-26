@@ -23,16 +23,24 @@
 
 'use strict'
 const mkdirp = require('mkdirp')
+const chalk = require('chalk')
 const config = require('../../config')
 const writeOSSReport = require('./writeOSSReport')
 const compileScripts = require('./compileScripts')
 const bundle = require('./bundle')
+const outputFolder = config.build.output.dir
 
-module.exports = () => {
-	mkdirp.sync(config.build.output.dir)
-	return compileScripts(config)
-		.then(({ stats, result }) =>
-			Promise.all([writeOSSReport(stats), bundle(result, config)])
-		)
-		.catch(err => console.log('ERR', err))
+module.exports = async () => {
+	console.log(chalk.green('creating output folder %s', outputFolder))
+	mkdirp.sync(outputFolder)
+	console.log(chalk.green('webpacking scripts'))
+	try {
+		const { stats, result } = await compileScripts(config)
+		console.log(chalk.green('writing OSS report'))
+		await writeOSSReport(stats)
+		console.log(chalk.green('zipping bundle'))
+		await bundle(result, config)
+	} catch (err) {
+		console.log(chalk.red('build caught error', err))
+	}
 }

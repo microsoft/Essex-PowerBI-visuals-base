@@ -23,6 +23,7 @@
 const fs = require('fs')
 const https = require('https')
 const connect = require('connect')
+const chalk = require('chalk')
 const serveStatic = require('serve-static')
 const conf = require('../../config')
 
@@ -41,9 +42,13 @@ module.exports = () => {
 
 	https.createServer(options, app).listen(conf.server.port, err => {
 		if (err) {
-			console.error('Error starting server', err)
+			console.error(chalk.red('Error starting server', err))
 			process.exit(1)
 		}
-		console.info('Server listening on port ', conf.server.port + '.')
+		console.info(
+			chalk.green('server listening on port ') +
+				chalk.blue.bold(conf.server.port) +
+				chalk.blue('.')
+		)
 	})
 }

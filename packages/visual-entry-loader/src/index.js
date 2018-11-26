@@ -22,7 +22,6 @@
  */
 
 'use strict'
-const path = require('path')
 const pbivizPluginTemplate = require('./pbivizPluginTemplate')
 const { packageJson, pbivizJson } = require('@essex/visual-config')
 
