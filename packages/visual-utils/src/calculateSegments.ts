@@ -52,10 +52,10 @@ export default function calculateSegments(
 			: columns.map((n, i) => ({
 					name: i + 1 + '',
 					identity: n.identity
-				}))
+			  }))
 	}
 
-	let gradientScale: d3.scale.Linear<string, number>
+	let gradientScale: d3.ScaleLinear<any, any>
 	if (gradient) {
 		const { startValue, endValue, startColor, endColor } = gradient
 		const minValue =
@@ -66,8 +66,8 @@ export default function calculateSegments(
 			typeof endValue !== 'undefined'
 				? endValue
 				: d3.max(segmentInfo.map(n => n.name))
-		gradientScale = d3.scale
-			.linear<string, number>()
+		gradientScale = d3
+			.scaleLinear()
 			.domain([
 				isNaN(minValue) ? 0 : minValue,
 				isNaN(maxValue) ? segmentInfo.length - 1 : maxValue

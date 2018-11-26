@@ -1,4 +1,4 @@
-import * as d3 from 'd3'
+import { scaleOrdinal, scaleSequential } from 'd3'
 import * as scaleChromatic from 'd3-scale-chromatic'
 import { Scaler } from './scalers/Scaler'
 
@@ -22,10 +22,10 @@ export default class Colorizer {
 		// Set up the color scale
 		if (CATEGORICAL[colorScheme]) {
 			const interpolator = `scheme${colorScheme}`
-			this.colorScale = d3.scaleOrdinal(scaleChromatic[interpolator])
+			this.colorScale = scaleOrdinal(scaleChromatic[interpolator])
 		} else {
 			const interpolator = `interpolate${colorScheme}`
-			this.colorScale = d3.scaleSequential(scaleChromatic[interpolator])
+			this.colorScale = scaleSequential(scaleChromatic[interpolator])
 		}
 	}
 

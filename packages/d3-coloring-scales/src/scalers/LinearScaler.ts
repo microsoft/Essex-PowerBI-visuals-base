@@ -1,4 +1,4 @@
-import * as d3 from 'd3-scale'
+import { ScaleLinear, ScaleLogarithmic, scaleLinear, scaleLog } from 'd3-scale'
 import { Scaler } from './Scaler'
 
 /**
@@ -8,21 +8,19 @@ const MIN = 0.000001
 const MAX = 1
 
 export default class LinearScaler implements Scaler {
-	private valueSanitizer: d3.ScaleLinear<number, number>
-	private logScaler: d3.ScaleLogarithmic<number, number>
+	private valueSanitizer: ScaleLinear<number, number>
+	private logScaler: ScaleLogarithmic<number, number>
 
 	constructor(
 		valueMin: number,
 		valueMax: number,
 		private isLogScaled: boolean = false
 	) {
-		this.valueSanitizer = d3
-			.scaleLinear()
+		this.valueSanitizer = scaleLinear()
 			.domain([valueMin, valueMax])
 			.range([MIN, MAX])
 			.clamp(true)
-		this.logScaler = d3
-			.scaleLog()
+		this.logScaler = scaleLog()
 			.domain([MIN, MAX])
 			.range([MIN, MAX])
 	}

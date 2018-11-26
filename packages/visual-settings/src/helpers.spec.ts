@@ -1,3 +1,4 @@
+/// <reference path="../../../powerbi.d.ts" />
 /*
  * MIT License
  *

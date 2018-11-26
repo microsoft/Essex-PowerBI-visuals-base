@@ -77,6 +77,7 @@ logger.addWriter = (writer: LogWriter) => {
 export function consoleLogWriter() {
 	'use strict'
 	return (...toLog: any[]) => {
+		// tslint:disable-next-line no-console
 		console.log.apply(console, toLog)
 	}
 }
