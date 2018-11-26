@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 
 'use strict'
-
+const chalk = require('chalk')
 process.title = 'essex-pbi-scripts'
 const metadata = require('../package.json')
 const program = require('commander')
@@ -10,7 +10,7 @@ const commands = require('./commands')
 
 program
 	.version(metadata.version)
-	.on('--version', () => console.log(metadata.version))
+	.on('--version', () => chalk.green(metadata.version))
 
 program
 	.command('install-certificate')

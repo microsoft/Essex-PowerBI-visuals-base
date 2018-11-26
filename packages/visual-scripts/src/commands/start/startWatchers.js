@@ -20,8 +20,6 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-const fs = require('fs')
-const path = require('path')
 const webpack = require('webpack')
 const chokidar = require('chokidar')
 const conf = require('../../config')
@@ -39,7 +37,7 @@ const runWatchTask = (task, isSass) => {
 					`ERROR: ${e.message}\n    at ${e.file}:${e.line}:${
 						e.column
 					}`
-				)
+			  )
 			: console.info(`ERROR: ${e.message}`)
 	}
 }

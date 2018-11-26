@@ -1,3 +1,4 @@
+/// <reference path="../../../powerbi.d.ts" />
 /*
  * MIT License
  *
@@ -22,7 +23,9 @@
  * SOFTWARE.
  */
 
-import * as d3 from 'd3'
+import { ScaleLinear, scaleLinear } from 'd3-scale'
+import { min, max } from 'd3-array'
+import { interpolateRgb } from 'd3-interpolate'
 import { fullColors } from '@essex/visual-styling'
 import { IGradient } from './interfaces'
 
@@ -52,27 +55,26 @@ export default function calculateSegments(
 			: columns.map((n, i) => ({
 					name: i + 1 + '',
 					identity: n.identity
-				}))
+			  }))
 	}
 
-	let gradientScale: d3.scale.Linear<string, number>
+	let gradientScale: ScaleLinear<any, any>
 	if (gradient) {
 		const { startValue, endValue, startColor, endColor } = gradient
 		const minValue =
 			typeof startValue !== 'undefined'
 				? startValue
-				: d3.min(segmentInfo.map(n => n.name))
+				: min(segmentInfo.map(n => n.name))
 		const maxValue =
 			typeof endValue !== 'undefined'
 				? endValue
-				: d3.max(segmentInfo.map(n => n.name))
-		gradientScale = d3.scale
-			.linear<string, number>()
+				: max(segmentInfo.map(n => n.name))
+		gradientScale = scaleLinear()
 			.domain([
 				isNaN(minValue) ? 0 : minValue,
 				isNaN(maxValue) ? segmentInfo.length - 1 : maxValue
 			])
-			.interpolate(d3.interpolateRgb as any)
+			.interpolate(interpolateRgb as any)
 			.range([startColor as any, endColor as any])
 	}
 

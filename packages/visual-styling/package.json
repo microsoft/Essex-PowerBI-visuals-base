@@ -1,15 +1,16 @@
 {
-  "name": "@essex/visual-styling",
-  "version": "2.0.0",
-  "description": "A collection of styling elements for producing a consistent powerbi visual experience.",
-  "main": "lib/index.js",
-  "repository": "https://github.com/Microsoft/Essex-PowerBI-visuals-base",
-  "author": "Microsoft",
-  "license": "MIT",
-  "publishConfig": {
-    "access": "public"
-  },
-  "dependencies": {
-    "font-awesome": "^4.6.1"
-  }
+	"name": "@essex/visual-styling",
+	"version": "2.0.0",
+	"description":
+		"A collection of styling elements for producing a consistent powerbi visual experience.",
+	"main": "lib/index.js",
+	"repository": "https://github.com/Microsoft/Essex-PowerBI-visuals-base",
+	"author": "Microsoft",
+	"license": "MIT",
+	"publishConfig": {
+		"access": "public"
+	},
+	"dependencies": {
+		"font-awesome": "^4.7.0"
+	}
 }

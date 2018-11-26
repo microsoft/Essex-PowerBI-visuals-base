@@ -1,4 +1,4 @@
-import * as d3 from 'd3-scale'
+import { ScaleLinear, ScaleLogarithmic, scaleLinear, scaleLog } from 'd3-scale'
 import { Scaler } from './Scaler'
 
 /**
@@ -9,12 +9,12 @@ const MID = 0.5
 const MAX = 1
 
 export default class DivergingScaler implements Scaler {
-	private valueSanitizerPos: d3.ScaleLinear<number, number>
-	private valueSanitizerNeg: d3.ScaleLinear<number, number>
-	private logScalerPos: d3.ScaleLogarithmic<number, number>
-	private logScalerNeg: d3.ScaleLogarithmic<number, number>
-	private linearScalerPos: d3.ScaleLinear<number, number>
-	private linearScalerNeg: d3.ScaleLinear<number, number>
+	private valueSanitizerPos: ScaleLinear<number, number>
+	private valueSanitizerNeg: ScaleLinear<number, number>
+	private logScalerPos: ScaleLogarithmic<number, number>
+	private logScalerNeg: ScaleLogarithmic<number, number>
+	private linearScalerPos: ScaleLinear<number, number>
+	private linearScalerNeg: ScaleLinear<number, number>
 
 	constructor(
 		/**
@@ -36,35 +36,29 @@ export default class DivergingScaler implements Scaler {
 		private isLogScaled = false
 	) {
 		// Sanitizes incoming positive values onto a range of 0-1
-		this.valueSanitizerPos = d3
-			.scaleLinear()
+		this.valueSanitizerPos = scaleLinear()
 			.domain([valueMid, valueMax])
 			.range([MIN, MAX])
 			.clamp(true)
 		// Sanitizes incoming negative values to a range of 0-1 (lowest value correstponds to 1)
-		this.valueSanitizerNeg = d3
-			.scaleLinear()
+		this.valueSanitizerNeg = scaleLinear()
 			.domain([valueMin, valueMid])
 			.range([MAX, MIN])
 			.clamp(true)
 
 		// Log scales sanitized values onto a domain from 0-1
-		this.logScalerPos = d3
-			.scaleLog()
+		this.logScalerPos = scaleLog()
 			.domain([MIN, MAX])
 			.range([MID, MAX])
-		this.logScalerNeg = d3
-			.scaleLog()
+		this.logScalerNeg = scaleLog()
 			.domain([MIN, MAX])
 			.range([MID, MIN])
 
 		// Linearly scales sanitized values ont a domain from 0-1.
-		this.linearScalerPos = d3
-			.scaleLinear()
+		this.linearScalerPos = scaleLinear()
 			.domain([MIN, MAX])
 			.range([MID, MAX])
-		this.linearScalerNeg = d3
-			.scaleLinear()
+		this.linearScalerNeg = scaleLinear()
 			.domain([MIN, MAX])
 			.range([MID, MIN])
 	}
