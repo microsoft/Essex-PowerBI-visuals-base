@@ -1,4 +1,4 @@
-import { scaleOrdinal, scaleSequential } from 'd3'
+import { scaleOrdinal, scaleSequential } from 'd3-scale'
 import * as scaleChromatic from 'd3-scale-chromatic'
 import { Scaler } from './scalers/Scaler'
 

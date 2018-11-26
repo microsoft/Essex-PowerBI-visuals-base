@@ -47,7 +47,6 @@
 		"@types/mocha": "^5.2.5",
 		"@types/mock-require": "^2.0.0",
 		"chai": "^4.2.0",
-		"d3": "^5.7.0",
 		"del-cli": "^1.1.0",
 		"husky": "^1.2.0",
 		"jquery": "^3.3.1",

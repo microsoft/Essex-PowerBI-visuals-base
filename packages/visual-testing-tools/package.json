@@ -3,9 +3,10 @@
 	"version": "2.1.2",
 	"description": "A set of testing tools for ease of testing within PowerBI",
 	"scripts": {
-		"clean": "node ../../run del lib",
-		"docs": "typedoc --out docs --ignoreCompilerErrors ./ --externalPattern **/node_modules/**/*.* --exclude **/src/**/*.spec.ts",
-		"compile": "node ../../run tsc"
+		"clean": "rimraf lib",
+		"docs":
+			"typedoc --out docs --ignoreCompilerErrors ./ --externalPattern **/node_modules/**/*.* --exclude **/src/**/*.spec.ts",
+		"compile": "tsc"
 	},
 	"main": "lib/index.js",
 	"typings": "lib/index.d.ts",
@@ -16,15 +17,16 @@
 	"publishConfig": {
 		"access": "public"
 	},
-	"keywords": [
-		"PowerBI",
-		"Base"
-	],
+	"keywords": ["PowerBI", "Base"],
 	"author": "Microsoft",
 	"license": "MIT",
 	"dependencies": {
-		"font-awesome": "^4.6.1",
-		"jquery": "^3.1.1",
-		"lodash": "3.6.0"
+		"font-awesome": "^4.7.0",
+		"jquery": "^3.3.1",
+		"lodash": "^4.17.11"
+	},
+	"devDependencies": {
+		"typescript": "^3.1.6",
+		"rimraf": "^2.6.2"
 	}
 }
