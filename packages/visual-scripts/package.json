@@ -1,6 +1,6 @@
 {
 	"name": "@essex/powerbi-visual-scripts",
-	"version": "2.0.12",
+	"version": "3.0.0",
 	"publishConfig": {
 		"access": "public"
 	},
@@ -10,9 +10,9 @@
 	"license": "MIT",
 	"author": "Microsoft",
 	"dependencies": {
-		"@essex/oss-report-builder": "^2.0.4",
-		"@essex/visual-config": "^2.0.11",
-		"@essex/visual-entry-loader": "^2.0.11",
+		"@essex/oss-report-builder": "^3.0.0",
+		"@essex/visual-config": "^3.0.0",
+		"@essex/visual-entry-loader": "^3.0.0",
 		"@types/chai": "^4.1.7",
 		"@types/mocha": "^5.2.5",
 		"chokidar": "^2.0.4",

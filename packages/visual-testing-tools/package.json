@@ -1,11 +1,10 @@
 {
 	"name": "@essex/visual-testing-tools",
-	"version": "2.1.2",
+	"version": "3.0.0",
 	"description": "A set of testing tools for ease of testing within PowerBI",
 	"scripts": {
 		"clean": "rimraf lib",
-		"docs":
-			"typedoc --out docs --ignoreCompilerErrors ./ --externalPattern **/node_modules/**/*.* --exclude **/src/**/*.spec.ts",
+		"docs": "typedoc --out docs --ignoreCompilerErrors ./ --externalPattern **/node_modules/**/*.* --exclude **/src/**/*.spec.ts",
 		"compile": "tsc"
 	},
 	"main": "lib/index.js",
@@ -17,7 +16,10 @@
 	"publishConfig": {
 		"access": "public"
 	},
-	"keywords": ["PowerBI", "Base"],
+	"keywords": [
+		"PowerBI",
+		"Base"
+	],
 	"author": "Microsoft",
 	"license": "MIT",
 	"dependencies": {
@@ -26,7 +28,7 @@
 		"lodash": "^4.17.11"
 	},
 	"devDependencies": {
-		"typescript": "^3.1.6",
-		"rimraf": "^2.6.2"
+		"rimraf": "^2.6.2",
+		"typescript": "^3.1.6"
 	}
 }

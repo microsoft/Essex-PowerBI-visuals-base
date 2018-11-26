@@ -1,6 +1,6 @@
 {
 	"name": "@essex/create-powerbi-visual",
-	"version": "2.0.7",
+	"version": "3.0.0",
 	"author": "Microsoft",
 	"license": "MIT",
 	"publishConfig": {

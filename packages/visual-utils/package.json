@@ -1,12 +1,10 @@
 {
 	"name": "@essex/visual-utils",
-	"version": "2.1.3",
-	"description":
-		"A collection of utilities to help in the creation of powerbi visuals",
+	"version": "3.0.0",
+	"description": "A collection of utilities to help in the creation of powerbi visuals",
 	"scripts": {
 		"clean": "rimraf lib",
-		"docs":
-			"typedoc --out docs --ignoreCompilerErrors ./ --externalPattern **/node_modules/**/*.* --exclude **/src/**/*.spec.ts",
+		"docs": "typedoc --out docs --ignoreCompilerErrors ./ --externalPattern **/node_modules/**/*.* --exclude **/src/**/*.spec.ts",
 		"compile": "tsc"
 	},
 	"main": "lib/index.js",
@@ -18,17 +16,20 @@
 	"publishConfig": {
 		"access": "public"
 	},
-	"keywords": ["PowerBI", "Base"],
+	"keywords": [
+		"PowerBI",
+		"Base"
+	],
 	"author": "Microsoft",
 	"license": "MIT",
 	"dependencies": {
+		"@essex/visual-styling": "^3.0.0",
 		"@types/d3-array": "^1.2.4",
-		"@types/d3-scale": "^2.0.2",
 		"@types/d3-interpolate": "^1.3.0",
-		"@essex/visual-styling": "^2.0.0",
+		"@types/d3-scale": "^2.0.2",
 		"d3-array": "^2.0.2",
-		"d3-scale": "^2.1.2",
 		"d3-interpolate": "^1.3.2",
+		"d3-scale": "^2.1.2",
 		"debug": "^4.1.0",
 		"font-awesome": "^4.6.1",
 		"lodash.assignin": "^4.2.0",
