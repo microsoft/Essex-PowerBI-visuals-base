@@ -7,7 +7,9 @@ const readFile = file =>
 	)
 
 module.exports = (js, config) => {
-	const { build: { pbivizJson, capabilitiesJson } } = config
+	const {
+		build: { pbivizJson, capabilitiesJson }
+	} = config
 	const iconType = config.assets.icon.indexOf('.svg') >= 0 ? 'svg+xml' : 'png'
 
 	return Promise.all([
@@ -27,6 +29,7 @@ module.exports = (js, config) => {
 				iconBase64
 			}
 		}
+		result.visual.version = config.metadata.version
 		return result
 	})
 }
