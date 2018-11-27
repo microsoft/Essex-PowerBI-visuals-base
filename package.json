@@ -12,13 +12,10 @@
 		"lint": "tslint -t verbose './packages/*/{src,spec}/**/*.ts'",
 		"compile": "lerna run compile --concurrency=1 --stream",
 		"docs": "lerna run docs --stream",
-		"mocha":
-			"mocha --require ts-node/register \"./packages/*/{src,spec,lib}/**/*.spec.ts\"",
+		"mocha": "mocha --require ts-node/register \"./packages/*/{src,spec,lib}/**/*.spec.ts\"",
 		"test": "run-s info clean lint compile mocha docs",
 		"publish_all": "lerna publish",
-		"prettify": "prettier \"packages/*/**/*.{js,jsx,ts,tsx}\" --write",
-		"precommit": "lint-staged",
-		"prepush": "yarn lint"
+		"prettify": "prettier \"packages/*/**/*.{js,jsx,ts,tsx}\" --write"
 	},
 	"main": "dist/index.js",
 	"typings": "dist/index.d.ts",
@@ -26,7 +23,10 @@
 		"type": "git",
 		"url": "https://github.com/Microsoft/Essex-PowerBI-visuals-base"
 	},
-	"keywords": ["PowerBI", "Base"],
+	"keywords": [
+		"PowerBI",
+		"Base"
+	],
 	"author": "Microsoft",
 	"license": "MIT",
 	"dependencies": {
@@ -35,10 +35,18 @@
 	"husky": {
 		"hooks": {
 			"pre-commit": "lint-staged",
+			"pre-push": "yarn lint",
 			"commit-msg": "commitlint -E HUSKY_GIT_PARAMS"
 		}
 	},
-	"workspaces": { "packages": ["packages/*"], "nohoist": ["**"] },
+	"workspaces": {
+		"packages": [
+			"packages/*"
+		],
+		"nohoist": [
+			"**"
+		]
+	},
 	"devDependencies": {
 		"@commitlint/cli": "^7.2.1",
 		"@commitlint/config-conventional": "^7.1.2",
